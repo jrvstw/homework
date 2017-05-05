@@ -18,8 +18,6 @@ class Rational
 
 int main()
 {
-    //
-
     return 0;
 }
 

@@ -17,10 +17,7 @@ public:
     int getDenominator() const;
     // returns denominator
     friend ostream& operator <<(ostream& outputStream, const Rational& value);
-    /* Negation will be shown before the whole rational number instead of
-     * shown before numerator and/or denominator separately.
-     * The number will be shown as an integer if the denominator is 1 or -1.
-     */
+    // output the number in the format numerator/denominator
     friend istream& operator >>(istream& inputStream, Rational& value);
     /* The input format must be and integer followed by a slash followed by
      * another integer.
@@ -108,12 +105,15 @@ int Rational::getDenominator() const
 
 ostream& operator <<(ostream& outputStream, const Rational& value)
 {
+    /*
     if (value.denominator < 0)
         outputStream << -value.numerator;
     else
         outputStream << value.numerator;
     if (value.denominator != 1 && value.denominator != -1)
         outputStream << '/' << value.denominator;
+    */
+    outputStream << value.numerator << '/' << value.denominator;
     return outputStream;
 }
 

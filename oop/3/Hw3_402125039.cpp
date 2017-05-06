@@ -11,19 +11,27 @@ public:
     Rational(int a);
     // sets the number to a/1
     Rational(int a, int b);
-    // sets the number to a/b when b is not 0. Otherwise, sets to 0/1.
+    /* sets the number to a/b when b is not 0. If b is 0, sets to 0/1 and sends
+     * error message. */
     int getNumerator() const;
     // returns numerator
     int getDenominator() const;
     // returns denominator
+    void normalize();
+    // normalizes the number and guarantees the denominator will be positive.
     friend ostream& operator <<(ostream& outputStream, const Rational& value);
-    // output the number in the format numerator/denominator
+    /* The output is NOT normalized.
+     * If the denominator equals 1, the rational number will be shown as
+     * an integer. */
     friend istream& operator >>(istream& inputStream, Rational& value);
     /* The input format must be and integer followed by a slash followed by
-     * another integer.
-     */
+     * another integer. If the second integer is 0, the rational number will
+     * be set to 0/1. */
     friend const Rational operator *(const Rational a, const Rational b);
+    // the output is normalized
     friend const Rational operator /(const Rational a, const Rational b);
+    // the output is normalized
+    // returns 0/1 with error message if b equals 0
     friend const bool operator ==(const Rational a, const Rational b);
     const bool operator <(const Rational b) const;
     const bool operator <=(const Rational b) const;
@@ -31,8 +39,6 @@ public:
     const bool operator >=(const Rational b) const;
     const int& operator [](const int index);
     // [1] returns numerator, [2] returns denominator, others return error.
-    void normalize();
-    // normalizes the number and guarantees the denominator will be positive.
 private:
     int numerator;
     int denominator;
@@ -40,11 +46,14 @@ private:
 
 int GCD(int a, int b);
 // returns the G.C.D. of integer a and b
-const Rational operator +(const Rational a, const Rational b);
-const Rational operator -(const Rational a, const Rational b);
-const Rational operator -(const Rational a);
 const Rational normalize(Rational a);
 // returns a normalized rational number of which the denominator is positive.
+const Rational operator +(const Rational a, const Rational b);
+// the output is normalized
+const Rational operator -(const Rational a, const Rational b);
+// the output is normalized
+const Rational operator -(const Rational a);
+// the output is normalized
 
 int main()
 {
@@ -55,21 +64,19 @@ int main()
     cin >> Y;
     cout << "Y = " << Y << "\n\n";
 
-    cout << "X + Y = " << normalize(X + Y) << endl;
-    cout << "X - Y = " << normalize(X - Y) << endl;
-    cout << "-X = " << normalize(-X) << endl;
-    cout << "X * Y = " << normalize(X * Y) << endl;
-    cout << " X / Y = " << normalize(X / Y) << endl;
-    if (X == Y)
-        cout << "X == Y\n";
-    if (X < Y)
-        cout << "X < Y\n";
-    if (X <= Y)
-        cout << "X <= Y\n";
-    if (X > Y)
-        cout << "X > Y\n";
-    if (X >= Y)
-        cout << "X >= Y\n";
+    cout << "X + Y  = " << X + Y << endl;
+    cout << "X - Y  = " << X - Y << endl;
+    cout << " -X    = " <<  -X   << endl;
+    cout << "X * Y  = " << X * Y << endl;
+    cout << "X / Y  = " << X / Y << endl;
+    cout << "X == Y : " << (X == Y) << endl;
+    cout << "X <  Y : " << (X < Y)  << endl;
+    cout << "X <= Y : " << (X <= Y) << endl;
+    cout << "X >  Y : " << (X > Y)  << endl;
+    cout << "X >= Y : " << (X >= Y) << endl;
+    cout << "X[1] = " << X[1] << endl;
+    cout << "X[2] = " << X[2] << endl;
+    cout << "X[3] = " << X[3] << endl;
     return 0;
 }
 
@@ -87,7 +94,7 @@ Rational::Rational(int inputNum, int inputDenom)
         numerator = inputNum;
         denominator = inputDenom;
     } else {
-        cout << "Invalid input! The number is set to 0/1." << endl;
+        cout << "Invalid number! The number is set to 0/1." << endl;
         numerator = 0;
         denominator = 1;
     }
@@ -103,17 +110,23 @@ int Rational::getDenominator() const
     return denominator;
 }
 
+void Rational::normalize()
+{
+    int gcd = GCD(numerator, denominator);
+    numerator /= gcd;
+    denominator /= gcd;
+    if (denominator < 0) {
+        numerator = -numerator;
+        denominator = -denominator;
+    }
+    return;
+}
+
 ostream& operator <<(ostream& outputStream, const Rational& value)
 {
-    /*
-    if (value.denominator < 0)
-        outputStream << -value.numerator;
-    else
-        outputStream << value.numerator;
-    if (value.denominator != 1 && value.denominator != -1)
+    outputStream << value.numerator;
+    if (value.denominator != 1)
         outputStream << '/' << value.denominator;
-    */
-    outputStream << value.numerator << '/' << value.denominator;
     return outputStream;
 }
 
@@ -123,19 +136,22 @@ istream& operator >>(istream& inputStream, Rational& value)
     cin >> value.numerator >> slash >> value.denominator;
     if ( value.denominator == 0 || slash != '/') {
         cout << "\nInvalid input! The number is set to 0/1. \n\n";
-        value = Rational();
+        value.numerator = 0;
+        value.denominator = 1;
     }
     return inputStream;
 }
 
 const Rational operator *(const Rational a, const Rational b)
 {
-    return Rational(a.numerator * b.numerator, a.denominator * b.denominator);
+    return normalize(Rational(a.numerator * b.numerator,
+                              a.denominator * b.denominator));
 }
 
 const Rational operator /(const Rational a, const Rational b)
 {
-    return Rational(a.numerator * b.denominator, a.denominator * b.numerator);
+    return normalize(Rational(a.numerator * b.denominator,
+                              a.denominator * b.numerator));
 }
 
 const bool operator ==(const Rational a, const Rational b)
@@ -145,25 +161,20 @@ const bool operator ==(const Rational a, const Rational b)
 
 const bool Rational::operator <(const Rational b) const
 {
-    bool i = this->numerator * b.denominator < b.numerator * this->denominator;
-    if (this->denominator * b.denominator > 0)
-        return i;
+    if (denominator * b.denominator > 0)
+        return (numerator * b.denominator < b.numerator * denominator);
     else
-        return 1 - i;
+        return (numerator * b.denominator > b.numerator * denominator);
 }
 
 const bool Rational::operator <=(const Rational b) const
 {
-    return !(*this > b);
+    return (*this == b) || (*this < b);
 }
 
 const bool Rational::operator >(const Rational b) const
 {
-    bool i = this->numerator * b.denominator > b.numerator * this->denominator;
-    if (this->denominator * b.denominator > 0)
-        return i;
-    else
-        return 1 - i;
+    return !(*this == b) && !(*this < b);
 }
 
 const bool Rational::operator >=(const Rational b) const
@@ -181,18 +192,6 @@ const int& Rational::operator [](const int index)
         cout << "\nIllegal index.\n\n";
 }
 
-void Rational::normalize()
-{
-    int gcd = GCD(numerator, denominator);
-    numerator /= gcd;
-    denominator /= gcd;
-    if (denominator < 0) {
-        numerator = -numerator;
-        denominator = -denominator;
-    }
-    return;
-}
-
 int GCD(int a, int b)
 {
     while (b != 0) {
@@ -203,28 +202,28 @@ int GCD(int a, int b)
     return a;
 }
 
-const Rational operator +(const Rational a, const Rational b)
-{
-    return Rational(a.getNumerator() * b.getDenominator()
-                    +b.getNumerator() * a.getDenominator(),
-                    a.getDenominator() * b.getDenominator());
-}
-
-const Rational operator -(const Rational a, const Rational b)
-{
-    return Rational(a.getNumerator() * b.getDenominator()
-                    -b.getNumerator() * a.getDenominator(),
-                    a.getDenominator() * b.getDenominator());
-}
-
-const Rational operator -(const Rational a)
-{
-    return Rational(-a.getNumerator(), a.getDenominator());
-}
-
 const Rational normalize(Rational a)
 {
     a.normalize();
     return a;
+}
+
+const Rational operator +(const Rational a, const Rational b)
+{
+    return normalize(Rational(a.getNumerator() * b.getDenominator()
+                              +b.getNumerator() * a.getDenominator(),
+                              a.getDenominator() * b.getDenominator()));
+}
+
+const Rational operator -(const Rational a, const Rational b)
+{
+    return normalize(Rational(a.getNumerator() * b.getDenominator()
+                              -b.getNumerator() * a.getDenominator(),
+                              a.getDenominator() * b.getDenominator()));
+}
+
+const Rational operator -(const Rational a)
+{
+    return normalize(Rational(-a.getNumerator(), a.getDenominator()));
 }
 

@@ -38,7 +38,7 @@ public:
     const bool operator >(const Rational b) const;
     const bool operator >=(const Rational b) const;
     const int& operator [](const int index);
-    // [1] returns numerator, [2] returns denominator, others return error.
+    // [0] returns numerator, [1] returns denominator, others return error.
 private:
     int numerator;
     int denominator;
@@ -74,18 +74,16 @@ int main()
     cout << "X <= Y : " << (X <= Y) << endl;
     cout << "X >  Y : " << (X > Y)  << endl;
     cout << "X >= Y : " << (X >= Y) << endl;
+    cout << "X[0] = " << X[0] << endl;
     cout << "X[1] = " << X[1] << endl;
     cout << "X[2] = " << X[2] << endl;
-    cout << "X[3] = " << X[3] << endl;
     return 0;
 }
 
-Rational::Rational()
-                  : numerator(0), denominator(1)
+Rational::Rational() : numerator(0), denominator(1)
 { /*intentionally empty*/ }
 
-Rational::Rational(int wholeNumber)
-                   : numerator(wholeNumber), denominator(1)
+Rational::Rational(int wholeNumber) : numerator(wholeNumber), denominator(1)
 { /*intentionally empty*/ }
 
 Rational::Rational(int inputNum, int inputDenom)
@@ -184,9 +182,9 @@ const bool Rational::operator >=(const Rational b) const
 
 const int& Rational::operator [](const int index)
 {
-    if (index == 1)
+    if (index == 0)
         return numerator;
-    if (index == 2)
+    if (index == 1)
         return denominator;
     else
         cout << "\nIllegal index.\n\n";

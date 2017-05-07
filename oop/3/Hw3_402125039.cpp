@@ -32,6 +32,9 @@ public:
     friend const Rational operator /(const Rational a, const Rational b);
     // the output is normalized
     // returns 0/1 with error message if b equals 0
+    const int compare(const Rational that) const;
+    /* Returned value is positive when *this > that, 0 when *this == that,
+     * negative when *this < that. */
     friend const bool operator ==(const Rational a, const Rational b);
     const bool operator <(const Rational b) const;
     const bool operator <=(const Rational b) const;
@@ -152,32 +155,35 @@ const Rational operator /(const Rational a, const Rational b)
                               a.denominator * b.numerator));
 }
 
+const int Rational::compare(const Rational that) const
+{
+    return (numerator * that.denominator - that.numerator * denominator)
+           * (denominator * that.denominator);
+}
+
 const bool operator ==(const Rational a, const Rational b)
 {
-    return (a.numerator * b.denominator == b.numerator * a.denominator);
+    return (a.compare(b) == 0);
 }
 
 const bool Rational::operator <(const Rational b) const
 {
-    if (denominator * b.denominator > 0)
-        return (numerator * b.denominator < b.numerator * denominator);
-    else
-        return (numerator * b.denominator > b.numerator * denominator);
+    return (this->compare(b) < 0);
 }
 
 const bool Rational::operator <=(const Rational b) const
 {
-    return (*this == b) || (*this < b);
+    return (this->compare(b) <= 0);
 }
 
 const bool Rational::operator >(const Rational b) const
 {
-    return !(*this == b) && !(*this < b);
+    return (this->compare(b) > 0);
 }
 
 const bool Rational::operator >=(const Rational b) const
 {
-    return !(*this < b);
+    return (this->compare(b) >= 0);
 }
 
 const int& Rational::operator [](const int index)

@@ -27,12 +27,18 @@ public:
     /* The input format must be and integer followed by a slash followed by
      * another integer. If the second integer is 0, the rational number will
      * be set to 0/1. */
-    friend const Rational operator *(const Rational a, const Rational b);
+    const Rational operator +(const Rational b) const;
     // the output is normalized
-    friend const Rational operator /(const Rational a, const Rational b);
+    const Rational operator -(const Rational b) const;
+    // the output is normalized
+    const Rational operator -() const;
+    // the output is normalized
+    const Rational operator *(const Rational b) const;
+    // the output is normalized
+    const Rational operator /(const Rational b) const;
     // the output is normalized
     // returns 0/1 with error message if b equals 0
-    friend const bool operator ==(const Rational a, const Rational b);
+    const bool operator ==(const Rational b) const;
     const bool operator <(const Rational b) const;
     const bool operator <=(const Rational b) const;
     const bool operator >(const Rational b) const;
@@ -42,19 +48,11 @@ public:
 private:
     int numerator;
     int denominator;
-    int GCD(int a, int b) const;
-    // returns the G.C.D. of integer a and b
     const int compare(const Rational that) const;
     /* Returned value is positive when *this > that, 0 when *this == that,
      * negative when *this < that. */
 };
 
-const Rational operator +(const Rational a, const Rational b);
-// the output is normalized
-const Rational operator -(const Rational a, const Rational b);
-// the output is normalized
-const Rational operator -(const Rational a);
-// the output is normalized
 
 int main()
 {
@@ -111,7 +109,13 @@ int Rational::getDenominator() const
 
 const Rational Rational::normalize() const
 {
-    int gcd = GCD(numerator, denominator);
+    int gcd = numerator,
+        gcd2 = denominator;
+    while (gcd2 != 0) {
+        int tmp = gcd % gcd2;
+        gcd = gcd2;
+        gcd2 = tmp;
+    }
     if (gcd * denominator < 0)
         gcd = -gcd;
     return Rational(numerator / gcd, denominator / gcd);
@@ -137,27 +141,40 @@ istream& operator >>(istream& inputStream, Rational& value)
     return inputStream;
 }
 
-const Rational operator *(const Rational a, const Rational b)
+const Rational Rational::operator +(const Rational b) const
 {
-    return Rational(a.numerator * b.numerator,
-                              a.denominator * b.denominator).normalize();
+    return Rational(getNumerator() * b.getDenominator()
+                    + b.getNumerator() * getDenominator(),
+                    getDenominator() * b.getDenominator()).normalize();
 }
 
-const Rational operator /(const Rational a, const Rational b)
+const Rational Rational::operator -(const Rational b) const
 {
-    return Rational(a.numerator * b.denominator,
-                              a.denominator * b.numerator).normalize();
+    return Rational(getNumerator() * b.getDenominator()
+                    -b.getNumerator() * getDenominator(),
+                    getDenominator() * b.getDenominator()).normalize();
 }
 
-const int Rational::compare(const Rational that) const
+const Rational Rational::operator -() const
 {
-    return (numerator * that.denominator - that.numerator * denominator)
-           * (denominator * that.denominator);
+    return Rational(-getNumerator(), getDenominator()).normalize();
 }
 
-const bool operator ==(const Rational a, const Rational b)
+const Rational Rational::operator *(const Rational b) const
 {
-    return (a.compare(b) == 0);
+    return Rational(numerator * b.numerator,
+                    denominator * b.denominator).normalize();
+}
+
+const Rational Rational::operator /(const Rational b) const
+{
+    return Rational(numerator * b.denominator,
+                    denominator * b.numerator).normalize();
+}
+
+const bool Rational::operator ==(const Rational b) const
+{
+    return (compare(b) == 0);
 }
 
 const bool Rational::operator <(const Rational b) const
@@ -190,32 +207,9 @@ const int& Rational::operator [](const int index) const
         cout << "\nIllegal index.\n\n";
 }
 
-int Rational::GCD(int a, int b) const
+const int Rational::compare(const Rational that) const
 {
-    while (b != 0) {
-        int c = a % b;
-        a = b;
-        b = c;
-    }
-    return a;
-}
-
-const Rational operator +(const Rational a, const Rational b)
-{
-    return Rational(a.getNumerator() * b.getDenominator()
-                              +b.getNumerator() * a.getDenominator(),
-                              a.getDenominator() * b.getDenominator()).normalize();
-}
-
-const Rational operator -(const Rational a, const Rational b)
-{
-    return Rational(a.getNumerator() * b.getDenominator()
-                              -b.getNumerator() * a.getDenominator(),
-                              a.getDenominator() * b.getDenominator()).normalize();
-}
-
-const Rational operator -(const Rational a)
-{
-    return Rational(-a.getNumerator(), a.getDenominator()).normalize();
+    return (numerator * that.denominator - that.numerator * denominator)
+           * (denominator * that.denominator);
 }
 

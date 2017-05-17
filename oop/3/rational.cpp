@@ -17,7 +17,7 @@ public:
     // returns numerator
     int getDenominator() const;
     // returns denominator
-    const Rational normalize() const;
+    Rational normalize() const;
     // returns the normalized rational number.
     friend ostream& operator <<(ostream& outputStream, const Rational& value);
     /* The output is NOT normalized.
@@ -107,7 +107,7 @@ int Rational::getDenominator() const
     return denominator;
 }
 
-const Rational Rational::normalize() const
+Rational Rational::normalize() const
 {
     int gcd = numerator,
         gcd2 = denominator;
@@ -133,7 +133,7 @@ istream& operator >>(istream& inputStream, Rational& value)
 {
     char slash;
     cin >> value.numerator >> slash >> value.denominator;
-    if ( value.denominator == 0 || slash != '/') {
+    if (value.denominator == 0) {
         cout << "\nInvalid input! The number is set to 0/1. \n\n";
         value.numerator = 0;
         value.denominator = 1;
@@ -201,7 +201,7 @@ const int& Rational::operator [](const int index) const
 {
     if (index == 0)
         return numerator;
-    if (index == 1)
+    else if (index == 1)
         return denominator;
     else
         cout << "\nIllegal index.\n\n";

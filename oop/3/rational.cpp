@@ -133,11 +133,7 @@ istream& operator >>(istream& inputStream, Rational& value)
 {
     char slash;
     cin >> value.numerator >> slash >> value.denominator;
-    if (value.denominator == 0) {
-        cout << "\nInvalid input! The number is set to 0/1. \n\n";
-        value.numerator = 0;
-        value.denominator = 1;
-    }
+    value = Rational(value.numerator, value.denominator);
     return inputStream;
 }
 

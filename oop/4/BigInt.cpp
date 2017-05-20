@@ -1,36 +1,49 @@
 // 402125039
-//dealing with the problem that I can change the value of addr[i]
-// deal with 0 in different digits
 #include <iostream>
-#include <iomanip>
 #include <string>
+#include <iomanip>
 #include <cstdlib>
 #define MAXDIGIT 3
+/* maxdigit is the number of digits of every segment BigInt stores. It must not
+ * exceed 9.
+ */
 using namespace std;
 
 class BigInt
+/* An object of this class stores an integer of uncertain number of digits, and
+ * the integer can be negative. Objects of this class can do "+", "-", "=", and
+ * "<<" operations. Other operations are not supported.
+ */
 {
     public:
         BigInt();
+        // returns an integer 0
         BigInt(string A);
+        // the string contains only numbers, but the first character can be "-"
         BigInt(int A);
         BigInt(const BigInt &A);
+        friend ostream& operator <<(ostream& outputStream, const BigInt& A);
+        // prints the number with a comma between segments
         const BigInt operator =(const BigInt B);
         const BigInt operator +(const BigInt B) const;
         const BigInt operator -(const BigInt B) const;
         const BigInt operator -() const;
         ~BigInt();
-        friend ostream& operator <<(ostream& outputStream, const BigInt& A);
     private:
-        int *addr;
-        int nSegment;
+        int *addr;    // address of the dynamic array of int
+        int nSegment; // number of int used to store this big integer
 };
 
 int main()
 {
-    BigInt a("111111111"), c(-a);
-    BigInt *b = new BigInt(110112112);
+    //BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
+    //BigInt *b = new BigInt(1618033998);
+    BigInt a("1000000000"), c(-a);
+    BigInt *b = new BigInt(-999001);
+    c = a + *b;
+    cout << a << " + " << *b << " = " << c << endl;
     c = a - *b;
+    cout << a << " - " << *b << " = " << c << endl;
     cout << a << endl;
     cout << *b << endl;
     cout << c << endl;
@@ -45,35 +58,25 @@ BigInt::BigInt()
 
 BigInt::BigInt(string A)
 {
-    //checking if the number is negative
-    bool isNegative = 0;
-    if (A[0] == '-') {
-        isNegative = 1;
-        A = A.substr(1, A.length() - 1);
-    }
-    //declaring dynamic array
-    nSegment = (A.length() - 1) / MAXDIGIT + 1;
+    bool isNegative = (A[0] == '-')? 1: 0;
+    nSegment = (A.length() - 1 - isNegative) / MAXDIGIT + 1;
     addr = new int[nSegment];
-    //assigning numbers
-    int i = 0;
-    for (i = 0; i < nSegment - 1; i++) {
+    for (int i = 0; i < nSegment - 1; i++) {
         addr[i] = atoi(A.substr(A.length() - MAXDIGIT, MAXDIGIT).c_str());
-        if (isNegative)
-            addr[i] = -addr[i];
         A.resize(A.length() - MAXDIGIT);
+        if (isNegative == true)
+            addr[i] = -addr[i];
     }
-    addr[i] = atoi(A.c_str());
-    if (isNegative)
-        addr[i] = -addr[i];
+    addr[nSegment - 1] = atoi(A.c_str());
 }
 
 BigInt::BigInt(int A)
 {
-    // setting divisor according to maxdigit
+    // computes the divisor according to maxdigit
     int divisor = 1;
     for (int i = MAXDIGIT; i > 0; i--)
         divisor *= 10;
-    // counting nSegment and assigning numbers
+    // counts nSegment and assigns numbers
     int tmp[10] = {0};
     for (nSegment = 0; A != 0; nSegment++, A /= divisor)
         tmp[nSegment] = A % divisor;
@@ -89,6 +92,14 @@ BigInt::BigInt(const BigInt &A)
         addr[nSegment] = A.addr[nSegment];
 }
 
+ostream& operator <<(ostream& outputStream, const BigInt& A)
+{
+    outputStream << A.addr[A.nSegment - 1];
+    for (int i = A.nSegment - 2; i >= 0; i--)
+        outputStream << ',' << setw(MAXDIGIT) << setfill('0') << abs(A.addr[i]);
+    return outputStream;
+}
+
 const BigInt BigInt::operator =(const BigInt B)
 {
     if (this != &B) {
@@ -102,16 +113,16 @@ const BigInt BigInt::operator =(const BigInt B)
 
 const BigInt BigInt::operator +(const BigInt B) const
 {
-    // constructing a BigInt (overflow is considered)
+    // constructs a BigInt with 1 extra segment in case of overflow
     BigInt Result;
     delete [] Result.addr;
     Result.nSegment = max(nSegment, B.nSegment) + 1;
     Result.addr = new int[Result.nSegment];
-    // setting divisor according to maxdigit
+    // computes the divisor according to maxdigit
     int divisor = 1;
     for (int i = MAXDIGIT; i > 0; i--)
         divisor *= 10;
-    // adding up assuming the result is posotive
+    // adds up assuming the result is positive
     int carry = 0;
     for (int i = 0; i < Result.nSegment; i++) {
         Result.addr[i] = carry;
@@ -119,31 +130,23 @@ const BigInt BigInt::operator +(const BigInt B) const
             Result.addr[i] += addr[i];
         if (i < B.nSegment)
             Result.addr[i] += B.addr[i];
-        // computing the next carry
-        carry = Result.addr[i] / divisor - (Result.addr[i] < 0);
-        Result.addr[i] -= carry * divisor;
-        /*
+        // makes the segment positive and computes the next carry
         carry = Result.addr[i] / divisor;
-        Result.addr[i] %= divisor;
-        if (Result.addr[i] < 0) {
+        if (Result.addr[i] < 0 && (Result.addr[i] % divisor) != 0)
             carry--;
-            Result.addr[i] += divisor;
-        }
-        */
+        Result.addr[i] -= carry * divisor;
     }
-    // dealing with negative number
+    // corrects every segments if the result should be negative
     if (carry == -1) {
         carry = 0;
         for (int i = 0; i < Result.nSegment; i++) {
             Result.addr[i] += carry;
-            carry = 0;
-            if (Result.addr[i] == 0)
-                continue;
-            Result.addr[i] -= divisor;
-            carry = 1;
+            carry = (Result.addr[i] == 0)? 0: 1;
+            if (Result.addr[i] != 0)
+                Result.addr[i] -= divisor;
         }
     }
-    // picking the proper number of segments
+    // corrects the number of segments
     int properSegment = Result.nSegment;
     while (Result.addr[properSegment - 1] == 0 && properSegment > 1)
         properSegment--;
@@ -152,23 +155,10 @@ const BigInt BigInt::operator +(const BigInt B) const
         for (int i = 0; i < properSegment; i++)
             tmp[i] = Result.addr[i];
         delete [] Result.addr;
-        Result.addr = tmp;
         Result.nSegment = properSegment;
+        Result.addr = tmp;
     }
     return Result;
-    /*
-    if (carry > 0)
-        return Result;
-    else {
-        BigInt Result2;
-        delete [] Result2.addr;
-        Result2.nSegment = Result.nSegment + 1;
-        for (int i = 0; i < Result.nSegment; i++)
-            Result2.addr[i] = Result.addr[i];
-        Result2.addr[Result.nSegment] = carry;
-        return Result2;
-    }
-    */
 }
 
 const BigInt BigInt::operator -(const BigInt B) const
@@ -181,8 +171,7 @@ const BigInt BigInt::operator -(const BigInt B) const
 const BigInt BigInt::operator -() const
 {
     BigInt A(*this);
-    int i;
-    for (i = 0; i < nSegment; i++)
+    for (int i = 0; i < nSegment; i++)
         A.addr[i] = -A.addr[i];
     return A;
 }
@@ -190,13 +179,5 @@ const BigInt BigInt::operator -() const
 BigInt::~BigInt()
 {
     delete [] addr;
-}
-
-ostream& operator <<(ostream& outputStream, const BigInt& A)
-{
-    outputStream << A.addr[A.nSegment - 1];
-    for (int i = A.nSegment - 2; i >= 0; i--)
-        outputStream << ',' << setw(MAXDIGIT) << setfill('0') << abs(A.addr[i]);
-    return outputStream;
 }
 

@@ -136,14 +136,13 @@ const BigInt BigInt::operator +(const BigInt B) const
             carry--;
         Result.addr[i] -= carry * divisor;
     }
-    // corrects every segments if the result should be negative
+    // corrects every segment if the result should be negative
     if (carry == -1) {
         carry = 0;
         for (int i = 0; i < Result.nSegment; i++) {
             Result.addr[i] += carry;
-            carry = (Result.addr[i] == 0)? 0: 1;
-            if (Result.addr[i] != 0)
-                Result.addr[i] -= divisor;
+            carry = (Result.addr[i] > 0)? 1: 0;
+            Result.addr[i] -= carry * divisor;
         }
     }
     // corrects the number of segments

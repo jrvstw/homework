@@ -1,4 +1,5 @@
 // 402125039
+
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -17,9 +18,11 @@ class BigInt
 {
     public:
         BigInt();
-        // returns an integer 0
+        // constructs an BigInt with value 0
         BigInt(string A);
-        // the string contains only numbers, but the first character can be "-"
+        /* the string must contain only number characters 0 ~ 9, except that
+         * the first character can be the negative sign.
+         */
         BigInt(int A);
         BigInt(const BigInt &A);
         friend ostream& operator <<(ostream& outputStream, const BigInt& A);
@@ -131,14 +134,13 @@ const BigInt BigInt::operator +(const BigInt B) const
             carry--;
         Result.addr[i] -= carry * divisor;
     }
-    // corrects every segments if the result should be negative
+    // corrects every segment if the result should be negative
     if (carry == -1) {
         carry = 0;
         for (int i = 0; i < Result.nSegment; i++) {
             Result.addr[i] += carry;
-            carry = (Result.addr[i] == 0)? 0: 1;
-            if (Result.addr[i] != 0)
-                Result.addr[i] -= divisor;
+            carry = (Result.addr[i] > 0)? 1: 0;
+            Result.addr[i] -= carry * divisor;
         }
     }
     // corrects the number of segments
@@ -159,8 +161,7 @@ const BigInt BigInt::operator +(const BigInt B) const
 const BigInt BigInt::operator -(const BigInt B) const
 {
     BigInt C(-B);
-    BigInt Result = *this + C;
-    return Result;
+    return BigInt(*this + C);
 }
 
 const BigInt BigInt::operator -() const

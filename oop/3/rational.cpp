@@ -1,5 +1,3 @@
-// 葉家瑋 402125039 哲學四
-
 #include <iostream>
 using namespace std;
 

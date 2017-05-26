@@ -1,0 +1,25 @@
+Essential:
+
+#1
+    - write a class Complex
+    - overload /
+    - overload <<
+
+#2
+    - make Rational compatible with BigInt
+    - (done) write main function (hw5.cpp)
+    - (done) write a basic factorial function
+
+#3
+    - overload *
+    - allow BigInt to be negative
+
+  ** meeting:  6/1 Thu. 13:15 - 14:30 at ?
+
+Optional:
+
+    - overload / in BigInt
+    - overload % in BigInt
+    - optimize factorial() in BigInt
+    - overload >>
+

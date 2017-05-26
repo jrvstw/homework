@@ -1,7 +1,7 @@
 #include <iostream>
-#include "BigInt.h"
-#include "Rational.h"
-#include "Complex.h"
+#include "bigInt.h"
+#include "rational.h"
+#include "complex.h"
 using namespace std;
 
 BigInt factorial(int x);

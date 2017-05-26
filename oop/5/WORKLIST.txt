@@ -5,17 +5,26 @@ Essential:
     - write a constructor Complex(Rational, Rational)
     - overload /
     - overload <<
+    - use namespace
+    - separate into .h and .o files
 
 #2
-    - make Rational compatible with BigInt
-    - (done) write main function (hw5.cpp)
-    - (done) write a basic factorial function
+    - (done) write application files (hw5.cpp)
+    - (done) write a simple factorial function
+    - (done) make Rational compatible with BigInt
+    - use namespace
+    - (done) separate into .h and .o files
 
 #3
     - overload *
     - allow BigInt to be negative
+    - use namespace
+    - separate into .h and .o files
 
   ** meeting:  6/1 Thu. 13:15 - 14:30 at ?
+
+Next:
+    -
 
 Optional:
 

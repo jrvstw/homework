@@ -1,4 +1,5 @@
 #include <iostream>
+//#include "BigInt.h"
 using namespace std;
 
 class Rational
@@ -11,9 +12,9 @@ public:
     Rational(int a, int b);
     /* sets the number to a/b when b is not 0. If b is 0, sets to 0/1 and sends
      * error message. */
-    int getNumerator() const;
+    //int getNumerator() const;
     // returns numerator
-    int getDenominator() const;
+    //int getDenominator() const;
     // returns denominator
     Rational normalize() const;
     // returns the normalized rational number.
@@ -41,8 +42,6 @@ public:
     const bool operator <=(const Rational b) const;
     const bool operator >(const Rational b) const;
     const bool operator >=(const Rational b) const;
-    const int& operator [](const int index) const;
-    // [0] returns numerator, [1] returns denominator, others return error.
 private:
     int numerator;
     int denominator;
@@ -71,9 +70,6 @@ int main()
     cout << "X <= Y : " << (X <= Y) << endl;
     cout << "X >  Y : " << (X > Y)  << endl;
     cout << "X >= Y : " << (X >= Y) << endl;
-    cout << "X[0] = " << X[0] << endl;
-    cout << "X[1] = " << X[1] << endl;
-    cout << "X[2] = " << X[2] << endl;
     return 0;
 }
 
@@ -95,6 +91,7 @@ Rational::Rational(int inputNum, int inputDenom)
     }
 }
 
+/*
 int Rational::getNumerator() const
 {
     return numerator;
@@ -104,9 +101,12 @@ int Rational::getDenominator() const
 {
     return denominator;
 }
+*/
 
 Rational Rational::normalize() const
 {
+    return *this;
+    /*
     int gcd = numerator,
         gcd2 = denominator;
     while (gcd2 != 0) {
@@ -117,6 +117,7 @@ Rational Rational::normalize() const
     if (gcd * denominator < 0)
         gcd = -gcd;
     return Rational(numerator / gcd, denominator / gcd);
+    */
 }
 
 ostream& operator <<(ostream& outputStream, const Rational& value)
@@ -137,21 +138,19 @@ istream& operator >>(istream& inputStream, Rational& value)
 
 const Rational Rational::operator +(const Rational b) const
 {
-    return Rational(getNumerator() * b.getDenominator()
-                    + b.getNumerator() * getDenominator(),
-                    getDenominator() * b.getDenominator()).normalize();
+    return Rational(numerator * b.denominator + b.numerator * denominator,
+                    denominator * b.denominator).normalize();
 }
 
 const Rational Rational::operator -(const Rational b) const
 {
-    return Rational(getNumerator() * b.getDenominator()
-                    -b.getNumerator() * getDenominator(),
-                    getDenominator() * b.getDenominator()).normalize();
+    return Rational(numerator * b.denominator - b.numerator * denominator,
+                    denominator * b.denominator).normalize();
 }
 
 const Rational Rational::operator -() const
 {
-    return Rational(-getNumerator(), getDenominator()).normalize();
+    return Rational(-numerator, denominator).normalize();
 }
 
 const Rational Rational::operator *(const Rational b) const
@@ -189,16 +188,6 @@ const bool Rational::operator >(const Rational b) const
 const bool Rational::operator >=(const Rational b) const
 {
     return (compare(b) >= 0);
-}
-
-const int& Rational::operator [](const int index) const
-{
-    if (index == 0)
-        return numerator;
-    else if (index == 1)
-        return denominator;
-    else
-        cout << "\nIllegal index.\n\n";
 }
 
 const int Rational::compare(const Rational that) const

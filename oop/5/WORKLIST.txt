@@ -2,6 +2,7 @@ Essential:
 
 #1
     - write a class Complex
+    - write a constructor Complex(Rational, Rational)
     - overload /
     - overload <<
 

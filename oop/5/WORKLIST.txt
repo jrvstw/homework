@@ -11,7 +11,7 @@ Essential:
 #2
     - (done) write application files (hw5.cpp)
     - (done) write a simple factorial function
-    - (done) make Rational compatible with BigInt
+    - make Rational compatible with BigInt
     - use namespace
     - (done) separate into .h and .o files
 

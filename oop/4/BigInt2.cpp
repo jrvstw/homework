@@ -30,17 +30,12 @@ class BigInt
         const BigInt operator +(const BigInt B) const;
         const BigInt operator -(const BigInt B) const;
         const BigInt operator -() const;
-        const bool operator <(const BigInt B);
-        const bool operator <=(const BigInt B);
-        const bool operator ==(const BigInt B);
-        const bool operator >=(const BigInt B);
-        const bool operator >(const BigInt B);
         ~BigInt();
     private:
+        bool isNegative;
         int *addr;    // address of the dynamic array of int
         int nSegment; // number of int used to store this big integer
         void correctSegment();
-        const int compare(const BigInt B);
 };
 
 int main()
@@ -53,11 +48,6 @@ int main()
     cout << a << " + " << *b << " = " << c << endl;
     c = a - *b;
     cout << a << " - " << *b << " = " << c << endl;
-    cout << " a < b : " << (a < *b) << endl;
-    cout << " a <= b : " << (a <= *b) << endl;
-    cout << " a == b : " << (a == *b) << endl;
-    cout << " a >= b : " << (a >= *b) << endl;
-    cout << " a > b : " << (a > *b) << endl;
     cout << a << endl;
     cout << *b << endl;
     cout << c << endl;
@@ -66,26 +56,27 @@ int main()
 
 BigInt::BigInt()
 {
+    isNegative = 0;
     nSegment = 1;
     addr = new int(0);
 }
 
 BigInt::BigInt(string A)
 {
-    bool isNegative = (A[0] == '-')? 1: 0;
+    isNegative = (A[0] == '-')? 1: 0;
     nSegment = (A.length() - 1 - isNegative) / MAXDIGIT + 1;
     addr = new int[nSegment];
-    for (int i = 0; i < nSegment - 1; i++) {
-        addr[i] = atoi(A.substr(A.length() - MAXDIGIT, MAXDIGIT).c_str());
-        A.resize(A.length() - MAXDIGIT);
-        if (isNegative == true)
-            addr[i] = -addr[i];
-    }
-    addr[nSegment - 1] = atoi(A.c_str());
+    for (int i = 1; i < nSegment; i++)
+        addr[i-1] = atoi(A.substr(A.length() - i * MAXDIGIT, MAXDIGIT).c_str());
+    addr[nSegment - 1] = atoi(A.substr(isNegative, A.length() - (nSegment - 1) *
+                                       MAXDIGIT).c_str());
 }
 
 BigInt::BigInt(int A)
 {
+    isNegative = (A < 0)? 1: 0;
+    if (isNegative)
+        A = -A;
     int tmp[10] = {0};
     for (nSegment = 0; A != 0; nSegment++, A /= CAP)
         tmp[nSegment] = A % CAP;
@@ -96,6 +87,7 @@ BigInt::BigInt(int A)
 
 BigInt::BigInt(const BigInt &A)
 {
+    isNegative = A.isNegative;
     addr = new int[A.nSegment];
     for (nSegment = 0; nSegment < A.nSegment; nSegment++)
         addr[nSegment] = A.addr[nSegment];
@@ -103,15 +95,18 @@ BigInt::BigInt(const BigInt &A)
 
 ostream& operator <<(ostream& outputStream, const BigInt& A)
 {
+    if (A.isNegative)
+        outputStream << '-';
     outputStream << A.addr[A.nSegment - 1];
     for (int i = A.nSegment - 2; i >= 0; i--)
-        outputStream << ',' << setw(MAXDIGIT) << setfill('0') << abs(A.addr[i]);
+        outputStream << ',' << setw(MAXDIGIT) << setfill('0') << A.addr[i];
     return outputStream;
 }
 
 const BigInt BigInt::operator =(const BigInt B)
 {
     if (this != &B) {
+        isNegative = B.isNegative;
         delete [] addr;
         addr = new int[B.nSegment];
         for (nSegment = 0; nSegment < B.nSegment; nSegment++)
@@ -169,31 +164,6 @@ const BigInt BigInt::operator -() const
     return A;
 }
 
-const bool BigInt::operator <(const BigInt B)
-{
-    return compare(B) < 0;
-}
-
-const bool BigInt::operator <=(const BigInt B)
-{
-    return compare(B) <= 0;
-}
-
-const bool BigInt::operator ==(const BigInt B)
-{
-    return compare(B) == 0;
-}
-
-const bool BigInt::operator >=(const BigInt B)
-{
-    return compare(B) >= 0;
-}
-
-const bool BigInt::operator >(const BigInt B)
-{
-    return compare(B) > 0;
-}
-
 BigInt::~BigInt()
 {
     delete [] addr;
@@ -211,20 +181,6 @@ void BigInt::correctSegment()
         delete [] addr;
         nSegment = properSegment;
         addr = tmp;
-    }
-}
-
-const int BigInt::compare(const BigInt B)
-{
-    if (nSegment > B.nSegment)
-        return addr[nSegment - 1];
-    else if (nSegment < B.nSegment)
-        return B.addr[nSegment - 1];
-    else {
-        int i = nSegment - 1;
-        while (addr[i] == B.addr[i] && i > 0)
-            i--;
-        return addr[i] - B.addr[i];
     }
 }
 

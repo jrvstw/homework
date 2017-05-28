@@ -6,20 +6,20 @@ Essential:
     - overload /
     - overload <<
     - use namespace
-    - separate into .h and .o files
+    - separate codes into interface and implementation
 
 #2
     - (done) write application files (hw5_team15.cpp)
     - (done) write a simple factorial function
     - make Rational compatible with BigInt
     - (done) use namespace
-    - (done) separate into .h and .o files
+    - (done) separate codes into interface and implementation
 
 #3
     - overload *
     - allow BigInt to be negative
     - use namespace
-    - separate into .h and .o files
+    - separate codes into interface and implementation
 
   ** meeting:  6/1 Thu. 13:15 - 14:30 at ?
 

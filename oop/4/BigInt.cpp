@@ -33,6 +33,7 @@ class BigInt
     private:
         int *addr;    // address of the dynamic array of int
         int nSegment; // number of int used to store this big integer
+        void correctSegment();
 };
 
 int main()
@@ -147,17 +148,7 @@ const BigInt BigInt::operator +(const BigInt B) const
         }
     }
     // corrects the number of segments
-    int properSegment = Result.nSegment;
-    while (Result.addr[properSegment - 1] == 0 && properSegment > 1)
-        properSegment--;
-    if (properSegment != Result.nSegment) {
-        int *tmp = new int[properSegment];
-        for (int i = 0; i < properSegment; i++)
-            tmp[i] = Result.addr[i];
-        delete [] Result.addr;
-        Result.nSegment = properSegment;
-        Result.addr = tmp;
-    }
+    Result.correctSegment();
     return Result;
 }
 
@@ -178,5 +169,20 @@ const BigInt BigInt::operator -() const
 BigInt::~BigInt()
 {
     delete [] addr;
+}
+
+void BigInt::correctSegment()
+{
+    int properSegment = nSegment;
+    while (addr[properSegment - 1] == 0 && properSegment > 1)
+        properSegment--;
+    if (properSegment != nSegment) {
+        int *tmp = new int[properSegment];
+        for (int i = 0; i < properSegment; i++)
+            tmp[i] = addr[i];
+        delete [] addr;
+        nSegment = properSegment;
+        addr = tmp;
+    }
 }
 

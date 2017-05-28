@@ -9,10 +9,10 @@ Essential:
     - separate into .h and .o files
 
 #2
-    - (done) write application files (hw5.cpp)
+    - (done) write application files (hw5_team15.cpp)
     - (done) write a simple factorial function
     - make Rational compatible with BigInt
-    - use namespace
+    - (done) use namespace
     - (done) separate into .h and .o files
 
 #3

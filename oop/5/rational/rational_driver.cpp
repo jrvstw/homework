@@ -1,9 +1,12 @@
 #include <iostream>
-using namespace std;
 #include "rational.h"
 
 int main()
 {
+    using std::cin;
+    using std::cout;
+    using std::endl;
+    using namespace rationalJarvis;
     Rational X, Y;
     cout << "Input a rational number: ";
     cin >> X;

@@ -2,12 +2,14 @@
 #include "bigInt.h"
 #include "rational.h"
 #include "complex.h"
-using namespace std;
 
 BigInt factorial(int x);
 
 int main()
 {
+    using std::cout;
+    using std::endl;
+    using namespace rationalJarvis;
     Rational a = 1/3,
              b = -6/17;
     Complex C1(a, b);
@@ -19,7 +21,7 @@ int main()
     //cout << "Let C1 = 1/3 - (6/17)i,\n    C2 = 81!/320! + (128!/520!)i\n\n"
     cout << "Let C1 = 1/3 - (6/17)i, \n"
          << "    C2 = 4!/16! + (6!/26!)i\n\n"
-         << " C1/C2 = " << C1/C2 << endl;
+         << " C1/C2 = " << C1 / C2 << endl;
     return 0;
 }
 

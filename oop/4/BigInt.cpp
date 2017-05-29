@@ -5,7 +5,7 @@
 #define MAXDIGIT 3
 #define CAP 1000
 /* maxdigit is the number of digits of every segment BigInt stores. It must not
- * exceed 9.
+ * exceed 3.
  */
 using namespace std;
 
@@ -31,6 +31,11 @@ class BigInt
         const BigInt operator -(const BigInt B) const;
         const BigInt operator -() const;
         const BigInt operator *(const BigInt B) const;
+        // has problems of overflow when numbers get big
+        const BigInt operator /(const BigInt B) const;
+        // deals with only positive integers
+        const BigInt operator %(const BigInt B) const;
+        const BigInt abs() const;
         const bool operator <(const BigInt B);
         const bool operator <=(const BigInt B);
         const bool operator ==(const BigInt B);
@@ -48,17 +53,15 @@ BigInt factorial(int x)
 {
     BigInt A(1);
     for (int i = 2; i <= x; i++)
-    {
         A = A * i;
-        cout << i << "! = " << A << endl;
-    }
     return A;
 }
 
 int main()
 {
-    cout << factorial(1000) << endl;
-    //BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
+    BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
+    BigInt b("896052342342111");
+    cout << a << " = " << (a / b) << " * " << b << " + " << (a % b) << endl;
     //BigInt *b = new BigInt(1618033998);
     /*
     BigInt a("1000000000"), c(-a);
@@ -168,7 +171,6 @@ const BigInt BigInt::operator +(const BigInt B) const
             Result.addr[i] -= carry * CAP;
         }
     }
-    // corrects the number of segments
     Result.correctSegment();
     return Result;
 }
@@ -207,6 +209,58 @@ const BigInt BigInt::operator *(const BigInt B) const
     Result.addr[Result.nSegment - 1] = carry;
     Result.correctSegment();
     return Result;
+}
+
+const BigInt BigInt::operator /(const BigInt B) const
+{
+    if (B.addr[B.nSegment - 1] == 0) {
+        cout << "ERROR: divisor is zero" << endl;
+        return *this;
+    }
+    BigInt remainer,
+           divisor = B.abs(),
+           quotient;
+    for (int i = nSegment - 1; i >= 0; i--) {
+        remainer = remainer * CAP;
+        quotient = quotient * CAP;
+        remainer.addr[0] = std::abs(addr[i]);
+        while (remainer >= divisor) {
+            remainer = remainer - divisor;
+            quotient = quotient + 1;
+        }
+        remainer.correctSegment();
+    }
+    if (addr[nSegment - 1] * B.addr[nSegment - 1] < 0)
+        quotient = -quotient;
+    return quotient;
+}
+
+const BigInt BigInt::operator %(const BigInt B) const
+{
+    if (B.addr[B.nSegment - 1] == 0) {
+        cout << "ERROR: divisor is zero" << endl;
+        return *this;
+    }
+    BigInt remainer,
+           divisor = B.abs();
+    for (int i = nSegment - 1; i >= 0; i--) {
+        remainer = remainer * CAP;
+        remainer.addr[0] = std::abs(addr[i]);
+        while (remainer >= divisor)
+            remainer = remainer - divisor;
+        remainer.correctSegment();
+    }
+    return remainer;
+}
+
+const BigInt BigInt::abs() const
+{
+    if (addr[nSegment - 1] >= 0)
+        return *this;
+    BigInt A(*this);
+    for (int i = 0; i < nSegment; i++)
+        A.addr[i] = -addr[i];
+    return A;
 }
 
 const bool BigInt::operator <(const BigInt B)
@@ -259,7 +313,7 @@ const int BigInt::compare(const BigInt B)
     if (nSegment > B.nSegment)
         return addr[nSegment - 1];
     else if (nSegment < B.nSegment)
-        return B.addr[nSegment - 1];
+        return -B.addr[B.nSegment - 1];
     else {
         int i = nSegment - 1;
         while (addr[i] == B.addr[i] && i > 0)

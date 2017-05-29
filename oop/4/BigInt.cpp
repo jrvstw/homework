@@ -30,6 +30,7 @@ class BigInt
         const BigInt operator +(const BigInt B) const;
         const BigInt operator -(const BigInt B) const;
         const BigInt operator -() const;
+        const BigInt operator *(const BigInt B) const;
         const bool operator <(const BigInt B);
         const bool operator <=(const BigInt B);
         const bool operator ==(const BigInt B);
@@ -43,24 +44,44 @@ class BigInt
         const int compare(const BigInt B);
 };
 
+BigInt factorial(BigInt x)
+{
+    int ax = 1;
+    BigInt A(1);
+    while (ax <= 15) {
+        A = A * ax;
+        ax = ax + 1;
+        cout << A << endl;
+    }
+    //for (int i = x; i > 1; i--)
+        //A = A * i;
+    return A;
+}
+
 int main()
 {
+    cout << " ! = " << factorial(20) << endl;
     //BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
     //BigInt *b = new BigInt(1618033998);
+    /*
     BigInt a("1000000000"), c(-a);
     BigInt *b = new BigInt(-999001);
-    c = a + *b;
-    cout << a << " + " << *b << " = " << c << endl;
-    c = a - *b;
-    cout << a << " - " << *b << " = " << c << endl;
+    cout << " a = " << a << endl;
+    cout << " b = " << *b << endl;
+    //c = a + *b;
+    //cout << a << " + " << *b << " = " << c << endl;
+    //c = a - *b;
+    //cout << a << " - " << *b << " = " << c << endl;
+    cout << "a + 1 = " << (a + 1) << endl;
+    cout << " a + b = " << (a + *b) << endl;
+    cout << " a - b = " << (a - *b) << endl;
+    cout << " a * b = " << (a * *b) << endl;
     cout << " a < b : " << (a < *b) << endl;
     cout << " a <= b : " << (a <= *b) << endl;
     cout << " a == b : " << (a == *b) << endl;
     cout << " a >= b : " << (a >= *b) << endl;
     cout << " a > b : " << (a > *b) << endl;
-    cout << a << endl;
-    cout << *b << endl;
-    cout << c << endl;
+    */
     return 0;
 }
 
@@ -167,6 +188,25 @@ const BigInt BigInt::operator -() const
     for (int i = 0; i < nSegment; i++)
         A.addr[i] = -A.addr[i];
     return A;
+}
+
+const BigInt BigInt::operator *(const BigInt B) const
+{
+    BigInt Result;
+    delete [] Result.addr;
+    Result.nSegment = nSegment + B.nSegment;
+    Result.addr = new int[Result.nSegment];
+    for (int i = 0; i < nSegment; i++)
+        for (int j = 0; j < B.nSegment; j++)
+            Result.addr[i + j] = addr[i] * B.addr[j];
+    int carry = 0;
+    for (int i = 0; i < Result.nSegment - 1; i++) {
+        Result.addr[i] += carry;
+        carry = Result.addr[i] / CAP;
+        Result.addr[i] %= CAP;
+    }
+    Result.correctSegment();
+    return Result;
 }
 
 const bool BigInt::operator <(const BigInt B)

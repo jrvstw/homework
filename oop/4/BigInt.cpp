@@ -67,7 +67,9 @@ int main()
            c = factorial(128),
            d = factorial(520);
     cout << a << endl << b << endl << c << endl << d << endl;
-    cout << b * d * b * d << endl << a * c * a * c << endl;
+    cout << d * b / c / a << endl;
+    //cout << d / c << endl << b / a << endl;
+    //cout << b * d * b * d << endl << a * c * a * c << endl;
     //cout << b * d / a / c << endl;
     /*
     //c = a + *b;

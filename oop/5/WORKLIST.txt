@@ -17,7 +17,6 @@ Essential:
 
 #3
     - overload *
-    - allow BigInt to be negative
     - use namespace
     - separate codes into interface and implementation
 
@@ -28,6 +27,7 @@ Next:
 
 Optional:
 
+    - allow BigInt to be negative
     - overload / in BigInt
     - overload % in BigInt
     - optimize factorial() in BigInt

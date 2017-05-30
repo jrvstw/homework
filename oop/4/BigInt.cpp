@@ -61,21 +61,13 @@ int main()
 {
     //BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
     //BigInt *b = new BigInt(1618033998);
-    //cout << a << " = " << (a / b) << " * " << b << " + " << (a % b) << endl;
     BigInt a = factorial(81),
            b = factorial(320),
            c = factorial(128),
            d = factorial(520);
     cout << a << endl << b << endl << c << endl << d << endl;
-    cout << d * b / c / a << endl;
-    //cout << d / c << endl << b / a << endl;
-    //cout << b * d * b * d << endl << a * c * a * c << endl;
-    //cout << b * d / a / c << endl;
+    cout << d / c * b / a << endl;
     /*
-    //c = a + *b;
-    //cout << a << " + " << *b << " = " << c << endl;
-    //c = a - *b;
-    //cout << a << " - " << *b << " = " << c << endl;
     cout << " a + b = " << (a + *b) << endl;
     cout << " a - b = " << (a - *b) << endl;
     cout << " a * b = " << (a * *b) << endl;

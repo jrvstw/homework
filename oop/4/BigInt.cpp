@@ -36,17 +36,17 @@ class BigInt
         // deals with only positive integers
         const BigInt operator %(const BigInt B) const;
         const BigInt abs() const;
-        const bool operator <(const BigInt B);
-        const bool operator <=(const BigInt B);
-        const bool operator ==(const BigInt B);
-        const bool operator >=(const BigInt B);
-        const bool operator >(const BigInt B);
+        const bool operator <(const BigInt B) const;
+        const bool operator <=(const BigInt B) const;
+        const bool operator ==(const BigInt B) const;
+        const bool operator >=(const BigInt B) const;
+        const bool operator >(const BigInt B) const;
         ~BigInt();
     private:
         int *addr;    // address of the dynamic array of int
         int nSegment; // number of int used to store this big integer
         void correctSegment();
-        const int compare(const BigInt B);
+        const int compare(const BigInt B) const;
 };
 
 BigInt factorial(int x)
@@ -59,14 +59,23 @@ BigInt factorial(int x)
 
 int main()
 {
+    /*
+    BigInt a("1324"),
+           b("10");
+    cout << a / b << endl;
+    */
     //BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
     //BigInt *b = new BigInt(1618033998);
-    BigInt a = factorial(81),
-           b = factorial(320),
+    BigInt e = factorial(81),
+           f = factorial(320),
            c = factorial(128),
            d = factorial(520);
-    cout << a << endl << b << endl << c << endl << d << endl;
-    cout << d / c * b / a << endl;
+    cout << e << endl << f << endl << c << endl << d << endl;
+    //cout << d / c * f / e << endl;
+    BigInt a(f / e),
+           b(d / c);
+    cout << a * b * (b/3 - a * 6 /17) / (a * a + b * b) << endl;
+    //cout << a << endl << b << endl;
     /*
     cout << " a + b = " << (a + *b) << endl;
     cout << " a - b = " << (a - *b) << endl;
@@ -121,7 +130,7 @@ ostream& operator <<(ostream& outputStream, const BigInt& A)
 {
     outputStream << A.addr[A.nSegment - 1];
     for (int i = A.nSegment - 2; i >= 0; i--)
-        outputStream << ',' << setw(MAXDIGIT) << setfill('0') << abs(A.addr[i]);
+        outputStream << setw(MAXDIGIT) << setfill('0') << abs(A.addr[i]);
     return outputStream;
 }
 
@@ -219,10 +228,24 @@ const BigInt BigInt::operator /(const BigInt B) const
         remainer = remainer * CAP;
         quotient = quotient * CAP;
         remainer.addr[0] = std::abs(addr[i]);
+        int low = 0,
+            high = CAP - 1,
+            mid;
+        while (low < high) {
+            mid = (low + high + 1) >> 1;
+            if (divisor * mid <= remainer)
+                low = mid;
+            else
+                high = mid - 1;
+        }
+        quotient.addr[0] = low;
+        remainer = remainer - divisor * quotient.addr[0];
+        /*
         while (remainer >= divisor) {
             remainer = remainer - divisor;
-            quotient = quotient + 1;
+            quotient.addr[0]++;
         }
+        */
         remainer.correctSegment();
     }
     if (addr[nSegment - 1] * B.addr[nSegment - 1] < 0)
@@ -241,6 +264,19 @@ const BigInt BigInt::operator %(const BigInt B) const
     for (int i = nSegment - 1; i >= 0; i--) {
         remainer = remainer * CAP;
         remainer.addr[0] = std::abs(addr[i]);
+        /*
+        int low = 0,
+            high = CAP - 1,
+            mid;
+        while (low < high) {
+            mid = (low + high + 1) << 1;
+            if (divisor * mid <= remainer)
+                low = mid;
+            else
+                high = mid - 1;
+        }
+        remainer = remainer - divisor * low;
+        */
         while (remainer >= divisor)
             remainer = remainer - divisor;
         remainer.correctSegment();
@@ -260,27 +296,27 @@ const BigInt BigInt::abs() const
     return A;
 }
 
-const bool BigInt::operator <(const BigInt B)
+const bool BigInt::operator <(const BigInt B) const
 {
     return compare(B) < 0;
 }
 
-const bool BigInt::operator <=(const BigInt B)
+const bool BigInt::operator <=(const BigInt B) const
 {
     return compare(B) <= 0;
 }
 
-const bool BigInt::operator ==(const BigInt B)
+const bool BigInt::operator ==(const BigInt B) const
 {
     return compare(B) == 0;
 }
 
-const bool BigInt::operator >=(const BigInt B)
+const bool BigInt::operator >=(const BigInt B) const
 {
     return compare(B) >= 0;
 }
 
-const bool BigInt::operator >(const BigInt B)
+const bool BigInt::operator >(const BigInt B) const
 {
     return compare(B) > 0;
 }
@@ -305,7 +341,7 @@ void BigInt::correctSegment()
     }
 }
 
-const int BigInt::compare(const BigInt B)
+const int BigInt::compare(const BigInt B) const
 {
     if (nSegment > B.nSegment)
         return addr[nSegment - 1];

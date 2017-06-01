@@ -10,8 +10,8 @@ int main()
     using std::cout;
     using std::endl;
     using namespace rationalJarvis;
-    Rational a = 1/3,
-             b = -6/17;
+    Rational a(1, 3),
+             b(-6,17);
     Complex C1(a, b);
     //a = factorial(81) / factorial(320);
     //b = factorial(128) / factorial(520);

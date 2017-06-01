@@ -1,12 +1,12 @@
 Essential:
 
 #1
-    - write a class Complex
-    - write a constructor Complex(Rational, Rational)
-    - overload /
-    - overload <<
-    - use namespace
-    - separate codes into interface and implementation
+    - (done) write a class Complex
+    - (done) write a constructor Complex(Rational, Rational)
+    - (done) overload /
+    - (done) overload <<
+    - (done) use namespace
+    - (done) separate codes into interface and implementation
 
 #2
     - (done) write application files (hw5_team15.cpp)

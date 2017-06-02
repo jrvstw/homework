@@ -43,17 +43,15 @@ namespace rationalJarvis
         const Rational operator /(const Rational b) const;
         // the output is normalized
         // returns 0/1 with error message if b equals 0
-        const bool operator ==(const Rational b) const;
         const bool operator <(const Rational b) const;
         const bool operator <=(const Rational b) const;
-        const bool operator >(const Rational b) const;
+        const bool operator ==(const Rational b) const;
         const bool operator >=(const Rational b) const;
+        const bool operator >(const Rational b) const;
+        const bool operator !=(const Rational b) const;
     private:
         int numerator;
         int denominator;
-        //const int compare(const Rational that) const;
-        /* Returned value is positive when *this > that, 0 when *this == that,
-         * negative when *this < that. */
     };
 } // rationalJarvis
 

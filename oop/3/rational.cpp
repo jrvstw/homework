@@ -130,7 +130,7 @@ ostream& operator <<(ostream& outputStream, const Rational& value)
 istream& operator >>(istream& inputStream, Rational& value)
 {
     char slash;
-    cin >> value.numerator >> slash >> value.denominator;
+    inputStream >> value.numerator >> slash >> value.denominator;
     value = Rational(value.numerator, value.denominator);
     return inputStream;
 }

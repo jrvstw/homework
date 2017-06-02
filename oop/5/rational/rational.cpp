@@ -12,8 +12,8 @@ namespace
     const int compare(const Rational A, const Rational B)
     {
         return (A.getNumerator() * B.getDenominator() -
-                B.getNumerator() * A.getDenominator())
-            * (A.getDenominator() * B.getDenominator());
+                B.getNumerator() * A.getDenominator()) *
+               (A.getDenominator() * B.getDenominator());
     }
 }
 
@@ -51,17 +51,17 @@ namespace rationalJarvis
     {
         return *this;
         /*
-           int gcd = numerator,
-           gcd2 = denominator;
-           while (gcd2 != 0) {
-           int tmp = gcd % gcd2;
-           gcd = gcd2;
-           gcd2 = tmp;
-           }
-           if (gcd * denominator < 0)
-           gcd = -gcd;
-           return Rational(numerator / gcd, denominator / gcd);
-           */
+        int gcd = numerator,
+            gcd2 = denominator;
+        while (gcd2 != 0) {
+            int tmp = gcd % gcd2;
+            gcd = gcd2;
+            gcd2 = tmp;
+        }
+        if (gcd * denominator < 0)
+            gcd = -gcd;
+        return Rational(numerator / gcd, denominator / gcd);
+        */
     }
 
     ostream& operator <<(ostream& outputStream, const Rational& value)
@@ -75,7 +75,7 @@ namespace rationalJarvis
     istream& operator >>(istream& inputStream, Rational& value)
     {
         char slash;
-        cin >> value.numerator >> slash >> value.denominator;
+        inputStream >> value.numerator >> slash >> value.denominator;
         value = Rational(value.numerator, value.denominator);
         return inputStream;
     }
@@ -109,11 +109,6 @@ namespace rationalJarvis
                         denominator * b.numerator).normalize();
     }
 
-    const bool Rational::operator ==(const Rational b) const
-    {
-        return (compare(*this, b) == 0);
-    }
-
     const bool Rational::operator <(const Rational b) const
     {
         return (compare(*this, b) < 0);
@@ -124,14 +119,24 @@ namespace rationalJarvis
         return (compare(*this, b) <= 0);
     }
 
-    const bool Rational::operator >(const Rational b) const
+    const bool Rational::operator ==(const Rational b) const
     {
-        return (compare(*this, b) > 0);
+        return (compare(*this, b) == 0);
     }
 
     const bool Rational::operator >=(const Rational b) const
     {
         return (compare(*this, b) >= 0);
+    }
+
+    const bool Rational::operator >(const Rational b) const
+    {
+        return (compare(*this, b) > 0);
+    }
+
+    const bool Rational::operator !=(const Rational b) const
+    {
+        return (compare(*this, b) != 0);
     }
 }
 

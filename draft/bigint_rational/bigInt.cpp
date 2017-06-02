@@ -2,86 +2,13 @@
 #include <string>
 #include <iomanip>
 #include <cstdlib>
+#include "bigInt.h"
 #define MAXDIGIT 3
 #define CAP 1000
 /* maxdigit is the number of digits of every segment BigInt stores. It must not
  * exceed 3.
  */
 using namespace std;
-
-class BigInt
-/* An object of this class stores an integer of uncertain number of digits, and
- * the integer can be negative. Objects of this class can do "+", "-", "=", and
- * "<<" operations. Other operations are not supported.
- */
-{
-    public:
-        BigInt();
-        // constructs an BigInt with value 0
-        BigInt(string A);
-        /* the string must contain only number characters 0 ~ 9, except that
-         * the first character can be the negative sign.
-         */
-        BigInt(int A);
-        BigInt(const BigInt &A);
-        friend ostream& operator <<(ostream& outputStream, const BigInt& A);
-        const BigInt operator =(const BigInt B);
-        const BigInt operator +(const BigInt B) const;
-        const BigInt operator -(const BigInt B) const;
-        const BigInt operator -() const;
-        const BigInt operator *(const BigInt B) const;
-        // has problems of overflow when numbers get big
-        const BigInt operator /(const BigInt B) const;
-        const BigInt operator %(const BigInt B) const;
-        const BigInt abs() const;
-        const bool operator <(const BigInt B) const;
-        const bool operator <=(const BigInt B) const;
-        const bool operator ==(const BigInt B) const;
-        const bool operator >=(const BigInt B) const;
-        const bool operator >(const BigInt B) const;
-        const bool operator !=(const BigInt B) const;
-        ~BigInt();
-    private:
-        int *addr;    // address of the dynamic array of int
-        int nSegment; // number of int used to store this big integer
-        void correctSegment();
-        const int compare(const BigInt B) const;
-};
-
-BigInt factorial(int x)
-{
-    BigInt A(1);
-    for (int i = 2; i <= x; i++)
-        A = A * i;
-    return A;
-}
-
-int main()
-{
-    //BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
-    //BigInt *b = new BigInt(1618033998);
-    BigInt e = factorial(81),
-           f = factorial(320),
-           c = factorial(128),
-           d = factorial(520);
-    BigInt a(f / e),
-           b(d % c);
-    //cout << a * b * (b / 3 - a * 6 / 17) << endl;
-    cout << a << endl << b << endl;
-    //cout << a * b * (b/3 - a * 6 /17) / (a * a + b * b) << endl;
-    //cout << a * a * b * b * (b * 17 - a * 18)/ (a * 3 * 17 * b) / (a * a + b * b) << endl;
-    /*
-    cout << " a + b = " << (a + *b) << endl;
-    cout << " a - b = " << (a - *b) << endl;
-    cout << " a * b = " << (a * *b) << endl;
-    cout << " a < b : " << (a < *b) << endl;
-    cout << " a <= b : " << (a <= *b) << endl;
-    cout << " a == b : " << (a == *b) << endl;
-    cout << " a >= b : " << (a >= *b) << endl;
-    cout << " a > b : " << (a > *b) << endl;
-    */
-    return 0;
-}
 
 BigInt::BigInt()
 {

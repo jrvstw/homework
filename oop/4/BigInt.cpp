@@ -64,10 +64,12 @@ int main()
            f = factorial(320),
            c = factorial(128),
            d = factorial(520);
-    BigInt a(f / e),
-           b(d % c);
+    cout << e * d * 17 - f * c * 18 << endl;
+    cout << f * d * 51 << endl;
+    //BigInt a(f / e),
+           //b(d % c);
     //cout << a * b * (b / 3 - a * 6 / 17) << endl;
-    cout << a << endl << b << endl;
+    //cout << a << endl << b << endl;
     //cout << a * b * (b/3 - a * 6 /17) / (a * a + b * b) << endl;
     //cout << a * a * b * b * (b * 17 - a * 18)/ (a * 3 * 17 * b) / (a * a + b * b) << endl;
     /*

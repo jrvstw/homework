@@ -232,6 +232,17 @@ BigInt factorial(int n)
 
 int main()
 {
+    BigInt e = factorial(81),
+           f = factorial(320),
+           c = factorial(128),
+           d = factorial(520);
+    cout << e * d * 17 - f * c * 18 << endl;
+    cout << f * d * 51 << endl;
+    //BigInt a(f / e),
+           //b(d % c);
+    //cout << a * b * (b / 3 - a * 6 / 17) << endl;
+    //cout << a << endl << b << endl;
+    /*
     BigInt a("314159265358979323846264338327950288419716939937510"),c(a);
     BigInt *b = new BigInt(1618033998);
     cout<<a<<"\n"<<*b<<"\n"<<c<<"\n";
@@ -242,5 +253,6 @@ int main()
     cout<<factorial(40)<<endl;
     BigInt x(39916800),y(12);
     cout<<x*y<<endl;
+    */
     return 0;
 }

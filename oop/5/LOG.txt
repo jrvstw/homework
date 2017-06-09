@@ -1,0 +1,34 @@
+# make BigInt::BigInt()
+    don't know why
+
+# make BigInt::operator <, <=, ==, >=, >, !=
+    class Rational and class Complex call them, although not necessarily.
+
+# remove Rational::normalize()
+    operator / is not defined in class BigInt
+
+# remove Rational::operator >>
+    it needs BigInt::operator >>
+
+# remove factorial() in hw5_team15.cpp
+    it's writen in BigInt.h and BigInt.cpp
+
+# replace int when comparing Complex with int.
+# ex: (Complex.realPart != 0)  --> (Complex.realPart != Rational(0))
+# or:                          --> (Complex.realPart != BigInt(0))
+    We have Rational::operator(Rational)
+            Rational::Rational(BigInt)
+            BigInt::BigInt(int)
+    But Rational::operator(int) just didn't work. I don't know why.
+
+
+opinion:
+    - "bigint"-like words are confusing when reading codes.
+      is it a namespace, a class, a member variable, or a parameter?
+
+    - there is a minor bug in Complex::operator << which prints nothing when
+      realPart and imaginaryPart are both zero.
+
+    - another minor bug in Complex::operator /
+      "ComplexB == 0" should be considered.
+

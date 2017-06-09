@@ -30,7 +30,7 @@ namespace rationalJarvis
         /* The output is NOT normalized.
          * If the denominator equals 1, the rational number will be shown as
          * an integer. */
-        friend istream& operator >>(istream& inputStream, Rational& value);
+        //friend istream& operator >>(istream& inputStream, Rational& value);
         /* The input format must be and integer followed by a slash followed by
          * another integer. If the second integer is 0, the rational number will
          * be set to 0/1. */
@@ -45,14 +45,12 @@ namespace rationalJarvis
         const Rational operator /(const Rational b) const;
         // the output is NOT normalized
         // returns 0/1 with error message if b equals 0
-        /*
         const bool operator <(const Rational b) const;
         const bool operator <=(const Rational b) const;
         const bool operator ==(const Rational b) const;
         const bool operator >=(const Rational b) const;
         const bool operator >(const Rational b) const;
         const bool operator !=(const Rational b) const;
-        */
     private:
         BigInt numerator;
         BigInt denominator;

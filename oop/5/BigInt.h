@@ -11,7 +11,7 @@ class BigInt
 {
     friend ostream &operator<<(ostream &out, BigInt const &obj);
 public:
-    //BigInt();
+    BigInt();
     BigInt(string bigint);
     // the string contains only positive numbers
     BigInt(int bigint);
@@ -24,9 +24,16 @@ public:
     const BigInt operator +(const BigInt right) const;
     const BigInt operator -(const BigInt right) const;
     const BigInt operator *(const BigInt right) const;
+    const bool operator <(const BigInt B) const;
+    const bool operator <=(const BigInt B) const;
+    const bool operator ==(const BigInt B) const;
+    const bool operator >=(const BigInt B) const;
+    const bool operator >(const BigInt B) const;
+    const bool operator !=(const BigInt B) const;
 private:
     int *big_int;
     int digit;
+    const int compare(const BigInt B) const;
 };
 BigInt factorial(int);
 }

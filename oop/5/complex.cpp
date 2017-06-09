@@ -14,7 +14,7 @@ namespace complexHuang{
 	Complex::Complex(Rational realValue, Rational imaginaryValue):realPart(realValue), imaginaryPart(imaginaryValue){
 	}
 	const Complex operator / (const Complex &complexA, const Complex &complexB){
-        if (c == 0 && d == 0) {
+        if (c == Rational(0) && d == Rational(0)) {
             std::cout << "\nERROR: divisor is zero.\n";
             return complexA;
         }
@@ -22,14 +22,14 @@ namespace complexHuang{
 		return result;
 	}
 	ostream& operator << (ostream& outs, const Complex& complexOuts){
-        if (complexOuts.realPart != 0) {
+        if (complexOuts.realPart != BigInt(0)) {
             outs << '(' << complexOuts.realPart << ')';
-            if (complexOuts.imaginaryPart != 0)
+            if (complexOuts.imaginaryPart != Rational(0))
                 outs << " + ";
         }
-        if (complexOuts.imaginaryPart != 0)
+        if (complexOuts.imaginaryPart != Rational(0))
             outs << '(' << complexOuts.imaginaryPart << ")i";
-        else if (complexOuts.realPart == 0)
+        else if (complexOuts.realPart == Rational(0))
             outs << '0';
         /*
 		if(complexOuts.realPart<0||complexOuts.realPart>0){

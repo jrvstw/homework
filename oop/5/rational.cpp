@@ -75,6 +75,7 @@ namespace rationalJarvis
         return outputStream;
     }
 
+    /*
     istream& operator >>(istream& inputStream, Rational& value)
     {
         char slash;
@@ -82,6 +83,7 @@ namespace rationalJarvis
         value = Rational(value.numerator, value.denominator);
         return inputStream;
     }
+    */
 
     const Rational Rational::operator +(const Rational b) const
     {
@@ -114,7 +116,6 @@ namespace rationalJarvis
                         denominator * b.numerator);
     }
 
-    /*
     const bool Rational::operator <(const Rational b) const
     {
         return (compare(*this, b) < 0);
@@ -144,6 +145,5 @@ namespace rationalJarvis
     {
         return (compare(*this, b) != 0);
     }
-    */
 }
 

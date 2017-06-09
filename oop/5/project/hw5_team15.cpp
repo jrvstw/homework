@@ -3,7 +3,6 @@
 //#include "rational.h"
 #include "complex.h"
 
-
 int main()
 {
     using std::cout;

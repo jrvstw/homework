@@ -2,7 +2,7 @@
 #define RATIONAL_H
 
 #include <iostream>
-#include "bigInt.h"
+#include "bigInt2.h"
 
 namespace rationalJarvis
 {

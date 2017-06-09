@@ -1,7 +1,7 @@
 main:
-	g++ -c bigInt.cpp -o bigInt.o
+	g++ -c bigInt2.cpp -o bigInt2.o
 	g++ -c rational.cpp -o rational.o
 	g++ -c complex.cpp -o complex.o
-	g++ bigInt.o rational.o complex.o hw5_team15.cpp -o hw5_team15.exe
+	g++ bigInt2.o rational.o complex.o hw5_team15.cpp -o hw5_team15.exe
 clean:
-	rm -rf bigInt.o rational.o complex.o hw5_team15.exe
+	rm -rf bigInt2.o rational.o complex.o hw5_team15.exe

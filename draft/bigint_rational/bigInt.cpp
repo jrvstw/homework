@@ -1,7 +1,4 @@
 #include <iostream>
-#include <string>
-#include <iomanip>
-#include <cstdlib>
 #include "bigInt.h"
 #define MAXDIGIT 3
 #define CAP 1000

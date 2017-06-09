@@ -1,53 +1,30 @@
 #include <iostream>
 #include <string>
 #include "BigInt.h"
-using namespace std;
-
-/*class BigInt
-//An object of this class stores an integer of uncertain number of digits, and
-//all big integer should be positive.
+namespace bigint
 {
-    friend ostream &operator<<(ostream &out, BigInt const &obj);
-public:
-    //BigInt();
-    BigInt(string bigint);
-    // the string contains only positive numbers
-    BigInt(int bigint);
-    // the integer contains only positive numbers
-    BigInt(const BigInt &bigint);
-    //copy constructor
-    ~BigInt();
-    //destructor
-    const BigInt operator =(const BigInt right);
-    const BigInt operator +(const BigInt right) const;
-    const BigInt operator -(const BigInt right) const;
-    const BigInt operator *(const BigInt right) const;
-private:
-    int *big_int;
-    int digit;
-};
-BigInt factorial(int);
+using namespace std;
 ostream &operator<<(ostream &out, const BigInt &obj)
 {
     int i;
-    for(i=0;i<obj.digit;i++)
+    for(i=0; i<obj.digit; i++)
     {
         out<<obj.big_int[i];
     }
     return out;
-}*/
+}
 /*BigInt::BigInt()
 {
     digit=1;
     big_int=new int[digit];
     big_int[digit-1]=0;
 }*/
-/*BigInt::BigInt(string bigint)
+BigInt::BigInt(string bigint)
 {
     int i;
     digit=bigint.size();
     big_int=new int[digit];
-    for(i=0;i<digit;i++)
+    for(i=0; i<digit; i++)
     {
         big_int[i]=bigint[i]-'0';
     }
@@ -64,7 +41,7 @@ BigInt::BigInt(int bigint)
     }
     digit=count;
     big_int=new int[digit];
-    for(i=digit-1;i>-1;i--)
+    for(i=digit-1; i>-1; i--)
     {
         big_int[i]=bigint%10;
         bigint=bigint/10;
@@ -73,7 +50,7 @@ BigInt::BigInt(int bigint)
 BigInt::BigInt(const BigInt &bigint)
 {
     big_int=new int[bigint.digit];
-    for(digit=0;digit<bigint.digit;digit++)
+    for(digit=0; digit<bigint.digit; digit++)
     {
         big_int[digit]=bigint.big_int[digit];
     }
@@ -86,7 +63,7 @@ const BigInt BigInt::operator =(const BigInt right)
 {
     delete [] big_int;
     big_int=new int[right.digit];
-    for(digit=0;digit<right.digit;digit++)
+    for(digit=0; digit<right.digit; digit++)
     {
         big_int[digit]=right.big_int[digit];
     }
@@ -98,7 +75,7 @@ const BigInt BigInt::operator +(const BigInt right) const
     int carry=0;
     int i;
     int j;
-    for(i=digit-1,j=right.digit-1;i>-1&&j>-1;i--,j--)
+    for(i=digit-1,j=right.digit-1; i>-1&&j>-1; i--,j--)
     {
         result.big_int[i]=big_int[i]+right.big_int[j]+carry;
         if(result.big_int[i]>9)
@@ -111,7 +88,7 @@ const BigInt BigInt::operator +(const BigInt right) const
             carry=0;
         }
     }
-    for(i=i;i>-1;i--)
+    for(i=i; i>-1; i--)
     {
         result.big_int[i]=big_int[i]+carry;
         if(result.big_int[i]>9)
@@ -132,7 +109,7 @@ const BigInt BigInt::operator -(const BigInt right) const
     int borrow=0;
     int i;
     int j;
-    for(i=digit-1,j=right.digit-1;i>-1&&j>-1;i--,j--)
+    for(i=digit-1,j=right.digit-1; i>-1&&j>-1; i--,j--)
     {
         result.big_int[i]=big_int[i]-right.big_int[j]-borrow;
         if(result.big_int[i]<0)
@@ -145,7 +122,7 @@ const BigInt BigInt::operator -(const BigInt right) const
             borrow=0;
         }
     }
-    for(i=i;i>-1;i--)
+    for(i=i; i>-1; i--)
     {
         result.big_int[i]=big_int[i]-borrow;
         if(result.big_int[i]<0)
@@ -169,23 +146,23 @@ const BigInt BigInt::operator *(const BigInt right) const
     int i;
     int j;
     int carry=0;
-    for(i=0;i<result.digit;i++)
+    for(i=0; i<result.digit; i++)
     {
         result.big_int[i]=0;
     }
-    for(i=digit-1;i>-1;i--)
+    for(i=digit-1; i>-1; i--)
     {
-        for(j=right.digit-1;j>-1;j--)
+        for(j=right.digit-1; j>-1; j--)
         {
             //result.big_int[i+j+1]=result.big_int[i+j+1]+big_int[i]*right.big_int[j]+carry;
             //if(result.big_int[i+j+1]>9)
             //{
-                //carry=result.big_int[i+j+1]/10;
-                //result.big_int[i+j+1]=result.big_int[i+j+1]%10;
+            //carry=result.big_int[i+j+1]/10;
+            //result.big_int[i+j+1]=result.big_int[i+j+1]%10;
             //}
             //else
             //{
-                //carry=0;
+            //carry=0;
             //}
             result.big_int[i+j+1]=result.big_int[i+j+1]+big_int[i]*right.big_int[j];
         }
@@ -194,8 +171,8 @@ const BigInt BigInt::operator *(const BigInt right) const
             result.big_int[i+j]=result.big_int[i+j]+carry;
             carry=0;
         }*/
-    /*}
-    for(i=result.digit-1;i>-1;i--)
+    }
+    for(i=result.digit-1; i>-1; i--)
     {
         result.big_int[i]=result.big_int[i]+carry;
         carry=result.big_int[i]/10;
@@ -212,7 +189,7 @@ const BigInt BigInt::operator *(const BigInt right) const
         result.digit=result.digit-1;
         delete [] result.big_int;
         result.big_int=new int[result.digit];
-        for(i=result.digit-1;i>-1;i--)
+        for(i=result.digit-1; i>-1; i--)
         {
             result.big_int[i]=temp.big_int[i+1];
         }
@@ -222,29 +199,17 @@ const BigInt BigInt::operator *(const BigInt right) const
 BigInt factorial(int n)
 {
     BigInt result = 1;
-    if (n % 2) {
+    if (n % 2)
+    {
         result = n;
         --n;
     }
     int last = 0;
-    for (; n >= 2; n -= 2) {
+    for (; n >= 2; n -= 2)
+    {
         result =result* (n + last);
         last =last+ n;
     }
     return result;
-}*/
-
-int main()
-{
-    BigInt a("314159265358979323846264338327950288419716939937510"),c(a);
-    BigInt *b = new BigInt(1618033998);
-    cout<<a<<"\n"<<*b<<"\n"<<c<<"\n";
-    c=a+*b;
-    cout<<a<<" + "<<*b<<" = "<<c<<endl;
-    c=a-*b;
-    cout<<a<<" - "<<*b<<" = "<<c<<endl;
-    cout<<factorial(40)<<endl;
-    BigInt x(39916800),y(12);
-    cout<<x*y<<endl;
-    return 0;
+}
 }

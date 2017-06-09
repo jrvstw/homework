@@ -2,26 +2,28 @@
 #define RATIONAL_H
 
 #include <iostream>
+#include "BigInt.h"
 
 namespace rationalJarvis
 {
     using std::istream;
     using std::ostream;
+    using namespace bigint;
     class Rational
     {
     public:
         Rational();
         // sets the number to 0/1
-        Rational(int a);
+        Rational(BigInt a);
         // sets the number to a/1
-        Rational(int a, int b);
+        Rational(BigInt a, BigInt b);
         /* sets the number to a/b when b is not 0. If b is 0, sets to 0/1 and
          * sends error message. */
-        int getNumerator() const;
+        BigInt getNumerator() const;
         // returns numerator
-        int getDenominator() const;
+        BigInt getDenominator() const;
         // returns denominator
-        Rational normalize() const;
+        //Rational normalize() const;
         // returns the normalized rational number.
         friend ostream& operator <<(ostream& outputStream,
                                     const Rational& value);
@@ -33,25 +35,27 @@ namespace rationalJarvis
          * another integer. If the second integer is 0, the rational number will
          * be set to 0/1. */
         const Rational operator +(const Rational b) const;
-        // the output is normalized
+        // the output is NOT normalized
         const Rational operator -(const Rational b) const;
-        // the output is normalized
-        const Rational operator -() const;
-        // the output is normalized
+        // the output is NOT normalized
+        //const Rational operator -() const;
+        // the output is NOT normalized
         const Rational operator *(const Rational b) const;
-        // the output is normalized
+        // the output is NOT normalized
         const Rational operator /(const Rational b) const;
-        // the output is normalized
+        // the output is NOT normalized
         // returns 0/1 with error message if b equals 0
+        /*
         const bool operator <(const Rational b) const;
         const bool operator <=(const Rational b) const;
         const bool operator ==(const Rational b) const;
         const bool operator >=(const Rational b) const;
         const bool operator >(const Rational b) const;
         const bool operator !=(const Rational b) const;
+        */
     private:
-        int numerator;
-        int denominator;
+        BigInt numerator;
+        BigInt denominator;
     };
 } // rationalJarvis
 

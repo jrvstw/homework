@@ -23,12 +23,12 @@ namespace complexHuang{
 	}
 	ostream& operator << (ostream& outs, const Complex& complexOuts){
         if (complexOuts.realPart != 0) {
-            outs << complexOuts.realPart;
-            if (complexOuts.imaginaryPart > 0)
-                outs << '+';
+            outs << '(' << complexOuts.realPart << ')';
+            if (complexOuts.imaginaryPart != 0)
+                outs << " + ";
         }
         if (complexOuts.imaginaryPart != 0)
-            outs << complexOuts.imaginaryPart << 'i';
+            outs << '(' << complexOuts.imaginaryPart << ")i";
         else if (complexOuts.realPart == 0)
             outs << '0';
         /*
@@ -50,5 +50,5 @@ namespace complexHuang{
 		}
         */
 		return outs;
-	} 
+	}
 }

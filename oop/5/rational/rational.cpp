@@ -1,4 +1,4 @@
-#include <iostream>
+//#include <iostream>
 #include "rational.h"
 using std::istream;
 using std::ostream;

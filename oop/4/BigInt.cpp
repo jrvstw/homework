@@ -250,11 +250,9 @@ const BigInt BigInt::operator %(const BigInt B) const
         return *this;
     }
     BigInt remainer,
-           //quotient,
            divisor = B.abs();
     for (int i = nSegment - 1; i >= 0; i--) {
         remainer = remainer * CAP;
-        //quotient = quotient * CAP;
         remainer.addr[0] = std::abs(addr[i]);
         int low = 0,
             high = CAP - 1,
@@ -266,8 +264,6 @@ const BigInt BigInt::operator %(const BigInt B) const
             else
                 high = mid - 1;
         }
-        //quotient.addr[0] = low;
-        //remainer = remainer - divisor * quotient.addr[0];
         remainer = remainer - divisor * low;
         remainer.correctSegment();
     }

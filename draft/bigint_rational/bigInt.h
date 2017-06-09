@@ -2,6 +2,9 @@
 #define BIGINT_H
 
 #include <iostream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
 using namespace std;
 
 class BigInt

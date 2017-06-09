@@ -1,5 +1,4 @@
 #include <iostream>
-#include "bigInt.h"
 #include "rational.h"
 using std::istream;
 using std::ostream;

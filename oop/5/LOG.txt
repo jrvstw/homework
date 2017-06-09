@@ -4,14 +4,11 @@
 # make BigInt::operator <, <=, ==, >=, >, !=
     class Rational and class Complex call them, although not necessarily.
 
-# remove Rational::normalize()
-    operator / is not defined in class BigInt
-
 # remove Rational::operator >>
     it needs BigInt::operator >>
 
 # remove factorial() in hw5_team15.cpp
-    it's writen in BigInt.h and BigInt.cpp
+    it's writen in bigInt.h and bigInt.cpp
 
 # replace int when comparing Complex with int.
 # ex: (Complex.realPart != 0)  --> (Complex.realPart != Rational(0))

@@ -4,7 +4,7 @@
 namespace
 {
     using namespace rationalJarvis;
-    using namespace bigint;
+    using namespace bigIntJarvis;
     const BigInt compare(const Rational A, const Rational B)
     {
         return (A.getNumerator() * B.getDenominator() -
@@ -20,7 +20,7 @@ namespace rationalJarvis
     using std::cin;
     using std::cout;
     using std::endl;
-    using namespace bigint;
+    using namespace bigIntJarvis;
     Rational::Rational() : numerator(0), denominator(1)
     { /*intentionally empty*/ }
 
@@ -29,16 +29,14 @@ namespace rationalJarvis
 
     Rational::Rational(BigInt inputNum, BigInt inputDenom)
     {
-        //if (inputDenom != 0) {
+        if (inputDenom != 0) {
             numerator = inputNum;
             denominator = inputDenom;
-            /*
         } else {
             cout << "Invalid number! The number is set to 0/1." << endl;
             numerator = 0;
             denominator = 1;
         }
-    */
     }
 
     BigInt Rational::getNumerator() const
@@ -51,7 +49,6 @@ namespace rationalJarvis
         return denominator;
     }
 
-    /*
     Rational Rational::normalize() const
     {
         BigInt gcd = numerator,
@@ -65,7 +62,6 @@ namespace rationalJarvis
             gcd = -gcd;
         return Rational(numerator / gcd, denominator / gcd);
     }
-    */
 
     ostream& operator <<(ostream& outputStream, const Rational& value)
     {
@@ -97,12 +93,10 @@ namespace rationalJarvis
                         denominator * b.denominator);
     }
 
-    /*
     const Rational Rational::operator -() const
     {
         return Rational(-numerator, denominator);
     }
-    */
 
     const Rational Rational::operator *(const Rational b) const
     {

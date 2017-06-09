@@ -2,13 +2,13 @@
 #define RATIONAL_H
 
 #include <iostream>
-#include "BigInt.h"
+#include "bigInt.h"
 
 namespace rationalJarvis
 {
     using std::istream;
     using std::ostream;
-    using namespace bigint;
+    using namespace bigIntJarvis;
     class Rational
     {
     public:
@@ -23,7 +23,7 @@ namespace rationalJarvis
         // returns numerator
         BigInt getDenominator() const;
         // returns denominator
-        //Rational normalize() const;
+        Rational normalize() const;
         // returns the normalized rational number.
         friend ostream& operator <<(ostream& outputStream,
                                     const Rational& value);
@@ -38,7 +38,7 @@ namespace rationalJarvis
         // the output is NOT normalized
         const Rational operator -(const Rational b) const;
         // the output is NOT normalized
-        //const Rational operator -() const;
+        const Rational operator -() const;
         // the output is NOT normalized
         const Rational operator *(const Rational b) const;
         // the output is NOT normalized

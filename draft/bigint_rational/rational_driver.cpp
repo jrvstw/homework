@@ -22,15 +22,10 @@ int main()
              Y(factorial(128), factorial(520));
     X = X.normalize();
     Y = Y.normalize();
-    Rational m(X.getDenominator()),
-             n(Y.getDenominator());
-    Rational k,
-             l;
-    k = m * n * ((A * n) + (B * m));
-    l = m * m + n * n;
+    cout << X << endl << Y << endl;
+    //cout << ((A*X + B*Y) / (X*X + Y*Y)).normalize() << endl;
     //cout << m * n * ((A * n) + (B * m)) << endl;
     //cout << m * m + n * n << endl;
-    cout << k << endl << l << endl;
     //cout << m * n * ((A / Y) + (B / X)) << endl;
     //cout << (A * X + B * Y) / (X * X + Y * Y) << endl;
     /*

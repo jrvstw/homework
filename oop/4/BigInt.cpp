@@ -48,26 +48,34 @@ class BigInt
         const int compare(const BigInt B) const;
 };
 
-BigInt factorial(int x)
+BigInt factorial(int x, int y)
 {
     BigInt A(1);
-    for (int i = 2; i <= x; i++)
+    for (int i = x; i > y; i--)
         A = A * i;
     return A;
 }
 
 int main()
 {
+    BigInt a(factorial(320, 81)),
+           b(factorial(520, 128));
+    cout << a << endl << b << endl;
     //BigInt a("314159265358979323846264338327950288419716939937510"), c(a);
     //BigInt *b = new BigInt(1618033998);
-    BigInt e = factorial(81),
+    /*
+    BigInt a(1),
+           b(3),
+           c(-6),
+           d(17),
+           e = factorial(81),
            f = factorial(320),
-           c = factorial(128),
-           d = factorial(520);
-    cout << e * d * 17 - f * c * 18 << endl;
-    cout << f * d * 51 << endl;
-    //BigInt a(f / e),
-           //b(d % c);
+           g = factorial(128),
+           h = factorial(520);
+    cout << f*f*h*h*(a*d*e*h + b*c*f*g) << endl;
+    cout << f*f*h*h*(b*c*e*h - a*d*f*g) << endl;
+    */
+    //cout << (e*e*h*h + g*g*f*f)*b*d*f*h << endl;
     //cout << a * b * (b / 3 - a * 6 / 17) << endl;
     //cout << a << endl << b << endl;
     //cout << a * b * (b/3 - a * 6 /17) / (a * a + b * b) << endl;

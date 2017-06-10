@@ -49,7 +49,7 @@ namespace rationalJarvis
 
     Rational Rational::normalize() const
     {
-        return *this;
+        //return *this;
         BigInt gcd = numerator,
                gcd2 = denominator;
         while (gcd2 != 0) {

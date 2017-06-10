@@ -1,3 +1,5 @@
+// Team 15 #2 葉家瑋 402125039 哲學四
+
 #include <iostream>
 #include "rational.h"
 

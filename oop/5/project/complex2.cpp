@@ -1,7 +1,10 @@
 #include <iostream>
+#include <cstdlib>
 #include "complex.h"
 namespace complexHuang{
 	using std::ostream;
+	using std::cout;
+	using std::endl;
 	using namespace rationalJarvis;
 	#define a complexA.realPart
 	#define b complexA.imaginaryPart
@@ -14,25 +17,14 @@ namespace complexHuang{
 	Complex::Complex(Rational realValue, Rational imaginaryValue):realPart(realValue), imaginaryPart(imaginaryValue){
 	}
 	const Complex operator / (const Complex &complexA, const Complex &complexB){
-        if (c == Rational(0) && d == Rational(0)) {
-            std::cout << "\nERROR: divisor is zero.\n";
-            return complexA;
-        }
+		if(complexB.realPart==Rational(0)&&complexB.imaginaryPart==Rational(0)){
+			cout << "denominator should not be zero." << endl;
+			     exit(-1);
+		}
 		Complex result((a*c+b*d)/(c*c+d*d), (b*c-a*d)/(c*c+d*d));
 		return result;
 	}
 	ostream& operator << (ostream& outs, const Complex& complexOuts){
-        /*
-        if (complexOuts.realPart != BigInt(0)) {
-            outs << '(' << complexOuts.realPart << ')';
-            if (complexOuts.imaginaryPart != Rational(0))
-                outs << " + ";
-        }
-        if (complexOuts.imaginaryPart != Rational(0))
-            outs << '(' << complexOuts.imaginaryPart << ")i";
-        else if (complexOuts.realPart == Rational(0))
-            outs << '0';
-        */
 		if(complexOuts.realPart<Rational(0)||complexOuts.realPart>Rational(0)){
 			outs << complexOuts.realPart;
 			if(complexOuts.imaginaryPart<Rational(0))
@@ -45,10 +37,10 @@ namespace complexHuang{
 		else{
 			if(complexOuts.imaginaryPart<Rational(0))
 				outs << complexOuts.imaginaryPart << 'i';
-			else if(complexOuts.imaginaryPart>0){
+			else if(complexOuts.imaginaryPart>Rational(0)){
 				outs << complexOuts.imaginaryPart << 'i';
 			}
 		}
 		return outs;
-	}
+	} 
 }

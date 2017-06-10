@@ -1,3 +1,5 @@
+// Team 15 #2 葉家瑋 402125039 哲學四
+
 #ifndef RATIONAL_H
 #define RATIONAL_H
 

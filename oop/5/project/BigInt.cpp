@@ -198,48 +198,6 @@ const BigInt BigInt::operator *(const BigInt right) const
     }
     return result;
 }
-const bool BigInt::operator <(const BigInt B) const
-{
-    return compare(B) < 0;
-}
-
-const bool BigInt::operator <=(const BigInt B) const
-{
-    return compare(B) <= 0;
-}
-
-const bool BigInt::operator ==(const BigInt B) const
-{
-    return compare(B) == 0;
-}
-
-const bool BigInt::operator >=(const BigInt B) const
-{
-    return compare(B) >= 0;
-}
-
-const bool BigInt::operator >(const BigInt B) const
-{
-    return compare(B) > 0;
-}
-
-const bool BigInt::operator !=(const BigInt B) const
-{
-    return compare(B) != 0;
-}
-const int BigInt::compare(const BigInt B) const
-{
-    if (digit > B.digit)
-        return big_int[0];
-    else if (digit < B.digit)
-        return -B.big_int[0];
-    else {
-        int i = 0;
-        while (big_int[i] == B.big_int[i] && i < digit - 1)
-            i++;
-        return big_int[i] - B.big_int[i];
-    }
-}
 BigInt factorial(int n)
 {
     BigInt result = 1;

@@ -26,16 +26,9 @@ public:
     const BigInt operator +(const BigInt right) const;
     const BigInt operator -(const BigInt right) const;
     const BigInt operator *(const BigInt right) const;
-    const bool operator <(const BigInt B) const;
-    const bool operator <=(const BigInt B) const;
-    const bool operator ==(const BigInt B) const;
-    const bool operator >=(const BigInt B) const;
-    const bool operator >(const BigInt B) const;
-    const bool operator !=(const BigInt B) const;
 private:
     int *big_int;
     int digit;
-    const int compare(const BigInt B) const;
 };
 BigInt factorial(int);
 }

@@ -2,4 +2,4 @@
 *.o
 *.exe
 *.swp
-#.pyc
+*.pyc

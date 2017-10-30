@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 a = int(input('give me a number: '))
 type(a)

@@ -1,0 +1,8 @@
+
+lab401=ycw102u:linux.cs.ccu.edu.tw
+
+export PS1="\[\e[1;30m\]                                                                      [\t]\r> \j jobs, at \w\n\n\[\e[32m\]\u\[\e[m\]\\$ "
+# export PS1="\[\e[35m\]`printf "%80s" "[\t]      "`\r \w\n\[\e[0;1;32m\]\u\[\e[m\]\\$ "
+# export PS1="\[\e[35m\][\t]\r\[\e[1;2;30m\]\w\n\[\e[0;1;32m\]\u\[\e[m\]\\$ "
+# export PS1="\[\e[1;2;30m\]\w\[\e[35m\]`printf "%${COLUMNS}s\n" "[\t]"`\n\[\e[0;1;32m\]\u\[\e[m\]\\$ "
+

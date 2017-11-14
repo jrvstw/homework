@@ -58,7 +58,7 @@ int main()
             // p:1 print play screen
             if (reprint) {
                 reprint = 0;
-                system("cls");
+                system("clear");
                 // print instructions
                 printf(" Menu(esc)");
                 if (undo) printf("     Undo(z)");
@@ -79,10 +79,11 @@ int main()
                 if (game == -1) printf("\nYou lose.");
             }
             // p:2 switch input
-            input = getchar();
+            input = getch();
             switch (input) {
             // p:2-a arrow keys
-            case 72: case 75: case 77: case 80:
+            //case 72: case 75: case 77: case 80:
+                case 'w': case 's': case 'a': case 'd':
                 // if game is set, arrow keys are invalid
                 if (game) break;
                 // test result in TMP[][]
@@ -148,7 +149,7 @@ int main()
                 printf(" r : Restart\n s : Settings\n e : Exit\n\n");
             }
             // m:2 switch input
-            input = getchar();
+            input = getch();
             switch (input) {
             // m:2-a resume
             case 27:
@@ -193,7 +194,7 @@ int main()
                 printf("\n\n\n Press arrow keys to adjust.\n Press Enter to apply.\n Press ESC to cancel.");
             }
             // s:2 switch input
-            input = getchar();
+            input = getch();
             switch (input) {
             // s:2-a apply settings
             case 13:

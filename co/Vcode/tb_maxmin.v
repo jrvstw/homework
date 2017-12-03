@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "maxmin.v"
+`include "try_maxmin.v"
 module tb_acc;
 	reg clk,rst;
 	reg signed[15:0] din;
@@ -18,7 +18,7 @@ module tb_acc;
 				din = i*((-1)**(i-1));
 				#20;
 			end
-		#300 $finish;
+		#500 $finish;
 	end
 	always #10 clk = ~clk;
 endmodule

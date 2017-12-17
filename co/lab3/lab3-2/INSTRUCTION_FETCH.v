@@ -8,13 +8,11 @@ module INSTRUCTION_FETCH(
 	PC, IR
 );
 
-input clk, rst;
-input Jump, Branch;
-input [31:0] JAddr, BAddr;
+input       clk, rst;
+input       Jump, Branch;
+input       [31:0] JAddr, BAddr;
 output reg 	[31:0] PC, IR;
-
-//instruction memory
-reg [31:0] instruction [127:0];
+reg         [31:0] instruction [127:0];
 
 // output program counter and instruction
 always @(posedge clk or posedge rst) begin

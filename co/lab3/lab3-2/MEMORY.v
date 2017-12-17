@@ -4,33 +4,21 @@ module MEMORY(
 	clk, rst,
 	XM_RD,
 	XM_B, ALUout,
-    XM_MemWrite,
-    XM_MemToReg,
-    XM_RegWrite,
+    XM_MemWrite, XM_MemToReg, XM_RegWrite,
 
 	MW_RD,
 	MW_ALUout,
     MW_RegWrite
 );
-input clk, rst;
-input [4:0] XM_RD;
-input [31:0] XM_B, ALUout;
-input XM_MemWrite;
-input XM_MemToReg;
-input XM_RegWrite;
 
-output reg [4:0] MW_RD;
-output reg [31:0] MW_ALUout;
-output reg MW_RegWrite;
-
-//data memory
-reg [31:0] DM [0:127];
-/*
-//always store word to data memory
-always @(posedge clk)
-  if(XM_MemWrite)
-    DM[ALUout[6:0]] <= XM_MD;
-*/
+input       clk, rst;
+input       [4:0] XM_RD;
+input       [31:0] XM_B, ALUout;
+input       XM_MemWrite, XM_MemToReg, XM_RegWrite;
+output reg  [4:0] MW_RD;
+output reg  [31:0] MW_ALUout;
+output reg  MW_RegWrite;
+reg         [31:0] DM [0:127];
 
 //send to Dst REG: "load word from data memory" or  "ALUout"
 always @(posedge clk) begin

@@ -14,28 +14,22 @@ module INSTRUCTION_DECODE(
     ALUSrc,
     Jump,
     Branch,
-    DX_MemWrite,
-    DX_MemToReg,
-    DX_RegWrite
+    DX_MemWrite, DX_MemToReg, DX_RegWrite
 );
 
-input clk,rst;
-input [31:0] PC, IR, MW_ALUout;
-input [4:0] MW_RD;
-input MW_RegWrite;
-output reg [31:0] DX_PC;
-output reg [4:0] RD;
-output reg [31:0] A, B, Imm, JAddr;
-output reg [2:0] ALUCtr;
-output reg ALUSrc;
-output reg Jump;
-output reg Branch;
-output reg DX_MemWrite;
-output reg DX_MemToReg;
-output reg DX_RegWrite;
-
-//register file
-reg [31:0] REG [0:31];
+input       clk,rst;
+input       [31:0] PC, IR, MW_ALUout;
+input       [4:0] MW_RD;
+input       MW_RegWrite;
+output reg  [31:0] DX_PC;
+output reg  [4:0] RD;
+output reg  [31:0] A, B, Imm, JAddr;
+output reg  [2:0] ALUCtr;
+output reg  ALUSrc;
+output reg  Jump;
+output reg  Branch;
+output reg  DX_MemWrite, DX_MemToReg, DX_RegWrite;
+reg         [31:0] REG [0:31];
 
 //Write back
 always @(posedge clk)//add new Dst REG source here

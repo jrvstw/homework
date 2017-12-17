@@ -12,7 +12,7 @@ module INSTRUCTION_DECODE(
 	A, B, Imm, JAddr,
 	ALUCtr,
     ALUSrc,
-    lhWrite, lhRead, mflh,
+    lhWrite, lhRead, mflo,
     Jump,
     Branch,
     DX_MemWrite, DX_MemToReg, DX_RegWrite
@@ -27,7 +27,7 @@ output reg  [4:0] RD;
 output reg  [31:0] A, B, Imm, JAddr;
 output reg  [2:0] ALUCtr;
 output reg  ALUSrc;
-output reg  lhWrite, lhRead, mflh;
+output reg  lhWrite, lhRead, mflo;
 output reg  Jump;
 output reg  Branch;
 output reg  DX_MemWrite, DX_MemToReg, DX_RegWrite;
@@ -67,6 +67,9 @@ always @(posedge clk or posedge rst) begin
         DX_MemWrite <= 1'b0;
         DX_MemToReg <= 1'b0;
         DX_RegWrite <= 1'b0;
+        lhWrite     <= 1'b0;
+        lhRead      <= 1'b0;
+        mflo        <= 1'b0;
         RD 	        <= 5'b0;
     end
     else begin
@@ -75,23 +78,35 @@ always @(posedge clk or posedge rst) begin
         Branch      <= (IR[31:28] == 4'b0001)?              1: 0;
         DX_MemToReg <= (IR[31:29] == 3'b100)?               1: 0;
         DX_MemWrite <= (IR[31:29] == 3'b101)?               1: 0;
-        lhWrite     <= ({IR[31:26],IR[5:2]} == 10'b110)?    1: 0;
-        lhRead      <= ({IR[31:26],IR[5:2]} == 10'b110)?    1: 0;
-        RD          <= (IR[31:26] == 6'b0)? IR[15:11]: IR[20:16];
+        lhRead      <= ({IR[31:26],IR[5:3]} == 9'b10)?      1: 0;
+        lhWrite     <= ({IR[31:26],IR[5:3]} == 9'b11)?      1: 0;
+        RD          <= (IR[31:29] == 3'b0)? IR[15:11]: IR[20:16];
         DX_RegWrite <= (IR[31:26]==6'b0 || IR[31:29]==3'b001 || IR[31:29]==3'b100)? 1: 0;
-        mflh        <= IR[1];
+        mflo        <= IR[1];
+
+        if (IR[31:26] != 6'b0)
+            ALUCtr  <= 3'b010;
+        else begin
+            case (IR[5:0])
+                6'b100000: ALUCtr <= 3'b010; // add
+                6'b100010: ALUCtr <= 3'b110; // sub
+                6'b100100: ALUCtr <= 3'b000; // and
+                6'b100101: ALUCtr <= 3'b001; // or
+                6'b101010: ALUCtr <= 3'b111; // slt
+            endcase
+        end
+    end
+end
+
+endmodule
+        /*
         case (IR[31:26])
             6'b000000: begin // R-Type
                 case (IR[5:0])
-                    //6'b010000: // mfhi
-                    //6'b010010: // mflo
-                    //6'b011000: // mult
-                    //6'b011010: // div
-                    6'b100000: ALUCtr <= 3'b010; // add
-                    6'b100010: ALUCtr <= 3'b110; // sub
-                    6'b100100: ALUCtr <= 3'b000; // and
-                    6'b100101: ALUCtr <= 3'b001; // or
-                    6'b101010: ALUCtr <= 3'b111; // slt
+                    // 010000: // mfhi
+                    // 010010: // mflo
+                    // 011000: // mult
+                    // 011010: // div
                 endcase
             end
             // 000010: j
@@ -101,7 +116,4 @@ always @(posedge clk or posedge rst) begin
             6'b100011: ALUCtr <= 3'b010; // lw
             6'b101011: ALUCtr <= 3'b010; // sw
         endcase
-    end
-end
-
-endmodule
+        */

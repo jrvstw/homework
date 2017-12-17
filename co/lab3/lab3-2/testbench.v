@@ -1,5 +1,5 @@
 `define CYCLE_TIME 20
-`define INSTRUCTION_NUMBERS 36
+`define INSTRUCTION_NUMBERS 41
 `timescale 1ns/1ps
 `include "CPU.v"
 
@@ -48,14 +48,17 @@ begin
 		cpu.IF.instruction[28] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[29] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 
-		//cpu.IF.instruction[30] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[30] = 32'b100011_00010_01001_00000_00000_000101;	//lw $9, 5($2)
 		cpu.IF.instruction[31] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[32] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[33] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[34] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 
-		//cpu.IF.instruction[35] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
+		cpu.IF.instruction[35] = 32'b101011_00000_00001_00000_00000_000100;	//sw $1, 5($0)
+		cpu.IF.instruction[36] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
+		cpu.IF.instruction[37] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
+		cpu.IF.instruction[38] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
+		cpu.IF.instruction[39] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 
 		cpu.IF.PC = 0;
 end

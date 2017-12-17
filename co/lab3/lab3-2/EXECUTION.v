@@ -7,7 +7,7 @@ module EXECUTION(
     A, B, Imm,
     ALUCtr,
     ALUSrc,
-    lhWrite, lhRead, mflh,
+    lhWrite, lhRead, mflo,
     DX_Branch,
     DX_MemWrite, DX_MemToReg, DX_RegWrite,
 
@@ -23,7 +23,7 @@ input       [4:0] DX_RD;
 input       [31:0] A, B, Imm;
 input       [2:0] ALUCtr;
 input       ALUSrc;
-input       lhWrite, lhRead, mflh;
+input       lhWrite, lhRead, mflo;
 input       DX_Branch;
 input       DX_MemWrite, DX_MemToReg, DX_RegWrite;
 output reg  [4:0] XM_RD;
@@ -34,7 +34,7 @@ reg         [31:0] LO, HI;
 
 //set pipeline register
 always @(posedge clk or posedge rst) begin
-    if(rst) begin
+    if (rst) begin
         XM_RD       <= 5'd0;
         XM_B        <= 32'b0;
         XF_Branch   <= 1'b0;
@@ -54,11 +54,23 @@ always @(posedge clk or posedge rst) begin
     end
 end
 
+always @(posedge clk or posedge rst) begin
+    if (rst) begin
+        LO <= 32'b0;
+        HI <= 32'b0;
+    end
+    else if (lhWrite) begin
+        LO <= (mflo)? A/B: A*B;
+        HI <= A % B;
+    end
+end
+
 // calculating ALUout
 always @(posedge clk or posedge rst) begin
-    if(rst) begin
+    if (rst)
         ALUout	<= 32'd0;
-    end
+    else if (lhRead)
+        ALUout  <= (mflo)? LO: HI;
     else begin
         case(ALUCtr)
             3'b000: ALUout <= A & B; // and

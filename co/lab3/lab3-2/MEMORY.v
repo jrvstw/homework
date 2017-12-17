@@ -29,8 +29,8 @@ always @(posedge clk) begin
     end
     else begin
         MW_RD   		<= XM_RD;
-        MW_ALUout   	<= (XM_MemToReg)? DM[ALUout[6:0]]: ALUout;
-        DM[ALUout[6:0]] <= (XM_MemWrite)? XM_B: DM[ALUout[6:0]];
+        MW_ALUout   	<= (XM_MemToReg)? DM[ALUout[8:2]]: ALUout;
+        DM[ALUout[8:2]] <= (XM_MemWrite)? XM_B: DM[ALUout[8:2]];
         MW_RegWrite     <= XM_RegWrite;
     end
 end

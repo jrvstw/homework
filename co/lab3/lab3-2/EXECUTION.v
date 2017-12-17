@@ -3,10 +3,10 @@
 module EXECUTION(
     clk,
     rst,
-    A,
-    B,
+    A, B, Imm,
     DX_RD,
     ALUctr,
+    ALUSrc,
     DX_Branch,
     DX_RegWrite,
 
@@ -17,9 +17,10 @@ module EXECUTION(
 );
 
 input clk,rst,ALUop;
-input [31:0] A,B;
+input [31:0] A, B, Imm;
 input [4:0]DX_RD;
 input [2:0] ALUctr;
+input ALUSrc;
 input DX_Branch;
 input DX_RegWrite;
 
@@ -51,11 +52,12 @@ always @(posedge clk or posedge rst) begin
         case(ALUctr)
             3'b010: //add //lw //sw
             begin
-                ALUout <= A+B;
+                ALUout <= (ALUSrc)? A+Imm: A+B;
+                //ALUout <= A+B;
             end
             3'b110: //sub
             begin
-                ALUout <= A - B;
+                ALUout <= (ALUSrc)? A-Imm: A-B;
             end
             3'b000: // and
             begin

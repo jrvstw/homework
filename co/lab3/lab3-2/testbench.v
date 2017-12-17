@@ -10,14 +10,15 @@ reg [31:0] cycles, i;
 // Instruction DM initialilation
 initial
 begin
-		//cpu.IF.instruction[ 0] = 32'b000000_00001_00010_00011_00000_100000;	//add $3, $1, $2
-		cpu.IF.instruction[ 0] = 32'b000010_00000_00000_00000_00000_001010;	//jump 10
+		cpu.IF.instruction[ 0] = 32'b000000_00001_00010_00011_00000_100000;	//add $3, $1, $2
+		//cpu.IF.instruction[ 0] = 32'b000010_00000_00000_00000_00000_001010;	//jump 10
 		cpu.IF.instruction[ 1] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[ 2] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[ 3] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[ 4] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 
-		cpu.IF.instruction[ 5] = 32'b000000_00001_00010_00100_00000_100010;	//sub $4, $1, $2
+		//cpu.IF.instruction[ 5] = 32'b000000_00001_00010_00100_00000_100010;	//sub $4, $1, $2
+		cpu.IF.instruction[ 5] = 32'b001000_00001_00100_00000_00000_000110;	//addi $4, $1, 6
 		cpu.IF.instruction[ 6] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[ 7] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[ 8] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
@@ -58,8 +59,8 @@ begin
 	for (i=2; i<128; i=i+1) cpu.MEM.DM[i] = 32'b0;
 	
 	cpu.ID.REG[0] = 32'd0;
-	cpu.ID.REG[1] = 32'd18;
-	cpu.ID.REG[2] = 32'd25;
+	cpu.ID.REG[1] = 32'd25;
+	cpu.ID.REG[2] = 32'd18;
 	for (i=3; i<32; i=i+1) cpu.ID.REG[i] = 32'b0;
 
 end

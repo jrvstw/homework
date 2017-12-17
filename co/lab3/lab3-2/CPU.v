@@ -14,11 +14,11 @@ input clk, rst;
 // INSTRUCTION_FETCH wires
 wire [31:0] FD_PC, FD_IR;
 // INSTRUCTION_DECODE wires
-wire [31:0] A, B;
+wire [31:0] A, B, Imm, JAddr;
 wire [4:0] DX_RD;
 wire [2:0] ALUctr;
+wire ALUSrc;
 wire Jump;
-wire [31:0] JAddr;
 wire DX_Branch;
 wire DX_RegWrite;
 // EXECUTION wires
@@ -57,10 +57,12 @@ INSTRUCTION_DECODE ID(
 
 	.A(A),
 	.B(B),
+    .Imm(Imm),
+    .JAddr(JAddr),
 	.RD(DX_RD),
 	.ALUctr(ALUctr),
+    .ALUSrc(ALUSrc),
     .Jump(Jump),
-    .JAddr(JAddr),
     .Branch(DX_Branch),
     .DX_RegWrite(DX_RegWrite)
 );
@@ -72,8 +74,10 @@ EXECUTION EXE(
 	.rst(rst),
 	.A(A),
 	.B(B),
+    .Imm(Imm),
 	.DX_RD(DX_RD),
 	.ALUctr(ALUctr),
+    .ALUSrc(ALUSrc),
     .DX_Branch(DX_Branch),
     .DX_RegWrite(DX_RegWrite),
 

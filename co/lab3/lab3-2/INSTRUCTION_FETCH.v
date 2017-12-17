@@ -1,20 +1,17 @@
 `timescale 1ns/1ps
 
 module INSTRUCTION_FETCH(
-	clk,
-	rst,
-    Jump,
-    Branch,
-    JAddr,
+	clk, rst,
+    Jump, Branch,
+    JAddr, BAddr,
 
-	PC,
-	IR
+	PC, IR
 );
 
 input clk, rst;
-input Jump;
-input [31:0] JAddr;
-input Branch;
+input Jump, Branch;
+input [31:0] JAddr, BAddr;
+
 output reg 	[31:0] PC, IR;
 
 //instruction memory
@@ -32,12 +29,8 @@ end
 always @(posedge clk or posedge rst) begin
 	if(rst)
 		PC <= 32'd0;
-	else if (Jump)
-		PC <= JAddr;
-    else if (Branch)
-		PC <= PC + 4;
-    else
-		PC <= PC + 4;
+	else
+        PC <= (Jump)? JAddr: (Branch)? BAddr: PC+4;
 end
 
 endmodule

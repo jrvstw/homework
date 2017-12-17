@@ -1,23 +1,22 @@
 `timescale 1ns/1ps
 
 module MEMORY(
-	clk,
-	rst,
-	ALUout,
+	clk, rst,
 	XM_RD,
+	ALUout,
     XM_RegWrite,
 
-	MW_ALUout,
 	MW_RD,
+	MW_ALUout,
     MW_RegWrite
 );
 input clk, rst;
-input [31:0] ALUout;
 input [4:0] XM_RD;
+input [31:0] ALUout;
 input XM_RegWrite;
 
-output reg [31:0] MW_ALUout;
 output reg [4:0] MW_RD;
+output reg [31:0] MW_ALUout;
 output reg MW_RegWrite;
 
 //data memory

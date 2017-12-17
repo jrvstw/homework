@@ -1,16 +1,15 @@
 `timescale 1ns/1ps
 
 module INSTRUCTION_DECODE(
-	clk,
-	rst,
-	IR,
-	PC,
-	MW_RD,
+	clk, rst,
+	PC, IR,
 	MW_ALUout,
+	MW_RD,
     MW_RegWrite,
 
-	A, B, Imm, JAddr,
+    DX_PC,
 	RD,
+	A, B, Imm, JAddr,
 	ALUctr,
     ALUSrc,
     Jump,
@@ -19,12 +18,13 @@ module INSTRUCTION_DECODE(
 );
 
 input clk,rst;
-input [31:0]IR, PC, MW_ALUout;
+input [31:0] PC, IR, MW_ALUout;
 input [4:0] MW_RD;
 input MW_RegWrite;
 
-output reg [31:0] A, B, Imm, JAddr;
+output reg [31:0] DX_PC;
 output reg [4:0] RD;
+output reg [31:0] A, B, Imm, JAddr;
 output reg [2:0] ALUctr;
 output reg ALUSrc;
 output reg Jump;
@@ -44,12 +44,14 @@ always @(posedge clk)//add new Dst REG source here
 //set A, and other register content(j/beq flag and address)	
 always @(posedge clk or posedge rst) begin
     if(rst) begin
+        DX_PC   <= 32'b0;
         A 	    <= 32'b0;
         B 	    <= 32'b0;
         Imm	    <= 32'b0;
         JAddr 	<= 32'b0;
     end 
     else begin
+        DX_PC   <= PC;
         A    	<= REG[IR[25:21]];
         B   	<= REG[IR[20:16]];
         Imm     <= {16'b0, IR[15:0]};
@@ -110,11 +112,11 @@ always @(posedge clk or posedge rst) begin
             end
             6'b000100://beq
             begin
-                ALUSrc      <= 1'b1;
+                ALUSrc      <= 1'b0;
                 ALUctr      <= 3'b110;
                 Jump <= 0;
                 Branch <= 1;
-                DX_RegWrite <= 1;
+                DX_RegWrite <= 0;
                 RD <= IR[20:16];
             end
             6'd2://j

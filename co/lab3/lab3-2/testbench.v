@@ -1,5 +1,5 @@
 `define CYCLE_TIME 20
-`define INSTRUCTION_NUMBERS 35
+`define INSTRUCTION_NUMBERS 36
 `timescale 1ns/1ps
 `include "CPU.v"
 
@@ -48,11 +48,14 @@ begin
 		cpu.IF.instruction[28] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[29] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 
-		cpu.IF.instruction[30] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
+		//cpu.IF.instruction[30] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
+		cpu.IF.instruction[30] = 32'b100011_00010_01001_00000_00000_000101;	//lw $9, 5($2)
 		cpu.IF.instruction[31] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[32] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[33] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 		cpu.IF.instruction[34] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
+
+		//cpu.IF.instruction[35] = 32'b000000_00000_00000_00000_00000_100000;	//NOP(add $0, $0, $0)
 
 		cpu.IF.PC = 0;
 end
@@ -62,8 +65,11 @@ initial
 begin
 	cpu.MEM.DM[0] = 32'd9;
 	cpu.MEM.DM[1] = 32'd3;
-	for (i=2; i<128; i=i+1) cpu.MEM.DM[i] = 32'b0;
-	
+	cpu.MEM.DM[2] = 32'd15;
+	cpu.MEM.DM[3] = 32'd2;
+	for (i=4; i<128; i=i+1) cpu.MEM.DM[i] = 32'b0;
+	cpu.MEM.DM[30] = 32'd254;
+
 	cpu.ID.REG[0] = 32'd0;
 	cpu.ID.REG[1] = 32'd25;
 	cpu.ID.REG[2] = 32'd25;

@@ -17,15 +17,19 @@ wire [31:0] FD_PC, FD_IR;
 wire [31:0] DX_PC;
 wire [4:0] DX_RD;
 wire [31:0] A, B, Imm, JAddr;
-wire [2:0] ALUctr;
+wire [2:0] ALUCtr;
 wire ALUSrc;
 wire Jump;
 wire DX_Branch;
+wire DX_MemWrite;
+wire DX_MemToReg;
 wire DX_RegWrite;
 // EXECUTION wires
 wire [4:0] XM_RD;
-wire [31:0] XM_ALUout, BAddr;
+wire [31:0] XM_ALUout, BAddr, XM_B;
 wire XF_Branch;
+wire XM_MemWrite;
+wire XM_MemToReg;
 wire XM_RegWrite;
 // DATA_MEMORY wires
 wire [4:0]	MW_RD;
@@ -63,10 +67,12 @@ INSTRUCTION_DECODE ID(
 	.B(B),
     .Imm(Imm),
     .JAddr(JAddr),
-	.ALUctr(ALUctr),
+	.ALUCtr(ALUCtr),
     .ALUSrc(ALUSrc),
     .Jump(Jump),
     .Branch(DX_Branch),
+    .DX_MemWrite(DX_MemWrite),
+    .DX_MemToReg(DX_MemToReg),
     .DX_RegWrite(DX_RegWrite)
 );
 
@@ -80,16 +86,21 @@ EXECUTION EXE(
     .Imm(Imm),
     .DX_PC(DX_PC),
 	.DX_RD(DX_RD),
-	.ALUctr(ALUctr),
+	.ALUCtr(ALUCtr),
     .ALUSrc(ALUSrc),
     .DX_Branch(DX_Branch),
+    .DX_MemWrite(DX_MemWrite),
+    .DX_MemToReg(DX_MemToReg),
     .DX_RegWrite(DX_RegWrite),
 
 
+	.XM_RD(XM_RD),
+    .XM_B(XM_B),
 	.ALUout(XM_ALUout),
     .BAddr(BAddr),
-	.XM_RD(XM_RD),
     .XF_Branch(XF_Branch),
+    .XM_MemWrite(XM_MemWrite),
+    .XM_MemToReg(XM_MemToReg),
     .XM_RegWrite(XM_RegWrite)
 );
 
@@ -99,7 +110,10 @@ MEMORY MEM(
 	.clk(clk),
 	.rst(rst),
 	.XM_RD(XM_RD),
+    .XM_B(XM_B),
 	.ALUout(XM_ALUout),
+    .XM_MemWrite(XM_MemWrite),
+    .XM_MemToReg(XM_MemToReg),
     .XM_RegWrite(XM_RegWrite),
 
 	.MW_RD(MW_RD),

@@ -19,6 +19,9 @@ wire [4:0] DX_RD;
 wire [31:0] A, B, Imm, JAddr;
 wire [2:0] ALUCtr;
 wire ALUSrc;
+wire lhWrite;
+wire lhRead;
+wire mflh;
 wire Jump;
 wire DX_Branch;
 wire DX_MemWrite;
@@ -69,6 +72,9 @@ INSTRUCTION_DECODE ID(
     .JAddr(JAddr),
 	.ALUCtr(ALUCtr),
     .ALUSrc(ALUSrc),
+    .lhWrite(lhWrite),
+    .lhRead(lhRead),
+    .mflh(mflh),
     .Jump(Jump),
     .Branch(DX_Branch),
     .DX_MemWrite(DX_MemWrite),
@@ -88,6 +94,9 @@ EXECUTION EXE(
 	.DX_RD(DX_RD),
 	.ALUCtr(ALUCtr),
     .ALUSrc(ALUSrc),
+    .lhWrite(lhWrite),
+    .lhRead(lhRead),
+    .mflh(mflh),
     .DX_Branch(DX_Branch),
     .DX_MemWrite(DX_MemWrite),
     .DX_MemToReg(DX_MemToReg),

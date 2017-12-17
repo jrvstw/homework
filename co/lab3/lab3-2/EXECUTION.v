@@ -7,6 +7,7 @@ module EXECUTION(
     A, B, Imm,
     ALUCtr,
     ALUSrc,
+    lhWrite, lhRead, mflh,
     DX_Branch,
     DX_MemWrite, DX_MemToReg, DX_RegWrite,
 
@@ -22,12 +23,14 @@ input       [4:0] DX_RD;
 input       [31:0] A, B, Imm;
 input       [2:0] ALUCtr;
 input       ALUSrc;
+input       lhWrite, lhRead, mflh;
 input       DX_Branch;
 input       DX_MemWrite, DX_MemToReg, DX_RegWrite;
 output reg  [4:0] XM_RD;
 output reg  [31:0] XM_B, ALUout, BAddr;
 output reg  XF_Branch;
 output reg  XM_MemWrite, XM_MemToReg, XM_RegWrite;
+reg         [31:0] LO, HI;
 
 //set pipeline register
 always @(posedge clk or posedge rst) begin

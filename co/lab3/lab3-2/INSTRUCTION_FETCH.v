@@ -14,6 +14,7 @@ input       [31:0] JAddr, BAddr;
 output reg 	[31:0] PC, IR;
 reg         [31:0] instruction [127:0];
 
+
 // output program counter and instruction
 always @(posedge clk or posedge rst) begin
     if (rst) begin
@@ -25,5 +26,6 @@ always @(posedge clk or posedge rst) begin
 		IR <= instruction[PC[10:2]];
     end
 end
+
 
 endmodule

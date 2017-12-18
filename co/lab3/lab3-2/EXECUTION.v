@@ -3,34 +3,37 @@
 module EXECUTION(
     clk, rst,
     DX_PC,
-    DX_RD,
-    A, B, Imm,
-    ALUCtr,
-    ALUSrc,
-    lhWrite, lhRead, mflo,
     DX_Branch,
     DX_MemWrite, DX_MemToReg, DX_RegWrite,
+    lhWrite, lhRead, mflo,
+    ALUSrc,
+    ALUCtr,
+    DX_RD,
+    A, B, Imm,
 
-    XM_RD,
-    XM_B, ALUout, BAddr,
+    BAddr,
     XF_Branch,
-    XM_MemWrite, XM_MemToReg, XM_RegWrite
+    XM_MemWrite, XM_MemToReg, XM_RegWrite,
+    XM_RD,
+    XM_B, ALUout
 );
 
 input       clk, rst;
 input       [31:0] DX_PC;
-input       [4:0] DX_RD;
-input       [31:0] A, B, Imm;
-input       [2:0] ALUCtr;
-input       ALUSrc;
-input       lhWrite, lhRead, mflo;
 input       DX_Branch;
 input       DX_MemWrite, DX_MemToReg, DX_RegWrite;
-output reg  [4:0] XM_RD;
-output reg  [31:0] XM_B, ALUout, BAddr;
+input       lhWrite, lhRead, mflo;
+input       ALUSrc;
+input       [2:0] ALUCtr;
+input       [4:0] DX_RD;
+input       [31:0] A, B, Imm;
+output reg  [31:0] BAddr;
 output reg  XF_Branch;
 output reg  XM_MemWrite, XM_MemToReg, XM_RegWrite;
+output reg  [4:0] XM_RD;
+output reg  [31:0] XM_B, ALUout;
 reg         [31:0] LO, HI;
+
 
 //set pipeline register
 always @(posedge clk or posedge rst) begin
@@ -54,6 +57,8 @@ always @(posedge clk or posedge rst) begin
     end
 end
 
+
+// calculating LO and HI
 always @(posedge clk or posedge rst) begin
     if (rst) begin
         LO <= 32'b0;
@@ -64,6 +69,7 @@ always @(posedge clk or posedge rst) begin
         HI <= A % B;
     end
 end
+
 
 // calculating ALUout
 always @(posedge clk or posedge rst) begin

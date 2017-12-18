@@ -3,35 +3,35 @@
 module INSTRUCTION_DECODE(
 	clk, rst,
 	PC, IR,
-	MW_ALUout,
-	MW_RD,
     MW_RegWrite,
+	MW_RD,
+	MW_ALUout,
 
-    DX_PC,
-	RD,
-	A, B, Imm, JAddr,
-	ALUCtr,
-    ALUSrc,
+    DX_PC, JAddr,
+    Jump, Branch,
+    DX_MemWrite, DX_MemToReg, DX_RegWrite,
     lhWrite, lhRead, mflo,
-    Jump,
-    Branch,
-    DX_MemWrite, DX_MemToReg, DX_RegWrite
+    ALUSrc,
+	ALUCtr,
+	RD,
+	A, B, Imm
 );
 
 input       clk,rst;
-input       [31:0] PC, IR, MW_ALUout;
-input       [4:0] MW_RD;
+input       [31:0] PC, IR;
 input       MW_RegWrite;
-output reg  [31:0] DX_PC;
-output reg  [4:0] RD;
-output reg  [31:0] A, B, Imm, JAddr;
-output reg  [2:0] ALUCtr;
-output reg  ALUSrc;
-output reg  lhWrite, lhRead, mflo;
-output reg  Jump;
-output reg  Branch;
+input       [4:0] MW_RD;
+input       [31:0] MW_ALUout;
+output reg  [31:0] DX_PC, JAddr;
+output reg  Jump, Branch;
 output reg  DX_MemWrite, DX_MemToReg, DX_RegWrite;
+output reg  lhWrite, lhRead, mflo;
+output reg  ALUSrc;
+output reg  [2:0] ALUCtr;
+output reg  [4:0] RD;
+output reg  [31:0] A, B, Imm;
 reg         [31:0] REG [0:31];
+
 
 //Write back
 always @(posedge clk)//add new Dst REG source here
@@ -39,6 +39,7 @@ always @(posedge clk)//add new Dst REG source here
 	  REG[MW_RD] <= MW_ALUout;
 	else
 	  REG[MW_RD] <= REG[MW_RD];//keep REG[0] always equal zero
+
 
 //set A, and other register content(j/beq flag and address)
 always @(posedge clk or posedge rst) begin
@@ -57,6 +58,7 @@ always @(posedge clk or posedge rst) begin
         JAddr   <= {PC[31:28], IR[25:0], 2'b0};
     end
 end
+
 
 //set control signal, choose Dst REG, and set B
 always @(posedge clk or posedge rst) begin

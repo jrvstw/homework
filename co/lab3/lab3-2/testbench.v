@@ -1,6 +1,6 @@
 `define CYCLE_TIME 20
 //`define INSTRUCTION_NUMBERS 2000
-`define TEST_NUMBER 1024
+`define TEST_NUMBER 34892
 `timescale 1ns/1ps
 `include "CPU.v"
 

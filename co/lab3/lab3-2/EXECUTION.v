@@ -40,11 +40,11 @@ always @(posedge clk or posedge rst) begin
     if (rst) begin
         XM_RD       <= 5'd0;
         XM_B        <= 32'b0;
+        BAddr       <= 32'b0;
         XF_Branch   <= 1'b0;
         XM_MemWrite <= 1'b0;
         XM_MemToReg <= 1'b0;
         XM_RegWrite <= 1'b0;
-        BAddr       <= 1'b0;
     end
     else begin
         XM_RD       <= DX_RD;

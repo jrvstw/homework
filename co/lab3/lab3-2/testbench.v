@@ -1,6 +1,6 @@
 `define CYCLE_TIME 20
 //`define INSTRUCTION_NUMBERS 2000
-`define TEST_NUMBER 34892
+`define TEST_NUMBER 14
 `timescale 1ns/1ps
 `include "CPU.v"
 
@@ -79,7 +79,6 @@ always @(posedge Clk) begin
         $display(" %8d %8d %8d", cpu.MEM.DM[0],cpu.MEM.DM[1],cpu.MEM.DM[2]);
         $finish;
     end
-    /*
     $display("PC: %d cycles: %d", cpu.FD_PC>>2 , cycles);
     $display("  R00-R07: %08x %08x %08x %08x %08x %08x %08x %08x", cpu.ID.REG[0], cpu.ID.REG[1], cpu.ID.REG[2], cpu.ID.REG[3],cpu.ID.REG[4], cpu.ID.REG[5], cpu.ID.REG[6], cpu.ID.REG[7]);
     $display("  R08-R15: %08x %08x %08x %08x %08x %08x %08x %08x", cpu.ID.REG[8], cpu.ID.REG[9], cpu.ID.REG[10], cpu.ID.REG[11],cpu.ID.REG[12], cpu.ID.REG[13], cpu.ID.REG[14], cpu.ID.REG[15]);
@@ -89,7 +88,6 @@ always @(posedge Clk) begin
     $display("  0x08   : %08x %08x %08x %08x %08x %08x %08x %08x", cpu.MEM.DM[8],cpu.MEM.DM[9],cpu.MEM.DM[10],cpu.MEM.DM[11],cpu.MEM.DM[12],cpu.MEM.DM[13],cpu.MEM.DM[14],cpu.MEM.DM[15]);
     $display("  LO, HI : %08x %08x", cpu.EXE.LO, cpu.EXE.HI);
     if (cpu.MEM.DM[2]) $finish;
-    */
 end
 
 

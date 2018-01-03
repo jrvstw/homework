@@ -75,7 +75,7 @@ end
 
 //8顆(d0~d7)7-segment(a~g)顯示 dp為右下角的.
 assign {d7,d6,d5,d4,d3,d2,d1,d0} = scan;
-assign dp = ((state==3) || (state==7)) ? 0 : 1;  //1,3 light_on
+assign dp = ((state==1) || (state==3)) ? 0 : 1;  //1,3 light_on
 always@(posedge clk) begin
   counter <=(counter<=100000) ? (counter +1) : 0;
   state <= (counter==100000) ? (state + 1) : state;

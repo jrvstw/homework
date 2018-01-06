@@ -1,4 +1,5 @@
 all:
-	g++ lab5.cpp && ./a.out
+	g++ -o cache lab5.cpp
+	./cache 8 32 1 LRU gcc10.din
 clean:
-	rm a.out
+	rm cache

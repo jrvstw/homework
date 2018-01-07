@@ -1,7 +1,7 @@
 // remember to change a.out to cache when completed
+
 #include <iostream>
 #include <string>
-//#include "block.h"
 #include "blockSet.h"
 using namespace std;
 
@@ -32,12 +32,11 @@ int main(int argc, char *argv[])
     int     B_to_mem        = 0;
 
     // declare a cache
-    int nSet = cache_size / block_size / assoc;
+    int      nSet = cache_size / block_size / assoc;
     blockSet cache[nSet];
-    for (int i = 0; i < nSet; i++) {
-        cache[i].setAssoc(assoc);
-        cache[i].setBlocks();
-    }
+
+    for (int i = 0; i < nSet; i++)
+        cache[i] = blockSet(assoc);
 
     // freopen
     freopen(argv[5], "r", stdin);
@@ -46,21 +45,14 @@ int main(int argc, char *argv[])
     int label;
     int addr;
     while (cin >> label >> hex >> addr) {
-        demand_fetch++;
-
-        // locate block
         int tag     = addr / cache_size;
         int index   = (addr % cache_size) / block_size / assoc;
+        int hit     = cache[index].checkHit(tag);
 
-        int hit = 0;
-        for (int i = 0; i < assoc; i++) {
-            if (tag == cache[index][i].getTag())
-                // hit
-                ;
-            else
-                // keep searching
-                ;
+        demand_fetch++;
 
+        if (hit == -1) {
+            
         }
 
         if (label == 0)
@@ -76,7 +68,11 @@ int main(int argc, char *argv[])
     // test output
     cout << cache_size << " " << block_size << " " << assoc << " " << r_policy << endl;
     cout << nSet << " " << assoc << endl;
-    cout << cache[0][0].getValid() << endl;
+    for (int i = 0; i < nSet; i++) {
+        cout << "# of sets:" << i << endl;
+        cache[i].print();
+        cout << endl << endl;
+    }
 
     // close
     return 0;

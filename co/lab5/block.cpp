@@ -1,5 +1,6 @@
 #include <iostream>
 #include "block.h"
+using namespace std;
 
 block::block()
 {
@@ -15,5 +16,10 @@ int block::getValid()
 int block::getTag()
 {
     return tag;
+}
+
+void block::print()
+{
+    cout << valid << "," << dirty << "," << tag << "  ";
 }
 

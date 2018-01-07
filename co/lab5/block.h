@@ -1,4 +1,5 @@
 #include <iostream>
+using namespace std;
 
 class block
 {
@@ -6,11 +7,10 @@ class block
         block();
         int     getValid();
         int     getTag();
-        ~block();
+        void    print();
     private:
         int     valid;
         int     dirty;
         int     tag;
-        block   next;
 };
 

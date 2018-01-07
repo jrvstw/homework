@@ -1,3 +1,4 @@
+// remember to change a.out to cache when completed
 #include <iostream>
 #include <string>
 //#include "block.h"

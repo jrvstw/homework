@@ -7,25 +7,28 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    // check validity of input
-
     // declare input variables
-    int     cache_size  = atoi(argv[1]) << 10; // in terms of bytes
-    int     block_size  = atoi(argv[2]);
-    int     assoc;
-    string  r_policy    = argv[4];
+    int cache_size  = atoi(argv[1]) << 10;
+    int block_size  = atoi(argv[2]);
+    int assoc;
+    int r_policy;
 
     if (string(argv[3]) == "f")
         assoc = cache_size / block_size;
     else
         assoc = atoi(argv[3]);
 
+    if (string(argv[4]) == "FIFO")
+        r_policy = 1;
+    else if (string(argv[4]) == "LRU")
+        r_policy = 2;
+
     //declare output variables
     string  input_file      = string(argv[5]);
     int     demand_fetch    = 0;
-    int     cache_hit       = 0;
+//  int     cache_hit       = 0;
     int     cache_miss      = 0;
-    double  miss_rate       = 0;
+//  double  miss_rate       = 0;
     int     read_data       = 0;
     int     write_data      = 0;
     int     B_from_mem      = 0;
@@ -34,45 +37,67 @@ int main(int argc, char *argv[])
     // declare a cache
     int      nSet = cache_size / block_size / assoc;
     blockSet cache[nSet];
-
     for (int i = 0; i < nSet; i++)
         cache[i] = blockSet(assoc);
 
-    // freopen
-    freopen(argv[5], "r", stdin);
-
     // read files
+    freopen(argv[5], "r", stdin);
     int label;
     int addr;
     while (cin >> label >> hex >> addr) {
         int tag     = addr / cache_size;
         int index   = (addr % cache_size) / block_size / assoc;
-        int hit     = cache[index].checkHit(tag);
 
         demand_fetch++;
 
-        if (hit == -1) {
-            
-        }
-
-        if (label == 0)
+        switch (label) {
+        case 0:
             read_data++;
-        else if (label == 1)
+            cache[index].read(tag, r_policy, cache_miss, B_from_mem, B_to_mem);
+            break;
+        case 1:
             write_data++;
-
-        cout << label << " " << hex << addr
-             << " " << tag << " " << index << endl;
+            cache[index].write(tag, r_policy, cache_miss, B_from_mem, B_to_mem);
+            break;
+        case 2:
+            cache[index].read(tag, r_policy, cache_miss, B_from_mem, B_to_mem);
+            break;
+        default:
+            cout << "Invalid instance in " << input_file << endl;
+            return -1;
+        }
+        // test output
+//      cout << label << " " << hex << addr
+//           << " " << tag << " " << index << endl;
     }
-    cout << dec << demand_fetch << endl;
+
+    for (int i = 0; i < nSet; i++)
+        cache[i].writeBack(B_to_mem);
+    B_from_mem *= block_size;
+    B_to_mem   *= block_size;
+
+
+    // output
+    cout << "Input file        = " << dec << input_file << endl
+         << "Demand fetch      = " << demand_fetch << endl
+         << "Cache hit         = " << demand_fetch - cache_miss << endl
+         << "Cache miss        = " << cache_miss << endl
+         << "Miss rate         = " << double(cache_miss)/double(demand_fetch) << endl
+         << "Read data         = " << read_data << endl
+         << "Write data        = " << write_data << endl
+         << "Bytes from Memory = " << B_from_mem << endl
+         << "Bytes to memory   = " << B_to_mem << endl << endl;
 
     // test output
-    cout << cache_size << " " << block_size << " " << assoc << " " << r_policy << endl;
-    cout << nSet << " " << assoc << endl;
+    //cout << cache_size << " " << block_size << " " << assoc << " " << r_policy << endl;
+    //cout << nSet << " " << assoc << endl;
+    /*
     for (int i = 0; i < nSet; i++) {
         cout << "# of sets:" << i << endl;
         cache[i].print();
         cout << endl << endl;
     }
+    */
 
     // close
     return 0;

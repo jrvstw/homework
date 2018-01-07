@@ -14,6 +14,24 @@ blockSet::blockSet(int assoc)
     head = new block[assoc];
 }
 
+blockSet::blockSet(const blockSet &B)
+{
+    head = new block[B.nBlocks];
+    for (nBlocks = 0; nBlocks < B.nBlocks; nBlocks++)
+        head[nBlocks] = B.head[nBlocks];
+}
+
+blockSet blockSet::operator =(blockSet B)
+{
+    if (this != &B) {
+        delete [] head;
+        head = new block[B.nBlocks];
+        for (nBlocks = 0; nBlocks < B.nBlocks; nBlocks++)
+            head[nBlocks] = B.head[nBlocks];
+    }
+    return *this;
+}
+
 void blockSet::print()
 {
     for (int i = 0; i < nBlocks; i++) {

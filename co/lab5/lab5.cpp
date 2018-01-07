@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     int     demand_fetch    = 0;
 //  int     cache_hit       = 0;
     int     cache_miss      = 0;
-//  double  miss_rate       = 0;
+    double  miss_rate       = 0;
     int     read_data       = 0;
     int     write_data      = 0;
     int     B_from_mem      = 0;
@@ -67,8 +67,10 @@ int main(int argc, char *argv[])
             return -1;
         }
         // test output
-//      cout << label << " " << hex << addr
-//           << " " << tag << " " << index << endl;
+        /*
+        cout << label << " " << hex << addr
+             << " " << tag << " " << index << endl;
+        */
     }
 
     for (int i = 0; i < nSet; i++)
@@ -78,12 +80,13 @@ int main(int argc, char *argv[])
 
 
     // output
+    miss_rate = double(cache_miss) / double(demand_fetch);
     cout << "Input file        = " << dec << input_file << endl
          << "Demand fetch      = " << demand_fetch << endl
          << "Cache hit         = " << demand_fetch - cache_miss << endl
          << "Cache miss        = " << cache_miss << endl
-         << "Miss rate         = " << double(cache_miss)/double(demand_fetch) << endl
-         << "Read data         = " << read_data << endl
+         << "Miss rate         = " ; printf("%.4f\n", miss_rate);
+    cout << "Read data         = " << read_data << endl
          << "Write data        = " << write_data << endl
          << "Bytes from Memory = " << B_from_mem << endl
          << "Bytes to memory   = " << B_to_mem << endl << endl;
@@ -93,7 +96,7 @@ int main(int argc, char *argv[])
     //cout << nSet << " " << assoc << endl;
     /*
     for (int i = 0; i < nSet; i++) {
-        cout << "# of sets:" << i << endl;
+        cout << "# of sets:" << hex << i << endl;
         cache[i].print();
         cout << endl << endl;
     }

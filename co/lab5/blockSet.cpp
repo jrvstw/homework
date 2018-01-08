@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "blockSet.h"
 using namespace std;
 
@@ -40,11 +41,11 @@ void blockSet::print()
     }
 }
 
-void blockSet::read(int tag, int rpo, int &miss, int &fromM, int &toM)
+void blockSet::read(int tag, string rpo, int &miss, int &fromM, int &toM)
 {
     int hit = checkHit(tag);
     if (hit > -1) {
-        if (rpo == 2) // 2: LRU
+        if (rpo == "LRU") // 2: LRU
             rotate(hit);
     } else {
         miss++;
@@ -58,12 +59,12 @@ void blockSet::read(int tag, int rpo, int &miss, int &fromM, int &toM)
     }
 }
 
-void blockSet::write(int tag, int rpo, int &miss, int &fromM, int &toM)
+void blockSet::write(int tag, string rpo, int &miss, int &fromM, int &toM)
 {
     int hit = checkHit(tag);
     if (hit > -1) {
         head[hit].setDirty();
-        if (rpo == 2) // 2: LRU
+        if (rpo == "LRU") // 2: LRU
             rotate(hit);
     } else {
         miss++;

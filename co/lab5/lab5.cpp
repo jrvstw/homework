@@ -11,24 +11,26 @@ int main(int argc, char *argv[])
     int cache_size  = atoi(argv[1]) << 10;
     int block_size  = atoi(argv[2]);
     int assoc;
-    int r_policy;
+    string r_policy    = string(argv[4]);
 
     if (string(argv[3]) == "f")
         assoc = cache_size / block_size;
     else
         assoc = atoi(argv[3]);
 
+    /*
     if (string(argv[4]) == "FIFO")
         r_policy = 1;
     else if (string(argv[4]) == "LRU")
         r_policy = 2;
+    */
 
     //declare output variables
     string  input_file      = string(argv[5]);
     int     demand_fetch    = 0;
 //  int     cache_hit       = 0;
     int     cache_miss      = 0;
-    double  miss_rate       = 0;
+//  double  miss_rate       = 0;
     int     read_data       = 0;
     int     write_data      = 0;
     int     B_from_mem      = 0;
@@ -45,8 +47,8 @@ int main(int argc, char *argv[])
     int label;
     int addr;
     while (cin >> label >> hex >> addr) {
-        int tag     = addr / cache_size;
-        int index   = (addr % cache_size) / block_size / assoc;
+        int tag     = (addr / block_size) / nSet;
+        int index   = (addr / block_size) % nSet;
 
         demand_fetch++;
 
@@ -66,11 +68,6 @@ int main(int argc, char *argv[])
             cout << "Invalid instance in " << input_file << endl;
             return -1;
         }
-        // test output
-        /*
-        cout << label << " " << hex << addr
-             << " " << tag << " " << index << endl;
-        */
     }
 
     for (int i = 0; i < nSet; i++)
@@ -80,27 +77,15 @@ int main(int argc, char *argv[])
 
 
     // output
-    miss_rate = double(cache_miss) / double(demand_fetch);
     cout << "Input file        = " << dec << input_file << endl
          << "Demand fetch      = " << demand_fetch << endl
          << "Cache hit         = " << demand_fetch - cache_miss << endl
          << "Cache miss        = " << cache_miss << endl
-         << "Miss rate         = " ; printf("%.4f\n", miss_rate);
+         << "Miss rate         = " ; printf("%.4f\n", double(cache_miss) / double(demand_fetch));
     cout << "Read data         = " << read_data << endl
          << "Write data        = " << write_data << endl
          << "Bytes from Memory = " << B_from_mem << endl
          << "Bytes to memory   = " << B_to_mem << endl << endl;
-
-    // test output
-    //cout << cache_size << " " << block_size << " " << assoc << " " << r_policy << endl;
-    //cout << nSet << " " << assoc << endl;
-    /*
-    for (int i = 0; i < nSet; i++) {
-        cout << "# of sets:" << hex << i << endl;
-        cache[i].print();
-        cout << endl << endl;
-    }
-    */
 
     // close
     return 0;

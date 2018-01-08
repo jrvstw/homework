@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "block.h"
 using namespace std;
 
@@ -10,8 +11,8 @@ public:
     blockSet(const blockSet &B);
     blockSet operator =(blockSet B);
     void    print();
-    void    read(int tag, int rpo, int &miss, int &fromM, int &toM);
-    void    write(int tag, int rpo, int &miss, int &fromM, int &toM);
+    void    read(int tag, string rpo, int &miss, int &fromM, int &toM);
+    void    write(int tag, string rpo, int &miss, int &fromM, int &toM);
     void    writeBack(int &toM);
     ~blockSet();
 private:

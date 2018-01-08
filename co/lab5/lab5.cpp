@@ -1,5 +1,3 @@
-// remember to change a.out to cache when completed
-
 #include <iostream>
 #include <string>
 #include "blockSet.h"
@@ -8,25 +6,21 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     // declare input variables
-    int cache_size  = atoi(argv[1]) << 10;
-    int block_size  = atoi(argv[2]);
-    int assoc;
-    string r_policy    = string(argv[4]);
+    int     cache_size  = atoi(argv[1]) << 10;
+    int     block_size  = atoi(argv[2]);
+    int     assoc       = (string(argv[3]) == "f")? cache_size/block_size:
+                                                    atoi(argv[3]);
+    string  r_policy    = string(argv[4]);
+    string  input_file  = string(argv[5]);
 
-    if (string(argv[3]) == "f")
-        assoc = cache_size / block_size;
-    else
-        assoc = atoi(argv[3]);
+    // declare a cache
+    int      nSet = cache_size / block_size / assoc;
+    blockSet cache[nSet];
 
-    /*
-    if (string(argv[4]) == "FIFO")
-        r_policy = 1;
-    else if (string(argv[4]) == "LRU")
-        r_policy = 2;
-    */
+    for (int i = 0; i < nSet; i++)
+        cache[i] = blockSet(assoc);
 
     //declare output variables
-    string  input_file      = string(argv[5]);
     int     demand_fetch    = 0;
 //  int     cache_hit       = 0;
     int     cache_miss      = 0;
@@ -35,12 +29,6 @@ int main(int argc, char *argv[])
     int     write_data      = 0;
     int     B_from_mem      = 0;
     int     B_to_mem        = 0;
-
-    // declare a cache
-    int      nSet = cache_size / block_size / assoc;
-    blockSet cache[nSet];
-    for (int i = 0; i < nSet; i++)
-        cache[i] = blockSet(assoc);
 
     // read files
     freopen(argv[5], "r", stdin);
@@ -69,9 +57,8 @@ int main(int argc, char *argv[])
             return -1;
         }
     }
-
     for (int i = 0; i < nSet; i++)
-        cache[i].writeBack(B_to_mem);
+        cache[i].clean(B_to_mem);
     B_from_mem *= block_size;
     B_to_mem   *= block_size;
 
@@ -81,13 +68,13 @@ int main(int argc, char *argv[])
          << "Demand fetch      = " << demand_fetch << endl
          << "Cache hit         = " << demand_fetch - cache_miss << endl
          << "Cache miss        = " << cache_miss << endl
-         << "Miss rate         = " ; printf("%.4f\n", double(cache_miss) / double(demand_fetch));
+         << "Miss rate         = " ;
+    printf("%.4f\n", double(cache_miss) / double(demand_fetch));
     cout << "Read data         = " << read_data << endl
          << "Write data        = " << write_data << endl
          << "Bytes from Memory = " << B_from_mem << endl
          << "Bytes to memory   = " << B_to_mem << endl << endl;
 
-    // close
     return 0;
 }
 

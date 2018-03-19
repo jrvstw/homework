@@ -4,14 +4,12 @@
 #include <string>
 #include <iomanip>
 #include <cstdlib>
-#define MAXDIGIT 3
-/* maxdigit is the number of digits of every segment BigInt stores. It must not
- * exceed 9.
- */
+#define MAXDIGIT 3 // number of digits of every segment BigInt stores.
 using namespace std;
 
 class BigInt
-/* An object of this class stores an integer of uncertain number of digits, and
+/*
+ * An object of this class stores an integer of uncertain number of digits, and
  * the integer can be negative. Objects of this class can do "+", "-", "=", and
  * "<<" operations. Other operations are not supported.
  */

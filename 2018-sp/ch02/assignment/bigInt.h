@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define CAP 1000   // the upper bound of each integer composing a bigInt.
-#define MAXDIGIT 3 // must equal log(CAP)
+#define MAXDIGIT 3 // must equal log10(CAP)
 
 
 /*

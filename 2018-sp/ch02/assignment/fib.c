@@ -1,36 +1,27 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include "bigInt.h"
 
-struct bigInt {
-    int nSegment;
-    int *addr;
-};
-
-int fib(int n)
-{
-    int a = 0,
-        b = 1;
-    for (int i = 0; i < n/2; i++) {
-        a += b;
-        b += a;
-    }
-    return (n % 2)? b: a;
-}
+bigInt fib(int n); // returns the nth value of Fibonacci sequence.
 
 int main()
 {
     int input;
-    struct bigInt a;
-    a.nSegment = 3;
-    a.addr = (int *)malloc(3 * sizeof(int));
-    for (int i = 0; i < a.nSegment; i++)
-        a.addr[i] = i;
-    for (int i = 0; i < a.nSegment; i++)
-        printf("%3d,", a.addr[i]);
-    printf("\n");
-    free(a.addr);
-    while (scanf("%d", &input) != EOF)
-        printf("   %d\n", fib(input));
+    while (scanf("%d", &input) != EOF) {
+        printf("   ");
+        print_bigInt(fib(input));
+        printf("\n");
+    }
     return 0;
+}
+
+bigInt fib(int n)
+{
+    bigInt a = construct(0),
+           b = construct(1);
+    for (int i = 0; i < n/2; i++) {
+        a = add(a, b);
+        b = add(a, b);
+    }
+    return (n % 2)? b: a;
 }
 

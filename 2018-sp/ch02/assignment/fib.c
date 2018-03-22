@@ -1,14 +1,17 @@
-#include <stdio.h>
 #include "bigInt.h"
+#include <stdio.h>
 
 bigInt fib(int n); // returns the nth value of Fibonacci sequence.
 
 int main()
 {
-    int input;
+    int    input;
+    bigInt output;
     while (scanf("%d", &input) != EOF) {
         printf("   ");
-        print_bigInt(fib(input));
+        output = fib(input);
+        print_bigInt(output);
+        free(output.addr);
         printf("\n");
     }
     return 0;
@@ -17,11 +20,23 @@ int main()
 bigInt fib(int n)
 {
     bigInt a = construct(0),
-           b = construct(1);
+           b = construct(1),
+           tmp;
     for (int i = 0; i < n/2; i++) {
-        a = add(a, b);
-        b = add(a, b);
+        tmp = add(a, b);
+        free(a.addr);
+        a = tmp;
+        tmp = add(a, b);
+        free(b.addr);
+        b = tmp;
     }
-    return (n % 2)? b: a;
+    if (n % 2) {
+        free(a.addr);
+        return b;
+    } else {
+        free(b.addr);
+        return a;
+    }
+    //return (n % 2)? b: a;
 }
 

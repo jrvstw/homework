@@ -5,8 +5,8 @@
 
 
 /*
- * This defines a type bigInt which has unlimited digits, but is limited to
- * be non-negative.
+ * This defines a type bigInt in which stores a non-negative integer with
+ * unlimited digits.
  */
 typedef struct _bigInt {
     int nParts;
@@ -30,6 +30,9 @@ bigInt construct(int value)
 }
 
 
+/*
+ * This is called when a bigInt needs an additional part.
+ */
 void add_part(int carry, bigInt *input)
 {
     int *tmp = calloc(input->nParts + 1, sizeof(int));
@@ -42,10 +45,11 @@ void add_part(int carry, bigInt *input)
     input->addr = tmp;
 }
 
+
 /*
- * This function returns a bigInt = a + b.
+ * "a + b" for bigInt.
  */
-bigInt add(bigInt a, bigInt b)
+bigInt plus(bigInt a, bigInt b)
 {
     bigInt sum;
     sum.nParts = (a.nParts > b.nParts)? a.nParts: b.nParts;
@@ -70,19 +74,18 @@ bigInt add(bigInt a, bigInt b)
     if (carry)
         add_part(carry, &sum);
     return sum;
+}
 
-//  if (!carry) {
-//      return sum;
-//  } else {
-//      bigInt tmp;
-//      tmp.nParts = sum.nParts + 1;
-//      tmp.addr   = calloc(tmp.nParts, sizeof(int));
-//      tmp.addr[tmp.nParts - 1] = carry;
-//      for (int i = 0; i < sum.nParts; i++)
-//          tmp.addr[i] = sum.addr[i];
-//      free(sum.addr);
-//      return tmp;
-//  }
+
+/*
+ * "a += b" for bigInt.
+ */
+void plus_equal(bigInt *a, bigInt b)
+{
+    bigInt tmp;
+    tmp = plus(*a, b);
+    free(a->addr);
+    *a = tmp;
 }
 
 bigInt multiply(bigInt a, bigInt b)

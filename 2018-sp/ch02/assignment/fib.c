@@ -20,15 +20,10 @@ int main()
 bigInt fib(int n)
 {
     bigInt a = construct(0),
-           b = construct(1),
-           tmp;
+           b = construct(1);
     for (int i = 0; i < n/2; i++) {
-        tmp = add(a, b);
-        free(a.addr);
-        a = tmp;
-        tmp = add(a, b);
-        free(b.addr);
-        b = tmp;
+        plus_equal(&a, b);
+        plus_equal(&b, a);
     }
     if (n % 2) {
         free(a.addr);
@@ -37,6 +32,5 @@ bigInt fib(int n)
         free(b.addr);
         return a;
     }
-    //return (n % 2)? b: a;
 }
 

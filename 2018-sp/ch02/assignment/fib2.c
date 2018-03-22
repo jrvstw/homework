@@ -23,19 +23,19 @@ void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
 
     tmp1 = multiply(a[2], b[2]);
     tmp2 = multiply(a[1], b[1]);
-    out[2] = add(tmp1, tmp2);
+    out[2] = plus(tmp1, tmp2);
     free(tmp1.addr);
     free(tmp2.addr);
 
     tmp1 = multiply(a[2], b[1]);
     tmp2 = multiply(a[1], b[0]);
-    out[1] = add(tmp1, tmp2);
+    out[1] = plus(tmp1, tmp2);
     free(tmp1.addr);
     free(tmp2.addr);
 
     tmp1 = multiply(a[1], b[1]);
     tmp2 = multiply(a[0], b[0]);
-    out[0] = add(tmp1, tmp2);
+    out[0] = plus(tmp1, tmp2);
     free(tmp1.addr);
     free(tmp2.addr);
 }

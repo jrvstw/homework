@@ -36,6 +36,10 @@ bigInt construct(int value)
 void add_part(int carry, bigInt *input)
 {
     int *tmp = calloc(input->nParts + 1, sizeof(int));
+    if (tmp == NULL) {
+        printf("cannot allocate memory!\n");
+        exit(1);
+    }
     for (int i = 0; i < input->nParts; i++)
         tmp[i] = input->addr[i];
     tmp[input->nParts] = carry;
@@ -93,6 +97,10 @@ bigInt multiply(bigInt a, bigInt b)
     bigInt output;
     output.nParts = a.nParts + b.nParts - 1;
     output.addr   = calloc(output.nParts, sizeof(int));
+    if (output.addr == NULL) {
+        printf("cannot allocate memory!\n");
+        exit(1);
+    }
     for (int i = 0; i < a.nParts; i++)
         for (int j = 0; j < b.nParts; j++)
             output.addr[i + j] += a.addr[i] * b.addr[j];
@@ -106,6 +114,26 @@ bigInt multiply(bigInt a, bigInt b)
     if (carry)
         add_part(carry, &output);
     return output;
+}
+
+
+void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
+{
+    bigInt tmp1, tmp2;
+    bigInt value[3];
+
+    for (int i = 0; i < 3; i++) {
+        tmp1 = multiply(a[(i > 0) + 1], b[(i > 1) + 1]);
+        tmp2 = multiply(a[(i > 0)], b[(i > 1)]);
+        value[i] = plus(tmp1, tmp2);
+        free(tmp1.addr);
+        free(tmp2.addr);
+    }
+
+    for (int i = 0; i < 3; i++) {
+        free(out[i].addr);
+        out[i] = value[i];
+    }
 }
 
 

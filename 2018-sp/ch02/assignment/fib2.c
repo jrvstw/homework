@@ -1,7 +1,11 @@
 #include "bigInt.h"
 #include <stdio.h>
 
-bigInt fib(int n); // returns the nth value of Fibonacci sequence.
+/*
+ * fib() returns the nth value of Fibonacci sequence, using linear algebra
+ * solution in a O(log(n)) way.
+ */
+bigInt fib(int n);
 
 int main()
 {
@@ -17,52 +21,17 @@ int main()
     return 0;
 }
 
-void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
-{
-    bigInt tmp1, tmp2;
-
-    tmp1 = multiply(a[2], b[2]);
-    tmp2 = multiply(a[1], b[1]);
-    out[2] = plus(tmp1, tmp2);
-    free(tmp1.addr);
-    free(tmp2.addr);
-
-    tmp1 = multiply(a[2], b[1]);
-    tmp2 = multiply(a[1], b[0]);
-    out[1] = plus(tmp1, tmp2);
-    free(tmp1.addr);
-    free(tmp2.addr);
-
-    tmp1 = multiply(a[1], b[1]);
-    tmp2 = multiply(a[0], b[0]);
-    out[0] = plus(tmp1, tmp2);
-    free(tmp1.addr);
-    free(tmp2.addr);
-}
 
 bigInt fib(int n)
 {
-    bigInt a[3] = {construct(0), construct(1), construct(1)},
-           b[3] = {construct(1), construct(0), construct(1)},
-           tmp[3];
+    bigInt F[3]  = {construct(0), construct(1), construct(1)},  // F1
+           out[3] = {construct(1), construct(0), construct(1)}; // I(2)
+
     for (int i = 1; i <= n; i <<= 1) {
-        if (i & n) {
-            matrix_multiply(tmp, a, b);
-            free(b[0].addr);
-            free(b[1].addr);
-            free(b[2].addr);
-            b[0] = tmp[0];
-            b[1] = tmp[1];
-            b[2] = tmp[2];
-        }
-        matrix_multiply(tmp, a, a);
-        free(a[0].addr);
-        free(a[1].addr);
-        free(a[2].addr);
-        a[0] = tmp[0];
-        a[1] = tmp[1];
-        a[2] = tmp[2];
+        if (i & n)
+            matrix_multiply(out, F, out);
+        matrix_multiply(F, F, F);
     }
-    return b[1];
+    return out[1];
 }
 

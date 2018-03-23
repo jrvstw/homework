@@ -22,8 +22,8 @@ bigInt fib(int n)
     bigInt a = construct(0),
            b = construct(1);
     for (int i = 0; i < n/2; i++) {
-        plus_equal(&a, b);
-        plus_equal(&b, a);
+        plus(&a, a, b);
+        plus(&b, a, b);
     }
     if (n % 2) {
         free(a.addr);

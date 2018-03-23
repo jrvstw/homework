@@ -51,9 +51,9 @@ void add_part(int carry, bigInt *input)
 
 
 /*
- * "a + b" for bigInt.
+ * " *out = a + b " for bigInt.
  */
-bigInt plus(bigInt a, bigInt b)
+void plus(bigInt *out, bigInt a, bigInt b)
 {
     bigInt sum;
     sum.nParts = (a.nParts > b.nParts)? a.nParts: b.nParts;
@@ -77,62 +77,57 @@ bigInt plus(bigInt a, bigInt b)
     }
     if (carry)
         add_part(carry, &sum);
-    return sum;
+    free(out->addr);
+    *out = sum;
 }
 
 
 /*
- * "a += b" for bigInt.
+ * " *out = a * b " for bigInt.
  */
-void plus_equal(bigInt *a, bigInt b)
+void multiply(bigInt *out, bigInt a, bigInt b)
 {
-    bigInt tmp;
-    tmp = plus(*a, b);
-    free(a->addr);
-    *a = tmp;
-}
-
-bigInt multiply(bigInt a, bigInt b)
-{
-    bigInt output;
-    output.nParts = a.nParts + b.nParts - 1;
-    output.addr   = calloc(output.nParts, sizeof(int));
-    if (output.addr == NULL) {
+    bigInt result;
+    result.nParts = a.nParts + b.nParts - 1;
+    result.addr   = calloc(result.nParts, sizeof(int));
+    if (result.addr == NULL) {
         printf("cannot allocate memory!\n");
         exit(1);
     }
     for (int i = 0; i < a.nParts; i++)
         for (int j = 0; j < b.nParts; j++)
-            output.addr[i + j] += a.addr[i] * b.addr[j];
+            result.addr[i + j] += a.addr[i] * b.addr[j];
 
     int carry = 0;
-    for (int i = 0; i < output.nParts; i++) {
-        output.addr[i] += carry;
-        carry = output.addr[i] / CAP;
-        output.addr[i] -= carry * CAP;
+    for (int i = 0; i < result.nParts; i++) {
+        result.addr[i] += carry;
+        carry = result.addr[i] / CAP;
+        result.addr[i] -= carry * CAP;
     }
     if (carry)
-        add_part(carry, &output);
-    return output;
+        add_part(carry, &result);
+    free(out->addr);
+    *out = result;
 }
 
 
 void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
 {
-    bigInt tmp1, tmp2;
-    bigInt value[3];
+    bigInt tmp1 = construct(0),
+           tmp2 = construct(0);
+    bigInt result[3] = {construct(0),construct(0),  construct(0)};
 
     for (int i = 0; i < 3; i++) {
-        tmp1 = multiply(a[(i > 0) + 1], b[(i > 1) + 1]);
-        tmp2 = multiply(a[(i > 0)], b[(i > 1)]);
-        value[i] = plus(tmp1, tmp2);
-        free(tmp1.addr);
-        free(tmp2.addr);
+        multiply(&tmp1, a[(i > 0) + 1], b[(i > 1) + 1]);
+        multiply(&tmp2, a[(i > 0)], b[(i > 1)]);
+        plus(result + i, tmp1, tmp2);
     }
+    free(tmp1.addr);
+    free(tmp2.addr);
 
     for (int i = 0; i < 3; i++) {
         free(out[i].addr);
-        out[i] = value[i];
+        out[i] = result[i];
     }
 }
 

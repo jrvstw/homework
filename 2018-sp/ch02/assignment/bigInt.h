@@ -9,7 +9,7 @@
  * unlimited digits.
  */
 typedef struct _bigInt {
-    int nParts;
+    int nSegment;
     int *addr;
 } bigInt;
 
@@ -35,18 +35,19 @@ bigInt construct(int value)
  */
 void add_part(int carry, bigInt *input)
 {
-    int *tmp = calloc(input->nParts + 1, sizeof(int));
+    int *tmp = calloc(input->nSegment + 1, sizeof(int));
     if (tmp == NULL) {
         printf("cannot allocate memory!\n");
         exit(1);
     }
-    for (int i = 0; i < input->nParts; i++)
+    for (int i = 0; i < input->nSegment; i++)
         tmp[i] = input->addr[i];
-    tmp[input->nParts] = carry;
+    tmp[input->nSegment] = carry;
 
-    input->nParts++;
+    input->nSegment++;
     free(input->addr);
     input->addr = tmp;
+    return;
 }
 
 
@@ -56,21 +57,21 @@ void add_part(int carry, bigInt *input)
 void plus(bigInt *out, bigInt a, bigInt b)
 {
     bigInt sum;
-    sum.nParts = (a.nParts > b.nParts)? a.nParts: b.nParts;
-    sum.addr   = calloc(sum.nParts, sizeof(int));
+    sum.nSegment = (a.nSegment > b.nSegment)? a.nSegment: b.nSegment;
+    sum.addr   = calloc(sum.nSegment, sizeof(int));
     if (sum.addr == NULL) {
         printf("cannot allocate memory!\n");
         exit(1);
     }
 
-    for (int i = 0; i < a.nParts; i++)
+    for (int i = 0; i < a.nSegment; i++)
         sum.addr[i] += a.addr[i];
 
-    for (int i = 0; i < b.nParts; i++)
+    for (int i = 0; i < b.nSegment; i++)
         sum.addr[i] += b.addr[i];
 
     int carry = 0;
-    for (int i = 0; i < sum.nParts; i++) {
+    for (int i = 0; i < sum.nSegment; i++) {
         sum.addr[i] += carry;
         carry = sum.addr[i] / CAP;
         sum.addr[i] -= carry * CAP;
@@ -79,6 +80,7 @@ void plus(bigInt *out, bigInt a, bigInt b)
         add_part(carry, &sum);
     free(out->addr);
     *out = sum;
+    return;
 }
 
 
@@ -88,18 +90,28 @@ void plus(bigInt *out, bigInt a, bigInt b)
 void multiply(bigInt *out, bigInt a, bigInt b)
 {
     bigInt result;
-    result.nParts = a.nParts + b.nParts - 1;
-    result.addr   = calloc(result.nParts, sizeof(int));
+    if ((a.nSegment == 0 && a.addr[0] == 0) ||
+        (b.nSegment == 1 && b.addr[0] == 0)) {
+        result.nSegment = 1;
+        result.addr   = calloc(1, sizeof(int));
+        result.addr[0] = 0;
+        free(out->addr);
+        *out = result;
+        return;
+    }
+
+    result.nSegment = a.nSegment + b.nSegment - 1;
+    result.addr   = calloc(result.nSegment, sizeof(int));
     if (result.addr == NULL) {
         printf("cannot allocate memory!\n");
         exit(1);
     }
-    for (int i = 0; i < a.nParts; i++)
-        for (int j = 0; j < b.nParts; j++)
+    for (int i = 0; i < a.nSegment; i++)
+        for (int j = 0; j < b.nSegment; j++)
             result.addr[i + j] += a.addr[i] * b.addr[j];
 
     int carry = 0;
-    for (int i = 0; i < result.nParts; i++) {
+    for (int i = 0; i < result.nSegment; i++) {
         result.addr[i] += carry;
         carry = result.addr[i] / CAP;
         result.addr[i] -= carry * CAP;
@@ -108,6 +120,7 @@ void multiply(bigInt *out, bigInt a, bigInt b)
         add_part(carry, &result);
     free(out->addr);
     *out = result;
+    return;
 }
 
 
@@ -129,6 +142,7 @@ void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
         free(out[i].addr);
         out[i] = result[i];
     }
+    return;
 }
 
 
@@ -137,8 +151,9 @@ void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
  */
 void print_bigInt(bigInt input)
 {
-    printf("%d", input.addr[input.nParts - 1]);
-    for (int i = input.nParts - 2; i >= 0; i--)
+    printf("%d", input.addr[input.nSegment - 1]);
+    for (int i = input.nSegment - 2; i >= 0; i--)
         printf("%0*d", MAXDIGIT, input.addr[i]);
+    return;
 }
 

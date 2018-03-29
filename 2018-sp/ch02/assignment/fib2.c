@@ -22,8 +22,8 @@ int main()
 
 
 /*                              | F(n+1)  Fn     |     | 1  1 | n
- * fib(n) solves the equation   | Fn      F(n-1) |  =  | 1  0 |     in a
- * O(log(n)) way.
+ * fib(n) solves the equation   | Fn      F(n-1) |  =  | 1  0 |     with a
+ * O(log(n)) complexity.
  */
 bigInt fib(int n)
 {

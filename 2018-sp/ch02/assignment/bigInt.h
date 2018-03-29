@@ -151,7 +151,7 @@ void multiply(bigInt *out, bigInt a, bigInt b)
 
 
 /*
- * bigInt version of matrix multiplication " out = a * b "
+ * bigInt version of matrix multiplication " out[] = a[] * b[] "
  *
  * This is ONLY for 2 by 2 matrices in which M[1][0] = M[0][1], and
  * matrices are simplified to 1 by 3: { M[0][0], M[1][0], M[1][1] }.
@@ -163,11 +163,17 @@ void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
     bigInt result[3] = {construct(0),construct(0),  construct(0)};
 
     // doing matrix multiplication
-    for (int i = 0; i < 3; i++) {
-        multiply(&tmp1, a[(i > 0) + 1], b[(i > 1) + 1]);
-        multiply(&tmp2, a[(i > 0)], b[(i > 1)]);
-        plus(result + i, tmp1, tmp2);
-    }
+    multiply(&tmp1, a[2], b[2]);
+    multiply(&tmp2, a[1], b[1]);
+    plus(result + 2, tmp1, tmp2);
+
+    multiply(&tmp1, a[2], b[1]);
+    multiply(&tmp2, a[1], b[0]);
+    plus(result + 1, tmp1, tmp2);
+
+    multiply(&tmp1, a[1], b[1]);
+    multiply(&tmp2, a[0], b[0]);
+    plus(result, tmp1, tmp2);
 
     // freeing and copying
     free(tmp1.addr);

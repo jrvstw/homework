@@ -38,8 +38,10 @@ void printResult() {
 int main() {
     printf("hello\n");
     initTable();
-    sumRow();
-    sumCol();
+    for (int i = 0; i < 100; i++) {
+        sumRow();
+        sumCol();
+    }
     printResult();
     return 0;
 }

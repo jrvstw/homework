@@ -10,9 +10,10 @@ int main(void)
     int    input;
     bigInt output;
 
-    while (scanf("%d", &input) != EOF) {
+    //while (scanf("%d", &input) != EOF) {
+    for (input = 8000; input < 10000; input++) {
         output = fib(input);
-        printf("    ");
+        printf("%d:\n    ", input);
         print_bigInt(output);
         printf("\n\n");
         free(output.addr);
@@ -27,20 +28,18 @@ int main(void)
  */
 bigInt fib(int n)
 {
-    bigInt F[3]   = {construct(0), construct(1), construct(1)}, // F1
-           out[3] = {construct(1), construct(0), construct(1)}; // I(2)
-
-    for (int i = 1; i <= n; i <<= 1) {
-        if (i & n)
-            matrix_multiply(out, F, out);
-        matrix_multiply(F, F, F);
+    bigInt a = construct(0),
+           b = construct(1);
+    for (int i = 0; i < n/2; i++) {
+        plus(&a, a, b);
+        plus(&b, a, b);
     }
-
-    free(F[0].addr);
-    free(F[1].addr);
-    free(F[2].addr);
-    free(out[0].addr);
-    free(out[2].addr);
-    return out[1];
+    if (n % 2) {
+        free(a.addr);
+        return b;
+    } else {
+        free(b.addr);
+        return a;
+    }
 }
 

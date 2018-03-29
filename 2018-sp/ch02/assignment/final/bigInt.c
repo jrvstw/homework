@@ -1,18 +1,9 @@
+#include "bigInt.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 #define CAP 1000   // the upper bound of each integer composing a bigInt.
 #define MAXDIGIT 3 // must equal log10(CAP)
-
-
-/*
- * This defines a type bigInt which stores a non-negative integer with
- * unlimited digits.
- */
-typedef struct _bigInt {
-    int nSegment;
-    int *addr;
-} bigInt;
 
 
 /*
@@ -49,7 +40,7 @@ void add_segment(int carry, bigInt *input)
         exit(1);
     }
 
-    // copying to this new one.
+    // copying data to this new one.
     for (int i = 0; i < input->nSegment; i++)
         tmp[i] = input->addr[i];
     tmp[input->nSegment] = carry;
@@ -79,7 +70,6 @@ void plus(bigInt *out, bigInt a, bigInt b)
     // adding a and b.
     for (int i = 0; i < a.nSegment; i++)
         sum.addr[i] += a.addr[i];
-
     for (int i = 0; i < b.nSegment; i++)
         sum.addr[i] += b.addr[i];
 
@@ -108,7 +98,7 @@ void multiply(bigInt *out, bigInt a, bigInt b)
 {
     bigInt result;
 
-    // a special case in which a == 0 or b == 0.
+    // dealing with a special case in which a == 0 or b == 0.
     if ((a.nSegment == 0 && a.addr[0] == 0) ||
         (b.nSegment == 1 && b.addr[0] == 0)) {
         result.nSegment = 1;
@@ -119,7 +109,7 @@ void multiply(bigInt *out, bigInt a, bigInt b)
         return;
     }
 
-    // constructing result.
+    // constructing a new bigInt.
     result.nSegment = a.nSegment + b.nSegment - 1;
     result.addr   = calloc(result.nSegment, sizeof(int));
     if (result.addr == NULL) {
@@ -153,27 +143,27 @@ void multiply(bigInt *out, bigInt a, bigInt b)
 /*
  * bigInt version of matrix multiplication " out[] = a[] * b[] "
  *
- * This is ONLY for 2 by 2 matrices in which M[1][0] = M[0][1], and
- * matrices are simplified to 1 by 3: { M[0][0], M[1][0], M[1][1] }.
+ * This is ONLY for 2*2 matrices in the form {M[0][0], M[1][0], M[1][1]}
+ * in which M[0][1] == M[1][0].
  */
 void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
 {
     bigInt tmp1 = construct(0),
            tmp2 = construct(0);
-    bigInt result[3] = {construct(0),construct(0), construct(0)};
+    bigInt result[3] = {construct(0),construct(0),  construct(0)};
 
     // doing matrix multiplication
-    multiply(&tmp1, a[2], b[2]);
-    multiply(&tmp2, a[1], b[1]);
-    plus(result + 2, tmp1, tmp2);
+    multiply(&tmp1, a[1], b[1]);
+    multiply(&tmp2, a[0], b[0]);
+    plus(result, tmp1, tmp2);
 
     multiply(&tmp1, a[2], b[1]);
     multiply(&tmp2, a[1], b[0]);
     plus(result + 1, tmp1, tmp2);
 
-    multiply(&tmp1, a[1], b[1]);
-    multiply(&tmp2, a[0], b[0]);
-    plus(result, tmp1, tmp2);
+    multiply(&tmp1, a[2], b[2]);
+    multiply(&tmp2, a[1], b[1]);
+    plus(result + 2, tmp1, tmp2);
 
     // freeing and copying
     free(tmp1.addr);
@@ -182,7 +172,6 @@ void matrix_multiply(bigInt *out, bigInt *a, bigInt *b)
         free(out[i].addr);
         out[i] = result[i];
     }
-
     return;
 }
 

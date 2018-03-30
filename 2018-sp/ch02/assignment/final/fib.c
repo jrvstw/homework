@@ -10,9 +10,12 @@ int main(void)
     int    input;
     bigInt output;
 
-    for (input = 0; input < 10000; input++) {
-        output = fib(input);
-        printf("\n\nfib(%d)=", input);
+    //while(scanf("%d", &input) != EOF) {
+    //scanf("%d", &input);
+    input = 3000;
+    for (int i = 0; i < input; i++) {
+        output = fib(i);
+        printf("\n\nfib(%d)=", i);
         print_bigInt(output);
         free(output.addr);
     }

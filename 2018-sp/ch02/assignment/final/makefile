@@ -1,8 +1,8 @@
-main: bigInt.o fib.c
-	gcc --std=c11 -pg fib.c bigInt.o -o fib.o
+main: fib.c bigInt.c
+	gcc --std=c11 -pg fib.c bigInt.c -o fib.o
 
-bigInt.o: bigInt.c
-	gcc --std=c11 -pg -c bigInt.c -o bigInt.o
+profile: fib.o
+	./fib.o && gprof -b fib.o gmon.out > profile
 
 clean:
-	rm -f bigInt.o fib.o gmon.out
+	rm -f fib.o gmon.out profile

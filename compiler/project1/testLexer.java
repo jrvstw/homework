@@ -11,7 +11,7 @@ public class testLexer {
 		// TODO Auto-generated method stub
 		  try {
 	           CharStream input = new ANTLRFileStream(args[0]);
-	           test1 lexer = new test1(input);
+	           mylexer lexer = new mylexer(input);
 	           Token token = lexer.nextToken();
 	           while (token.getType() != -1) {  // -1 is EOF.
 	             System.out.println("Token: "+token.getType() + " " + token.getText());

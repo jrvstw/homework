@@ -20,6 +20,7 @@ RETURN_     : 'return';
 CONTINUE_   : 'continue';
 BREAK_      : 'break';
 
+
 /*----------------------*/
 /*  Compound Operators  */
 /*----------------------*/
@@ -29,15 +30,18 @@ LE_OP : '<=';
 GE_OP : '>=';
 NE_OP : '!=';
 
+
+
 LS_OP : '<';
 GT_OP : '>';
 
-ASSIGN      : '=';
-OPERATOR    : '+' | '-' | '*' | '/';
+ASSIGN_OP   : '=';
+ARITH_OP    : '+' | '-' | '*' | '/' | '%';
+LOGIC_OP    : '!' | '&&' | '||';
 
 SEMICOLON   : ';';
 COMA        : ',';
-BRACKLETS   : '{' | '}' | '[' | ']' | '(' | ')' | '<' | '>';
+BRACKLETS   : '{' | '}' | '[' | ']' | '(' | ')';
 WS          : (' ' | '\r' | '\t' | '\n')+;
 
 DEC_NUM     : ('0' | ('1'..'9')(DIGIT)*);

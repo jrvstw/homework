@@ -4,7 +4,7 @@
 
 int main() {
 	FILE* stream;
-	char tmpStr[] = "./shiwulo_XXXXXX";
+	char tmpStr[] = "./jarvisye_XXXXXX";
 	mktemp(tmpStr);
 	printf("%s\n", tmpStr);
 	stream = fopen(tmpStr, "w+");	/*600*/

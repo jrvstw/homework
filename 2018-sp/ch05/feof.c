@@ -9,7 +9,7 @@ int main() {
 	printf("ret = %d\n", ret);
 	ret=fread(buf, 10, 500, stream);
 	printf("ret = %d\n", ret);
-	if(ret!=1) {
+	if(ret==0) {
 		if (ferror(stream))
 			printf("error\n");
 		if (feof(stream))

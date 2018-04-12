@@ -5,6 +5,7 @@
 int main(int argc, char **argv)
 {
 	char *str = "中文"; 
+    printf("%s\n", str);
 	printf("%d\n", (int)strlen(str));
 	return 0;
 }

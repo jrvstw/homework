@@ -3,32 +3,31 @@
 #include <sys/file.h>
 #include <string.h>
 
-#define BUF_SIZE 30
+#define BUF_SIZE 100
 
 int main()
 {
+    int fd = open("grade", O_WRONLY | O_APPEND | O_CREAT, 0664);
     char buf[BUF_SIZE];
     char respond;
-    int fd;
-    fd = open("grade", O_WRONLY | O_APPEND | O_CREAT, 0664);
     while (1) {
-        printf("\nInput an entry: ");
+        printf("Input an entry: ");
         fgets(buf, BUF_SIZE, stdin);
 
-        flock(fd, LOCK_EX);
-        printf("Confirm? (y/n)");
-
-        do respond = fgetc(stdin);
-        while (respond != 'y' && respond != 'n');
-        getchar();
-
-        if (respond == 'y') {
-            write(fd, buf, strlen(buf));
-            flock(fd, LOCK_UN);
-            printf("Entry accepted. File unlocked.\n");
-        } else {
-            flock(fd, LOCK_UN);
+        if (flock(fd, LOCK_EX | LOCK_NB) == -1) {
+            fprintf(stderr, "File locked. Please wait.\n");
+            flock(fd, LOCK_EX);
         }
+
+        write(fd, buf, strlen(buf));
+        printf("Entry accepted.\n");
+
+        printf("Press enter to unlock...");
+        do respond = fgetc(stdin);
+        while (respond != '\n');
+
+        flock(fd, LOCK_UN);
+        printf("File unlocked.\n\n");
     }
     close(fd);
     return 0;

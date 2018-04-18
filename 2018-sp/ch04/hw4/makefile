@@ -1,5 +1,5 @@
 main:
-	gcc addGrade.c
+	gcc addGrade.c -o addGrade
 
 clean:
-	rm -f a.out grade
+	rm -f addGrade grade

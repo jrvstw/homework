@@ -13,24 +13,17 @@ void printInotifyEvent(struct inotify_event* event);
 char wd[1000][10000];
 
 int main(int argc, char **argv) {
-	int fd;
-	int num;
+	int fd, num, ret, i;
 	char* p;
-	char buf[BUF_LEN];
-	int ret;
-	int i;
-	
+	char inotify_entity[BUF_LEN];
 	fd = inotify_init();
-	assert(fd>0);
 	for (i=1; i< argc; i++) {
 		ret=inotify_add_watch(fd, argv[i], IN_ALL_EVENTS);
-		assert(ret>0);
-		strcpy(&(wd[i][0]), argv[i]);
+		strcpy(wd[ret], argv[i]);
 	}
 	while(1) {
-		num = read(fd, buf, BUF_LEN);
-		assert(num>0);
-		for (p = buf; p < buf + num; ) {
+		num = read(fd, inotify_entity, BUF_LEN);
+		for (p = inotify_entity; p < inotify_entity + num; ) {
 			printInotifyEvent((struct inotify_event *) p);
 			p+=sizeof(struct inotify_event) + ((struct inotify_event *)p)->len;
 		}
@@ -38,27 +31,30 @@ int main(int argc, char **argv) {
 }
 
 void printInotifyEvent(struct inotify_event* event) {
-	printf("[%s] ", wd[event->wd]);
-	printf("{");
-	if (event->mask & IN_ACCESS) 		printf("IN_ACCESS, ");
-	if (event->mask & IN_ATTRIB) 		printf("IN_ATTRIB, ");
-	if (event->mask & IN_CLOSE_WRITE) 	printf("IN_CLOSE_WRITE, ");
-	if (event->mask & IN_CLOSE_NOWRITE) 	printf("IN_CLOSE_NOWRITE, ");
-	if (event->mask & IN_CREATE) 		printf("IN_CREATE, ");
-	if (event->mask & IN_DELETE) 		printf("IN_DELETE, ");
-	if (event->mask & IN_DELETE_SELF) 	printf("IN_DELETE_SELF, ");
-	if (event->mask & IN_MODIFY) 		printf("IN_MODIFY, ");
-	if (event->mask & IN_MOVE_SELF)		printf("IN_MOVE_SELF, ");
-	if (event->mask & IN_MOVED_FROM)	printf("IN_MOVED_FROM, ");
-	if (event->mask & IN_MOVED_TO)		printf("IN_MOVED_TO, ");
-	if (event->mask & IN_OPEN)			printf("IN_OPEN, ");
-	if (event->mask & IN_IGNORED)		printf("IN_IGNORED, ");
-	if (event->mask & IN_ISDIR)			printf("IN_ISDIR, ");
-	if (event->mask & IN_Q_OVERFLOW)	printf("IN_Q_OVERFLOW, ");
-	printf("}");
-	printf("cookie=%d", event->cookie);
+	char buf[4096]="";
+	sprintf(buf, "[%s] ", wd[event->wd]);
+	strncat(buf, "{", 4096);
+	if (event->mask & IN_ACCESS) 		strncat(buf, "ACCESS, ", 4096);
+	if (event->mask & IN_ATTRIB) 		strncat(buf,"ATTRIB, ", 4096);
+	if (event->mask & IN_CLOSE_WRITE) 	strncat(buf,"CLOSE_WRITE, ", 4096);
+	if (event->mask & IN_CLOSE_NOWRITE) 	strncat(buf,"CLOSE_NOWRITE, ", 4096);
+	if (event->mask & IN_CREATE) 		strncat(buf,"CREATE, ", 4096);
+	if (event->mask & IN_DELETE) 		strncat(buf,"DELETE, ", 4096);
+	if (event->mask & IN_DELETE_SELF) 	strncat(buf,"DELETE_SELF, ", 4096);
+	if (event->mask & IN_MODIFY) 		strncat(buf,"MODIFY, ", 4096);
+	if (event->mask & IN_MOVE_SELF)		strncat(buf,"MOVE_SELF, ", 4096);
+	if (event->mask & IN_MOVED_FROM)	strncat(buf,"MOVED_FROM, ", 4096);
+	if (event->mask & IN_MOVED_TO)		strncat(buf,"MOVED_TO, ", 4096);
+	if (event->mask & IN_OPEN)			strncat(buf,"OPEN, ", 4096);
+	if (event->mask & IN_IGNORED)		strncat(buf,"IGNORED, ", 4096);
+	if (event->mask & IN_ISDIR)			strncat(buf,"ISDIR, ", 4096);
+	if (event->mask & IN_Q_OVERFLOW)	strncat(buf,"Q_OVERFLOW, ", 4096);
+	buf[strlen(buf)-2]='\0';
+	strncat(buf, "}", 4096);
+	sprintf(buf, "%s cookie=%d", buf, event->cookie);
 	if (event->len>0)
-    	printf(" name = %s\n", event->name);
+    	sprintf(buf, "%s name = %s\n", buf, event->name);
 	else
-		printf(" name = null\n");
+		sprintf(buf, "%s name = null\n", buf);
+	printf("%s", buf);
 }

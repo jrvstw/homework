@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 	char* curDir = "./";
 	char pathname[512];
 	struct stat buf;
-	int perm;q
+	int perm;
 	char *time;
 	
 	dir = opendir(argv[1]);

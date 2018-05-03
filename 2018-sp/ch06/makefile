@@ -1,6 +1,6 @@
 SHELL = /bin/bash
-CC = gcc
-CFLAGS = -g -pthread
+CC = clang
+CFLAGS = -g -lacl
 SRC = $(wildcard *.c)
 EXE = $(patsubst %.c, %, $(SRC))
 

@@ -48,7 +48,7 @@ DEC_NUM     : ('0' | ('1'..'9')(DIGIT)*);
 ID          : (LETTER)(LETTER | DIGIT)*;
 FLOAT_NUM   : FLOAT_NUM1 | FLOAT_NUM2 | FLOAT_NUM3;
 COMMENT     : '/*' (options{greedy=false;}: .)* '*/';
-LITERAL     : '"' (.)* '"';
+LITERAL     : '"' ~('\n' | '\r')* '"';
 
 fragment LETTER : 'a'..'z' | 'A'..'Z' | '_';
 fragment DIGIT  : '0'..'9';

@@ -1,15 +1,24 @@
-int main()
+int square(int input)
 {
-    int i = 0;
-    int count_char = 0;
-    char a[20] = "TestString.";
+    return input * input;
+}
 
-    while (i < 20) {
-        if (64 < a[i] && a[i] < 91 || 113 > a[i] && a[i] > 96)
-            /* letter in ASCII */
-            count_char = count_char + 1;
-        else if (a[i] == 46)
-            /* period in ASCII */
+void main()
+{
+    int a;
+    a = 0;
+    int i;
+    for (i = 0; i < 30; i = i + 1) {
+        if (i % 5 == 0)
+            continue;
+        a = a + square(i);
+        if (a > 500)
             break;
     }
+    while (i > 0) {
+        printf("%d ", i);
+        i = i - 1;
+    }
+    return;
 }
+

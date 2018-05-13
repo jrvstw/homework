@@ -4,118 +4,112 @@ options {
   language = Java;
 }
 
-
-/*----------------------*/
-/*   Parser Section     */
-/*----------------------*/
-
-//program: preprocess statement ;
-//preprocess: (include | define) preprocess | ;
-//include: '#include'
-
-//program: functions ;
-
-//functions: function WS functions | ;
-
-//function: TYPE WS ID '(' declarations ')' WS '{' WS statements WS '}' ;
-
-//declarations: declaration declarations2 ;
-//declarations2: ',' WS declaration declarations2 | ;
-//declaration: TYPE ' ' ID ;
-
-//expressions: expression WS expressions | ;
+program
+    : {System.out.println("program");} function_definition+
+    ;
 
 function_definition
-    : type ID '(' declaration
+    : {System.out.println("func_def");} declaration '(' declaration_list ')' compound_statement
+    ;
+
+declaration_list
+    :
+    | {System.out.println("declar_list");} declaration (',' declaration)*
+    ;
+
+argument_expr_list
+    : {System.out.println("argu_list");} assignment_expression (',' assignment_expression)*
     ;
 
 statement_list
-    : statement+
+    : {System.out.println("stmt_list");} statement+
     ;
 
 statement
-    : declaration_statement
-    | expression_statement
-    | compound_statement
-    | selection_statement
-    | iteration_statement
+    : {System.out.println("statement");} declaration_statement
+    | {System.out.println("statement");} expression_statement
+    | {System.out.println("statement");} compound_statement
+    | {System.out.println("statement");} selection_statement
+    | {System.out.println("statement");} iteration_statement
+    | {System.out.println("statement");} jump_statement
     ;
 
 declaration_statement
-    : declaration ';'
+    : {System.out.println("declar_stmt");} declaration ';'
     ;
 
 expression_statement
-    : ';'
-    | expression ';'
+    : {System.out.println("expr_stmt");} ';'
+    | {System.out.println("expr_stmt");} expression ';'
     ;
 
 compound_statement
-    : '{' statement_list '}'
+    : {System.out.println("comp_stmt");} '{' statement_list '}'
     ;
 
 selection_statement
-    : 'if' '(' expression ')' statement (('else')=> 'else' statement)?
+    : {System.out.println("sele_stmt");} 'if' '(' expression ')' statement (('else')=> 'else' statement)?
     ;
 
 iteration_statement
-    : 'while' '(' expression ')' statement
-    | 'for' '(' expression_statement expression_statement expression? ')' statement
+    : {System.out.println("iter_stmt");} 'while' '(' expression ')' statement
+    | {System.out.println("iter_stmt");} 'for' '(' expression_statement expression_statement expression? ')' statement
     ;
 
 jump_statement
-    : 'continue' ';'
-    | 'break' ';'
-    | 'return' ';'
-    | 'return' expression ';'
+    : {System.out.println("jump_stmt");} 'continue' ';'
+    | {System.out.println("jump_stmt");} 'break' ';'
+    | {System.out.println("jump_stmt");} 'return' ';'
+    | {System.out.println("jump_stmt");} 'return' expression ';'
     ;
 
 declaration
-    : type ID
+    : {System.out.println("declaration");} type ID
     ;
 
 type
-    : 'void'
-    | 'int'
-    | 'char'
-    | 'float'
+    : {System.out.println("type(void)");} 'void'
+    | {System.out.println("type(int )");} 'int'
+    | {System.out.println("type(char)");} 'char'
+    | {System.out.println("type(float");} 'float'
     ;
 
 expression
-    : assignment_expression
+    : {System.out.println("expression");} assignment_expression
     ;
 
 assignment_expression
-    : ID ASSIGN_OP relational_expr
-    | relational_expr
+    : {System.out.println("assign_expr");} ID ASSIGN_OP relational_expr
+    | {System.out.println("assign_expr");} relational_expr
     ;
 
 relational_expr
-    : additive_expr ( RELATION_OP  additive_expr)?
+    : {System.out.println("rela_expr");} additive_expr ( RELATION_OP  additive_expr)?
     ;
 
 additive_expr
-    : multiplicative_expr ( ADDITIVE_OP  multiplicative_expr)*
+    : {System.out.println("addi_expr");} multiplicative_expr ( ADDITIVE_OP  multiplicative_expr)*
     ;
 
 multiplicative_expr
-    : primary_expr ( MULTIPLI_OP  primary_expr)*
+    : {System.out.println("mult_expr");} postfix_expr ( MULTIPLI_OP  postfix_expr)*
+    ;
+
+postfix_expr
+    : {System.out.println("post_expr");} primary_expr ('(' argument_expr_list ')')?
     ;
 
 primary_expr
-    : ID
-    | constant
-    | '(' additive_expr ')'
+    : {System.out.println("prim_expr");} ID
+    | {System.out.println("prim_expr");} LITERAL
+    | {System.out.println("prim_expr");} constant
+    | {System.out.println("prim_expr");} '(' additive_expr ')'
     ;
 
 constant
-    : DEC_NUM
-    | FLOAT_NUM
+    : {System.out.println("constant");} DEC_NUM
+    | {System.out.println("constant");} FLOAT_NUM
     ;
-
-/*----------------------*/
-/*  Compound Operators  */
-/*----------------------*/
 
 RELATION_OP : '<' | '<=' | '==' | '>=' | '>' | '!=' ;
 ASSIGN_OP   : '=' ;
@@ -125,8 +119,9 @@ MULTIPLI_OP : '*' | '/' | '%' ;
 
 DEC_NUM     : ('0' | ('1'..'9')(DIGIT)*) ;
 FLOAT_NUM   : DEC_NUM '.' (DIGIT)+ ;
-ID          : (LETTER)(LETTER | DIGIT)*;
-LITERAL     : '"' ~('\n'|'\r')* '"';
+ID          : {System.out.println("ID");} (LETTER)(LETTER | DIGIT)*;
+LITERAL     : '"' (.)* '"';
+//LITERAL     : '"' ~('\n'|'\r')* '"';
 COMMENT     : '/*' (options{greedy=false;}: .)* '*/' {$channel=HIDDEN;};
 WS          : (' ' | '\r' | '\t' | '\n') {$channel=HIDDEN;};
 

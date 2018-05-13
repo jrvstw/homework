@@ -1,6 +1,6 @@
-int main()
+void main()
 {
-    1 + 5 - 2;
-    int a;
-    a = 5;
+    printf("Hello");
+    return;
 }
+

@@ -8,7 +8,7 @@ public class testParser {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 	
         myparserParser parser = new myparserParser(tokens);
-        parser.statement_list();
+        parser.program();
     }
 }
 

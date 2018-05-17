@@ -1,3 +1,6 @@
+/*
+usage: fork2
+*/
 #include <stdio.h>
 #include <unistd.h>
 int main()

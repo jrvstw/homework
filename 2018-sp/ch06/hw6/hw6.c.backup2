@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <dirent.h>
+#include <string.h>
+#include <unistd.h>
+
+
+void myls(char *filename, int level)
+{
+	DIR* dir;
+	struct dirent* ent;
+	dir = opendir(filename);
+	ent = readdir(dir);
+	while(ent!=NULL) {
+        for (int i = 0 ; i < level ; i++)
+            printf("|   ");
+        printf("%s\n", ent->d_name);
+        if (ent->d_type == DT_DIR &&
+            strcmp(ent->d_name, ".") != 0 &&
+            strcmp(ent->d_name, "..") != 0) {
+            char *tmpName = (char*)malloc(PATH_MAX);
+            sprintf(tmpName, "%s/%s", filename, ent->d_name);
+            myls(tmpName, level + 1);
+        }
+		ent = readdir(dir);
+	}
+	closedir(dir);
+}
+
+int main(int argc, char **argv)
+{
+	myls(argv[1], 0);
+	return 0;
+}
+

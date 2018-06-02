@@ -11,7 +11,9 @@ ctr-c
 #include <stdlib.h>
 #include <errno.h>
 #include <signal.h>
+#include <time.h>
 #include <setjmp.h>
+#include <sys/resource.h> 
 ///color///
 #define NONE "\033[m"
 #define RED "\033[0;32;31m"
@@ -45,6 +47,21 @@ char* argVect[256];
 sigjmp_buf jumpBuf;
 volatile sig_atomic_t hasChild = 0;
 pid_t childPid;
+const long long nspersec = 1000000000;
+
+long long timespec2sec(struct timespec ts) {
+    long long ns = ts.tv_nsec;
+    ns += ts.tv_sec * nspersec;
+    return ns;
+    //return (double)ns/1000000000.0;
+}
+
+double timeval2sec(struct timeval input) {
+    long long us = input.tv_sec*1000000;
+    us += input.tv_usec;
+    //printf("%ldsec, %ld us\n", input.tv_sec, input.tv_usec);
+    return (double)us/1000000.0;
+}
 
 /*signal handler專門用來處理ctr-c*/
 void ctrC_handler(int sigNumber) {
@@ -92,6 +109,8 @@ int main (int argc, char** argv) {
     char cwd[256];
     char* exeName;
     int pid, pos, wstatus;
+    struct rusage resUsage;     //資源使用率
+    struct timespec statTime, endTime;
     /*底下程式碼註冊signal的處理方式*/
     signal(SIGINT, ctrC_handler);
     signal(SIGQUIT, SIG_IGN);
@@ -153,6 +172,7 @@ int main (int argc, char** argv) {
                 chdir(argVect[1]);
             continue;
         }
+        clock_gettime(CLOCK_MONOTONIC, &statTime);
         pid = fork();   //除了exit, cd，其餘為外部指令
         if (pid == 0) {
             /*
@@ -169,7 +189,25 @@ int main (int argc, char** argv) {
             */
             childPid = pid;/*通知singal handler，如果使用者按下ctr-c時，要處理這個child*/
             hasChild = 1;/*通知singal handler，正在處理child*/
-            wait(&wstatus);
+            wait3(&wstatus, 0, &resUsage);
+            clock_gettime(CLOCK_MONOTONIC, &endTime);
+            //wait(&wstatus);
+            //int ret=getrusage(RUSAGE_CHILDREN, &resUsage);
+            //printf("ret = %d\n", ret);
+            double sysTime = timeval2sec(resUsage.ru_stime);
+            double usrTime = timeval2sec(resUsage.ru_utime);
+            //printf("%ld\n", endTime.tv_nsec);
+            //printf("%ld\n", statTime.tv_nsec);
+            printf("\n");
+            long long elapse = timespec2sec(endTime)-timespec2sec(statTime);
+            printf(RED"elapse:     "YELLOW"%lld.%llds\n",elapse/nspersec, elapse%nspersec);
+            printf(RED"usr+sys:    "YELLOW"%fs\n"
+                   RED"user:       "YELLOW"%fs\n"
+                   RED"sys:        "YELLOW"%fs\n", sysTime+usrTime , usrTime, sysTime);
+            printf(RED"minor:      "YELLOW"%ld\n", resUsage.ru_minflt);
+            printf(RED"major:      "YELLOW"%ld\n", resUsage.ru_majflt);
+            printf(RED"vol, ctx-sw:"YELLOW"%ld\n", resUsage.ru_nvcsw);
+            printf(RED"inv, ctx-sw:"YELLOW"%ld\n", resUsage.ru_nivcsw);
             printf(RED "return value of " YELLOW "%s" RED " is " YELLOW "%d\n", 
                 exeName, WEXITSTATUS(wstatus));
             //printf("isSignaled? %d\n", WIFSIGNALED(wstatus));

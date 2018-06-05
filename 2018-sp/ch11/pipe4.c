@@ -1,3 +1,7 @@
+/*
+usage: pipe4
+*/
+
 #include <assert.h>
 #include <unistd.h>
 #include <stdio.h>

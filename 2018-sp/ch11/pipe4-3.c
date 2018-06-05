@@ -1,5 +1,5 @@
 //usage: pipe4-3 killgrp或 pipe4-3 killproc
-//結果相當於執行： ls | wc
+//結果相當於執行： ls | sort
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
         dup(pipefd[1]); //將pipefd[1]複製到stdout
         close(pipefd[1]);   //將沒用到的關閉
         close(pipefd[0]);   //將沒用到的關閉
-        execlp("ls", "ls", "-R", "/", NULL);//執行ls，ls會將東西藉由stdout輸出到pipefd[1]
+        execlp("ls", "ls", "-R", "/","--color=always", NULL);//執行ls，ls會將東西藉由stdout輸出到pipefd[1]
         //execlp("sleep", "sleep", "100s", NULL);//睡100sec
     } else printf("1st child's pid = %d\n", pid1);
     if (pid1>0) {    

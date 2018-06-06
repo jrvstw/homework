@@ -8,3 +8,5 @@ fishing:fishing.o
 fishing.o:fishing.c
 	cc -c fishing.c
 
+clean:
+	rm -rf fishing fishing.o

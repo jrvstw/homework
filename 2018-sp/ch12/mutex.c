@@ -17,12 +17,10 @@ void thread(void) {
 
 int main(void) {
 	pthread_t id1, id2;
-	pthread_mutex_init(&mutex, NULL);
-	pthread_create(&id1,NULL,(void *) thread,NULL);
+	pthread_mutex_init(&mutex, NULL);	//mutex預設是unlock
+	pthread_create(&id1,NULL,(void *) thread,NULL); 
 	pthread_create(&id2,NULL,(void *) thread,NULL);
-	pthread_join(id1,NULL);
+	pthread_join(id1,NULL); 
 	pthread_join(id2,NULL);
 	printf("1000000000+1000000000 = %d\n", global);
-	return (0);
 }
-

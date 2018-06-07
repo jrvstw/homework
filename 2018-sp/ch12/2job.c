@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <stdatomic.h>
 
 volatile int global=0;
 pthread_mutex_t mutex;

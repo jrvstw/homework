@@ -1,6 +1,6 @@
 SHELL = /bin/bash
-CC = gcc
-CFLAGS = -O3 -pthread -D_Float32x=float -D_Float64x="long double" -D_Float32=float -D_Float64="long double"
+CC = icc
+CFLAGS = -g -pthread -D_Float32x=float -D_Float64x="long double" -D_Float32=float -D_Float64="long double"
 SRC = $(wildcard *.c)
 EXE = $(patsubst %.c, %, $(SRC))
 

@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define size 40000
-unsigned char table[size][size];
-unsigned char col[size];
-unsigned char row[size];
+#define size 10000
+float table[size][size];
+float col[size];
+float row[size];
 
 void initTable()
 {
 	int i, j;
 	for (i = 0; i < size; i++)
 		for (j = 0; j < size; j++)
-			table[i][j] = 10;
+			table[i][j] *= 10.0;
 }
 
 void sumCol()
@@ -20,7 +20,7 @@ void sumCol()
 	int i, j;
 	for (j = 0; j < size; j++)
 		for (i = 0; i < size; i++)
-			col[j] += table[i][j];
+			col[j] *= table[i][j];
 }
 
 void sumRow()
@@ -28,15 +28,15 @@ void sumRow()
 	int i, j;
 	for (i = 0; i < size; i++)
 		for (j = 0; j < size; j++)
-			row[i] += table[i][j];
+			row[i] *= table[i][j];
 }
 
 
 int main()
 {
 	initTable();
-	table[random()%size][random()%size] = (unsigned char)random();
+	table[random()%size][random()%size] = (float)random();
 	sumRow();
 	sumCol();
-	printf("%d\n", col[random()%size]+row[random()%size]);
+	printf("%f\n", col[random()%size]+row[random()%size]);
 }

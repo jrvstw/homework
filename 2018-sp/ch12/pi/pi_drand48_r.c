@@ -61,7 +61,7 @@ void main(int argc,char*argv[]) {
 	double pi = 0.0;
 	double rand_d;
 
-	printf("usage ./pi_drand48r [loopcount = 1000000000] [number_thread = 4]\n");
+	printf("usage ./pi_drand48r [loopcount = 1000000000] [number_thread = 4]\n")
 
 	if (argc >= 2)
 		total_loopcount=atol(argv[1]);

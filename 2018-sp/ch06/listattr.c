@@ -1,3 +1,7 @@
+/*
+usage:
+listattr filename
+*/
 #include <sys/types.h>
 #include <sys/xattr.h>
 #include <string.h>

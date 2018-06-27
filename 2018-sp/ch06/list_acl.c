@@ -2,6 +2,7 @@
   Copyright (C) 1999-2002
   Andreas Gruenbacher, <a.gruenbacher@bestbits.at>
   shiwulo, <shiwulo@gmail.com>
+  usage: ./list_acl ./list_acl.c
  */ 
 #include <acl/libacl.h>
 #include <stdio.h>

@@ -1,13 +1,14 @@
 SHELL = /bin/bash
-CC = clang
-CFLAGS = -g -lacl
+CC = gcc
+CFLAGS = -g
+LIB = -lacl
 SRC = $(wildcard *.c)
 EXE = $(patsubst %.c, %, $(SRC))
 
 all: ${EXE}
 
 %:	%.c
-	${CC} ${CFLAGS} $@.c -o $@
+	${CC} ${CFLAGS} $@.c ${LIB} -o $@
 
 clean:
 	rm ${EXE}

@@ -30,7 +30,8 @@ int main(int argc, char **argv)
 		perm = (buf.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
 		time = ctime(&buf.st_atime);
 		time[strlen(time) - 1] = 0;
-		printf("%o  %s  %s %8d %s %s\n", perm, getpwuid(buf.st_uid)->pw_name, getgrgid(buf.st_gid)->gr_name, (int)buf.st_size, time, ent->d_name);
+		printf("%o  %8s  %8s %8d %s %s\n", perm, getpwuid(buf.st_uid)->pw_name, 
+			getgrgid(buf.st_gid)->gr_name, (int)buf.st_size, time, ent->d_name);
 		ent = readdir(dir);
 	}
 	closedir(dir);

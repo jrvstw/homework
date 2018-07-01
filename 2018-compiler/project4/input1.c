@@ -1,3 +1,5 @@
-    int a;
-    int b;
-    b = a + 1;
+int main()
+{
+    printf("hi");
+    return 0;
+}

@@ -1,1 +1,1 @@
-myCompiler0.g
+1.g

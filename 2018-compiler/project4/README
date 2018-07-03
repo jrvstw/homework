@@ -1,0 +1,36 @@
+                Project 4 by 402125039 葉家瑋
+
+--------
+Features:
+--------
+
+    Project 4 is a java program that compiles a C-subset language into
+    assembly language of X86 machines.
+
+    The supported feature in C-sbuset language is described below:
+
+        * Data type:
+
+            void, int, char, float
+
+        * Operator:
+
+            +, -, *, /, =
+
+        * Control flow:
+
+            if-then-else
+
+        * Comment:
+
+            /* [comment] */
+
+--------
+How to use:
+--------
+
+    1. Make sure you have the "antlr-3.5.2-complete.jar" in this directory.
+       You may as well modify the path of it in Makefile.
+
+    2. Run "make" to get input*.s files.
+

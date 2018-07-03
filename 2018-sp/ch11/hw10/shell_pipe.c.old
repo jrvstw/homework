@@ -5,8 +5,8 @@ ctr-c
 */
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
@@ -52,6 +52,7 @@ int countOccur(char *string, char unit)
     }
     return count;
 }
+
 
 /*
 全域變數，放解析過後的使用者指令（字串陣列）
@@ -138,7 +139,7 @@ int main (int argc, char** argv) {
 
     /*無窮迴圈直到使用者輸入exit*/
     while(1) {
-        if (child_pid == -1)
+        if (pgid == -1)
             printPrompt();
 wait_event:       
         assert(epoll_wait(epollfd, &event, 1, -1) !=-1);
@@ -147,7 +148,7 @@ wait_event:
             //printf("%s, size=%d\n", cmdLine, ret);
             //printf("\n");
             cmdLine[ret-1]='\0';
-            if (child_pid > 0) goto wait_event;
+            if (pgid > 0) goto wait_event;
         } else if(event.data.fd == sig_fd) {    //收到signal
             //printf("sig_fd\n");
             memset(&fdsi, 0, sizeof(struct signalfd_siginfo));
@@ -156,7 +157,7 @@ wait_event:
             switch(fdsi.ssi_signo) {    //判斷signal number
                 case SIGINT:
                     //printf(RED"killchild\n\n\n\n");
-                    if (child_pid > 0) {
+                    if (pgid > 0) {
                         //printf("kill child\n");
                         //system("touch kill_child");
                         int ret=kill(-pgid, fdsi.ssi_signo);
@@ -165,7 +166,7 @@ wait_event:
                             perror("kill child");
                             exit(1);
                         }
-                        child_pid = -1;
+                        pgid = -1;
                         goto wait_event;
                     } else {
                         printf("\n");
@@ -190,7 +191,7 @@ wait_event:
                             ", named " YELLOW "%s.\n",  WTERMSIG(fdsi.ssi_status), sys_siglist[WTERMSIG(fdsi.ssi_status)]);
             }
                     printf(NONE);
-                    child_pid = -1;
+                    pgid = -1;
                     //goto wait_event;
                     break;
                 default:
@@ -207,12 +208,15 @@ wait_event:
 
         /* ================== my modification below ============= */
 
+
         // count pipes
         int nCmd = 1 + countOccur(cmdLine, '|');
 
+
         char *cmdHead;
         char *cmdEnd = cmdLine - 1;
-        for (int child_i = 0; child_i < nCmd; child_i++) {
+        int child_i;
+        for (child_i = 0; child_i < nCmd; child_i++) {
 
             // retrieve command for this child
             char child_cmd[256];
@@ -225,17 +229,18 @@ wait_event:
                 child_cmd[cmdEnd - cmdHead] = '\0';
             }
 
+
             parseString(child_cmd, &exeName);
-            if (strcmp(exeName, "exit") == 0)   //內建指令exit
+            if (strcmp(exeName, "exit") == 0)
                 goto LEAVE; // break;
-            if (strcmp(exeName, "cd") == 0) {   //內建指令cd
+            if (strcmp(exeName, "cd") == 0) {
                 if (strcmp(argVect[1], "~")==0)
                     chdir(getenv("HOME"));
                 else
                     chdir(argVect[1]);
-                goto CONT; // continue;
+                goto LOOP; // continue;
             }
-            child_pid = fork();   //除了exit, cd，其餘為外部指令
+            child_pid = vfork();
             if (child_pid == 0) {
 
                 // set group id
@@ -261,21 +266,26 @@ wait_event:
                 }
 
                 clock_gettime(CLOCK_REALTIME, &startTime);
-                //要記得打開signal的遮罩，因為execve會延續這個遮罩
                 sigset_t sigset;
                 sigfillset(&sigset);
                 sigprocmask(SIG_UNBLOCK, &sigset, NULL);
-                //產生一個child執行使用者的指令
+                //printf("#%d: %s\npid = %d\npgid = %d\n", child_i, cmdHead, getpid(), getpgid(0));
                 if (execvp(exeName, argVect)==-1) {
                     perror("myShell");
                     exit(errno*-1);
                 }
             } else {
+
+                // parent: find group id
                 if (child_i == 0)
                     pgid = child_pid;
             }
         }
-CONT:;
+
+        // parent: wait child
+        //while (child_i-- > 0)
+            //wait(&wstatus);
+LOOP:;
     }
 LEAVE:;
 }

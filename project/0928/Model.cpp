@@ -10,8 +10,8 @@ Model::Model(QWidget *parent) : QWidget(parent)
 	strcpy(input[2], "impact53.jpg");
 	strcpy(input[3], "impact54.jpg");
 	strcpy(input[4], "water1.jpg");
-	img  = new PainterWidget(input[0], this);
- 	img->resize(1024, 600);
+	//img  = new PainterWidget(input[0], this);
+ 	//img->resize(1024, 600);
 	
  
 	index = 0;
@@ -23,7 +23,7 @@ Model::Model(QWidget *parent) : QWidget(parent)
 	//主視窗畫布資訊及大小
         this->setWindowTitle("Demo");
 	//this->showFullScreen();
-        this->resize(1400,900);
+        this->resize(1024,700);
  
  	//Label物件
         //lbl = new QLabel(this);
@@ -44,15 +44,26 @@ Model::Model(QWidget *parent) : QWidget(parent)
 	timer->start(2000);
 
   }
+
+void Model::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QPixmap pix;
+    pix.load("water1.jpg");
+    painter.drawPixmap(0,0,1024,600, pix);
+    painter.setPen(QPen(Qt::green, 5));
+    painter.drawRect(500,500,150,150);
+}
  
 void Model::timeout()
 {
  	/* Your code here */	
 	index = (index==4)? 0: index + 1;
-	delete img;
-	img = new PainterWidget(input[index], this);
-	img->resize(1024,600);
-	img->show();
+	//delete img;
+	//img = new PainterWidget(input[index], this);
+	//img->resize(1024,600);
+	//img->show();
+    this->update();
 
 	//////////////////////////////////////////////  test block
 	//if(j==1){					

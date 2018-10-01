@@ -23,6 +23,8 @@ class Model : public QWidget {
 		void pushpre();
 		void pushnext(); 
 		void timeout();
+    protected:
+        void paintEvent(QPaintEvent *);
 
 
 

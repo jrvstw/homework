@@ -10,7 +10,7 @@ class myWidget : public QWidget
     Q_OBJECT
 
     public:
-        explicit myWidget(char pics[][30], int nPics,
+        explicit myWidget(char xmls[][30], char pics[][30], int nPics,
                           int period, QWidget *parent = 0);
 
     public slots:
@@ -24,6 +24,7 @@ class myWidget : public QWidget
         int     nSource;
         int     index;
         QTimer  *timer;
+        char    (*xmlFile)[30];
 };
 
 #endif //MYWIDGET_H

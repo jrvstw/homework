@@ -1,0 +1,26 @@
+<annotation>
+	<folder>scratch</folder>
+	<filename>scratch275.jpg</filename>
+	<path>G:\Kwo\scratch\1253.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1920</width>
+		<height>1080</height>
+		<depth>1</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>scratch</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>857</xmin>
+			<ymin>553</ymin>
+			<xmax>1033</xmax>
+			<ymax>600</ymax>
+		</bndbox>
+	</object>
+</annotation>

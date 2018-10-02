@@ -3,18 +3,22 @@
 #include "myWidget.h"
 
 void import_pics(char source[][30]);
+void import_xmls(char xmlFile[][30]);
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    char source[20][30];
     int  nSource = 20;
+    char source[20][30];
+    char xmlFile[20][30];
     import_pics(source);
+    import_xmls(xmlFile);
     int  period = 1000; // millisec.
 
-    myWidget *defectLocator = new myWidget(source, nSource, period);
+    myWidget *defectLocator = new myWidget(xmlFile, source, nSource, period);
     defectLocator->resize(1024,600);
+    //defectLocator->showFullScreen();
     defectLocator->show();
 
     return app.exec();
@@ -44,3 +48,26 @@ void import_pics(char source[][30])
     strcpy(source[19], "../pics/water5.jpg");
 }
 
+void import_xmls(char xmlFile[][30])
+{
+    strcpy(xmlFile[ 0], "../xml/impact51.xml");
+    strcpy(xmlFile[ 1], "../xml/impact52.xml");
+    strcpy(xmlFile[ 2], "../xml/impact53.xml");
+    strcpy(xmlFile[ 3], "../xml/impact54.xml");
+    strcpy(xmlFile[ 4], "../xml/impact55.xml");
+    strcpy(xmlFile[ 5], "../xml/scratch271.xml");
+    strcpy(xmlFile[ 6], "../xml/scratch272.xml");
+    strcpy(xmlFile[ 7], "../xml/scratch273.xml");
+    strcpy(xmlFile[ 8], "../xml/scratch274.xml");
+    strcpy(xmlFile[ 9], "../xml/scratch275.xml");
+    strcpy(xmlFile[10], "../xml/sponge457.xml");
+    strcpy(xmlFile[11], "../xml/sponge458.xml");
+    strcpy(xmlFile[12], "../xml/sponge459.xml");
+    strcpy(xmlFile[13], "../xml/sponge460.xml");
+    strcpy(xmlFile[14], "../xml/sponge461.xml");
+    strcpy(xmlFile[15], "../xml/water1.xml");
+    strcpy(xmlFile[16], "../xml/water2.xml");
+    strcpy(xmlFile[17], "../xml/water3.xml");
+    strcpy(xmlFile[18], "../xml/water4.xml");
+    strcpy(xmlFile[19], "../xml/water5.xml");
+}

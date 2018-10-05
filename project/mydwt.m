@@ -1,7 +1,8 @@
 clear;
-img = imread('water1384.jpg');
-layer = 7;
-scale = 2048;
+img = imread('sponge2201.jpg');
+layer = 5;
+scale = 1024;
+
 
 R = rgb2gray(img);
 [h,w] = size(R);
@@ -13,7 +14,6 @@ for i = 1:layer
     s = s/2;
 end
 R(1:s, 1:s) = zeros(s,s);
-
 for i = 1:layer
     s = 2*s;
     Rt(1:2:s, 1:s) = (R(1:1:s/2, 1:s)+R(s/2+1:1:s, 1:s))/2;
@@ -21,5 +21,7 @@ for i = 1:layer
     R(1:s, 1:2:s) = (Rt(1:s,1:1:s/2)+Rt(1:s, s/2+1:1:s))/2;
     R(1:s, 2:2:s) = (Rt(1:s,1:1:s/2)-Rt(1:s, s/2+1:1:s))/2;
 end
-R=imresize(uint8(R),[h w]);
-imshow(R)
+R=uint8(R);
+R=imresize(R,[h w]);
+imshow(R);
+

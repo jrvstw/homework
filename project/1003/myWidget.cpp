@@ -15,38 +15,47 @@ myWidget::myWidget(char xmls[][30], char pics[][30], int nPics, int period, QWid
     nSource = nPics;
     xmlFile = xmls;
 
-    timer = new QTimer(this);
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
-    timer->start(period);
+    if (period > 0) {
+        timer = new QTimer(this);
+        QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
+        timer->start(period);
+    }
 }
 
 void myWidget::timeout()
 {
     index = (index == nSource - 1)? 0: index + 1;
+    // find defects
     this->update();
 }
 
+void myWidget::mousePressEvent(QMouseEvent *)
+{
+    index = (index == nSource - 1)? 0: index + 1;
+    // find defects
+    this->update();
+}
 
 void myWidget::paintEvent(QPaintEvent *)
 {
-    // draw pics
-    QPainter painter(this);
-    QImage img = QImage(source[index]);
-    img = img.scaled(width(), height(), Qt::KeepAspectRatio);
+    const QImage img(source[index]);
 
-    //painter.drawPixmap(0,0,width(),height(),QPixmap(source[index]));
-    //painter.drawImage(QRect(0,0,width(),height()), copy);
-    painter.drawImage(0,0,img);
+    QRect canvas;
+    canvas.setSize(img.scaled(this->size(), Qt::KeepAspectRatio).size());
+    canvas.moveCenter(this->rect().center());
 
     int m[1024][1024] = {0};
     int scale = 1024; // <= 1024
     int level = 5;
     QImage copy = img.scaled(scale, scale, Qt::IgnoreAspectRatio);
+
     for (int i = 0; i < scale; i++)
         for (int j = 0; j < scale; j++) {
             unsigned int tmp = copy.pixel(i,j);
-            m[i][j] = (tmp & 0xFF) + ((tmp>>8) & 0xFF) + ((tmp>>16) & 0xFF);
-            m[i][j] /= 3;
+            int r = (tmp & 0xFF0000) >> 16,
+                g = (tmp & 0x00FF00) >> 8,
+                b = (tmp & 0x0000FF);
+            m[i][j] = (int)(0.3 * r + 0.59 * g + 0.11 * b);
         }
 
     for (int i = 0; i < scale/2; i++)
@@ -60,7 +69,11 @@ void myWidget::paintEvent(QPaintEvent *)
             copy.setPixel(i, j, tmp);
         }
 
+    QPainter painter(this);
 
+    painter.drawImage(canvas, copy);
+
+    // read xml
     xml_document<>  doc;
     xml_node<>      *root_node;
     ifstream        theFile(xmlFile[index]);
@@ -77,14 +90,21 @@ void myWidget::paintEvent(QPaintEvent *)
 
         xml_node<> *bndbox_node = object_node->first_node("bndbox");
 
-        int xmin, xmax, ymin, ymax;
-        xmin = atoi(bndbox_node->first_node("xmin")->value())*width()/1920;
-        xmax = atoi(bndbox_node->first_node("xmax")->value())*width()/1920;
-        ymin = atoi(bndbox_node->first_node("ymin")->value())*height()/1080;
-        ymax = atoi(bndbox_node->first_node("ymax")->value())*height()/1080;
+        int xmin = atoi(bndbox_node->first_node("xmin")->value());
+        int xmax = atoi(bndbox_node->first_node("xmax")->value());
+        int ymin = atoi(bndbox_node->first_node("ymin")->value());
+        int ymax = atoi(bndbox_node->first_node("ymax")->value());
 
-        painter.setPen(QPen(Qt::green, 3));
-        painter.drawRect(xmin, ymin, (xmax-xmin), (ymax-ymin));
+        xmin = xmin * canvas.width() / img.width();
+        xmax = xmax * canvas.width() / img.width();
+        ymin = ymin * canvas.height() / img.height();
+        ymax = ymax * canvas.height() / img.height();
+
+        QRect frame(QPoint(xmin, ymin), QPoint(xmax, ymax));
+        frame.translate(canvas.topLeft());
+
+        painter.setPen(QPen(Qt::green, 2));
+        painter.drawRect(frame);
     }
 }
 

@@ -14,10 +14,10 @@ int main(int argc, char *argv[])
     char xmlFile[20][30];
     import_pics(source);
     import_xmls(xmlFile);
-    int  period = 1000; // millisec.
+    int  period = 0; // millisec.
 
     myWidget *defectLocator = new myWidget(xmlFile, source, nSource, period);
-    defectLocator->resize(1024,600);
+    defectLocator->resize(960,540);
     //defectLocator->showFullScreen();
     defectLocator->show();
 

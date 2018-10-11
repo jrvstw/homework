@@ -17,6 +17,7 @@ class myWidget : public QWidget
         void timeout();
 
     protected:
+        void mousePressEvent(QMouseEvent *);
         void paintEvent(QPaintEvent *);
 
     private:

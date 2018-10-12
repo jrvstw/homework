@@ -71,7 +71,7 @@ void myWidget::paintEvent(QPaintEvent *)
 
     QPainter painter(this);
 
-    painter.drawImage(canvas, copy);
+    painter.drawImage(canvas, img);
 
     // read xml
     xml_document<>  doc;

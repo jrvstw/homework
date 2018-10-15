@@ -46,9 +46,11 @@ void myWidget::paintEvent(QPaintEvent *)
     canvas.setSize(img.scaled(this->size(), Qt::KeepAspectRatio).size());
     canvas.moveCenter(this->rect().center());
 
-    QImage copy = dwt(img, 5, 1024, 1024);
+    QImage copy = img;
 
-    copy = toBinary(copy, 0.13);
+    //copy = dwt(copy, 5, 1024, 1024);
+
+    //copy = toBinary(copy, 0.13);
 
     QPainter painter(this);
 

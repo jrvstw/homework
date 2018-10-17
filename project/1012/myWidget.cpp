@@ -42,22 +42,32 @@ void myWidget::paintEvent(QPaintEvent *)
 {
     const QImage img(source[index]);
 
+    QSize paintSize(img.width(), img.height() * 2);
+    paintSize.scale(this->size(), Qt::KeepAspectRatio);
+
     QRect canvas;
-    canvas.setSize(img.scaled(this->size(), Qt::KeepAspectRatio).size());
+    canvas.setSize(paintSize);
     canvas.moveCenter(this->rect().center());
+    //canvas.setSize(img.scaled(this->size(), Qt::KeepAspectRatio).size());
+
+    QRect before(canvas);
+    before.setBottom(canvas.center().y());
+
+    QRect after(canvas);
+    after.setTop(canvas.center().y());
 
     QImage copy = img;
 
-    //copy = dwt(copy, 5, 1024, 1024);
+    copy = dwt(copy, 5, 1024, 1024);
 
-    //copy = toBinary(copy, 0.13);
+    copy = toBinary(copy, 0.13);
 
     QPainter painter(this);
 
-    painter.drawImage(canvas, copy);
+    painter.drawImage(before, img);
+    painter.drawImage(after, copy);
 
     // read xml
-    /*
     xml_document<>  doc;
     xml_node<>      *root_node;
     ifstream        theFile(xmlFile[index]);
@@ -79,18 +89,17 @@ void myWidget::paintEvent(QPaintEvent *)
         int ymin = atoi(bndbox_node->first_node("ymin")->value());
         int ymax = atoi(bndbox_node->first_node("ymax")->value());
 
-        xmin = xmin * canvas.width() / img.width();
-        xmax = xmax * canvas.width() / img.width();
-        ymin = ymin * canvas.height() / img.height();
-        ymax = ymax * canvas.height() / img.height();
+        xmin = xmin * before.width() / img.width();
+        xmax = xmax * before.width() / img.width();
+        ymin = ymin * before.height() / img.height();
+        ymax = ymax * before.height() / img.height();
 
         QRect frame(QPoint(xmin, ymin), QPoint(xmax, ymax));
-        frame.translate(canvas.topLeft());
+        frame.translate(before.topLeft());
 
         painter.setPen(QPen(Qt::green, 2));
         painter.drawRect(frame);
     }
-    */
 }
 
 QImage dwt(QImage source, int level, int width, int height)

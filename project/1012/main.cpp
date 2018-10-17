@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
     int  period = 0; // millisec.
 
     myWidget *defectLocator = new myWidget(xmlFile, source, nSource, period);
-    defectLocator->resize(960,540);
-    //defectLocator->showFullScreen();
+    //defectLocator->resize(960,540);
+    defectLocator->showFullScreen();
     defectLocator->show();
 
     return app.exec();

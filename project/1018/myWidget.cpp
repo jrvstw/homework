@@ -8,7 +8,11 @@
 
 using namespace rapidxml;
 using namespace std;
-void visit(int x, int y, QImage *src);
+const QRgb black = 0xFF000000;
+const QRgb white = 0xFFFFFFFF;
+const QRgb label = 0xFFFFFFFE;
+const double pi = 3.1415926;
+
 
 myWidget::myWidget(char xmls[][30], char pics[][30], int nPics, int period, QWidget *parent) :
     QWidget(parent)
@@ -44,18 +48,15 @@ void myWidget::paintEvent(QPaintEvent *)
 
     const QImage src(source[index]);
 
-    QSize paintSize(src.width() * 2,
-                    src.height() * 2);
+    QSize paintSize(src.size());
     paintSize.scale(this->size(), Qt::KeepAspectRatio);
 
     QRect canvas;
     canvas.setSize(paintSize);
     canvas.moveCenter(this->rect().center());
 
-    QRect subCanvas(canvas.x(),
-                    canvas.y(),
-                    canvas.width() / 2,
-                    canvas.height() / 2);
+    QRect subCanvas(canvas.x(), canvas.y(),
+                    canvas.width() / 2, canvas.height() / 2);
     painter.drawImage(subCanvas, src);
 
     // read xml
@@ -94,34 +95,46 @@ void myWidget::paintEvent(QPaintEvent *)
 
     QImage copy = dwt(src, 5, 1024, 1024);
 
-    subCanvas.moveTo(canvas.x() + canvas.width() / 2,
-                     canvas.y());
+    subCanvas.moveTo(canvas.x(), canvas.y() + canvas.height() / 2);
     painter.drawImage(subCanvas, copy);
 
     copy = toBinary(copy, 0.13);
 
-    subCanvas.moveTo(canvas.x(),
-                     canvas.y() + canvas.height() / 2);
-    painter.drawImage(subCanvas, copy);
-
-    copy = erode(copy);
-
     subCanvas.moveTo(canvas.x() + canvas.width() / 2,
                      canvas.y() + canvas.height() / 2);
-    painter.drawImage(subCanvas, copy);
+    subCanvas = canvas;
+    painter.drawImage(subCanvas, src);
 
-    painter.setPen(QPen(Qt::green, 1));
+    QImage copy2 = erode(copy, 1);
+    for (int y = 0; y < copy.height(); y++)
+        for (int x = 0; x < copy.width(); x++) {
+            if (copy2.pixel(x, y) != copy.pixel(x, y))
+                copy.setPixel(x, y, label);
+        }
+
+
+    painter.setPen(QPen(Qt::green, 2));
     for (int y = 0; y < copy.height(); y++)
         for (int x = 0; x < copy.width(); x++)
-            if (qGray(copy.pixel(x, y)) == 255) {
-                QRect frame(QPoint(x, y), QPoint(x, y));
-                findFrame(x, y, &copy, &frame);
-                frame.setCoords(frame.left() * subCanvas.width() / copy.width(),
-                                frame.top() * subCanvas.height() / copy.height(),
-                                frame.right() * subCanvas.width() / copy.width(),
-                                frame.bottom() * subCanvas.height() / copy.height());
-                frame.translate(subCanvas.topLeft());
-                painter.drawRect(frame);
+            if (copy.pixel(x, y) != black) {
+                int area = 1;
+                int perimeter = 1;
+                QRect bBox(QPoint(x, y), QPoint(x, y));
+                analyze(x, y, &copy, &area, &perimeter, &bBox);
+                if (true
+                    && area > 100
+                    && bBox.width() < bBox.height() * 3
+                    //&& area < bBox.width() * bBox.height() * 0.5
+                    && perimeter * perimeter > 4 * pi * area * 2
+                    )
+                {
+                    bBox.setCoords(bBox.left() * subCanvas.width() / copy.width(),
+                                   bBox.top() * subCanvas.height() / copy.height(),
+                                   bBox.right() * subCanvas.width() / copy.width(),
+                                   bBox.bottom() * subCanvas.height() / copy.height());
+                    bBox.translate(subCanvas.topLeft());
+                    painter.drawRect(bBox);
+                }
             }
     //copy = copy.convertToFormat(QImage::Format_Mono);
 }

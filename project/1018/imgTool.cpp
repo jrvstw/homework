@@ -1,4 +1,8 @@
 #include "imgTool.h"
+using namespace std;
+const QRgb black = 0xFF000000;
+const QRgb white = 0xFFFFFFFF;
+const QRgb label = 0xFFFFFFFE;
 
 QImage dwt(QImage source, int level, int width, int height)
 {
@@ -68,39 +72,69 @@ QImage toBinary(QImage source, float threshold)
     for (int y = 0; y < copy.height(); y++)
         for (int x = 0; x < copy.width(); x++) {
             if (qGray(copy.pixel(x, y)) >= thre)
-                copy.setPixel(x, y, QColor(255,255,255).rgb());
+                copy.setPixel(x, y, white);
             else
-                copy.setPixel(x, y, QColor(0,0,0).rgb());
+                copy.setPixel(x, y, black);
         }
     return copy;
 }
 
-QImage erode(QImage source)
+QImage erode(QImage source, int d)
 {
-    QImage extended(source.width() + 6,
-                    source.height() + 6,
+    QImage extended(source.width() + 2 * d, source.height() + 2 * d,
                     source.format());
     extended.fill(Qt::white);
+
     for (int y = 0; y < source.height(); y++)
         for (int x = 0; x < source.width(); x++)
-            extended.setPixel(x + 3, y + 3, source.pixel(x, y));
+            extended.setPixel(x + d, y + d, source.pixel(x, y));
+
     QImage output(source);
     output.fill(Qt::white);
-    QRgb black = QColor(0, 0, 0).rgb();
-    for (int y = 3; y < source.height() + 3; y++)
-        for (int x = 3; x < source.width() + 3; x++) {
+    for (int y = d; y < source.height() + d; y++)
+        for (int x = d; x < source.width() + d; x++) {
             if (extended.pixel(x    , y    ) == black ||
                 extended.pixel(x - 1, y    ) == black ||
                 extended.pixel(x    , y - 1) == black ||
                 extended.pixel(x + 1, y    ) == black ||
                 extended.pixel(x    , y + 1) == black)
-                output.setPixel(x - 3, y - 3, black);
+                output.setPixel(x - d, y - d, black);
         }
     return output;
 }
 
-QRect findFrame(int x, int y, QImage *src, QRect *frame)
+void analyze(int x0, int y0, QImage *src, int *area, int *perimeter,
+             QRect *bBox)
 {
-    return *frame;
+    queue<QPoint> obj;
+    obj.push(QPoint(x0, y0));
+    src->setPixel(x0, y0, black);
+    while (obj.size() > 0) {
+        visit(-1,  0, &obj, src, area, perimeter, bBox);
+        visit( 1,  0, &obj, src, area, perimeter, bBox);
+        visit( 0, -1, &obj, src, area, perimeter, bBox);
+        visit( 0,  1, &obj, src, area, perimeter, bBox);
+        visit(-1, -1, &obj, src, area, perimeter, bBox);
+        visit(-1,  1, &obj, src, area, perimeter, bBox);
+        visit( 1, -1, &obj, src, area, perimeter, bBox);
+        visit( 1,  1, &obj, src, area, perimeter, bBox);
+        obj.pop();
+    }
+}
+
+void visit(int dx, int dy, queue<QPoint> *obj, QImage *src, int *area,
+           int *perimeter, QRect *bBox)
+{
+    QPoint p(obj->front().x() + dx,
+             obj->front().y() + dy);
+
+    if (src->rect().contains(p) && src->pixel(p) != black) {
+        *area = *area + 1;
+        if (src->pixel(p) == label)
+            *perimeter = *perimeter + 1;
+        *bBox = bBox->united(QRect(p, p));
+        obj->push(p);
+        src->setPixel(p, black);
+    }
 }
 

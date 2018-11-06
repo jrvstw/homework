@@ -66,12 +66,13 @@ QImage dwt(QImage source, int level, int width, int height)
     return copy;
 }
 
-QImage toBinary(QImage source, int threshold)
+QImage toBinary(QImage source, float threshold)
 {
     QImage copy = source;
+    int    thre = (int)(threshold * 255);
     for (int y = 0; y < copy.height(); y++)
         for (int x = 0; x < copy.width(); x++) {
-            if (qGray(copy.pixel(x, y)) >= threshold)
+            if (qGray(copy.pixel(x, y)) >= thre)
                 copy.setPixel(x, y, white);
             else
                 copy.setPixel(x, y, black);
@@ -79,7 +80,7 @@ QImage toBinary(QImage source, int threshold)
     return copy;
 }
 
-int autoThreshold(QImage source)
+float autoThreshold(QImage source)
 {
     int histogram[256] = {0};
     for (int y = 0; y < source.height(); y++)
@@ -89,7 +90,7 @@ int autoThreshold(QImage source)
     int threshold = 255;
     while(histogram[threshold] == 0)
         threshold--;
-    return threshold * 4 / 10;
+    return threshold * 0.4 / 255;
 }
 
 QImage erode(QImage source, int d)

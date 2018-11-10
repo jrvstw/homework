@@ -1,9 +1,9 @@
 #include "imgTool.h"
+#include <vector>
 using namespace std;
 const QRgb black = 0xFF000000;
 const QRgb white = 0xFFFFFFFF;
-const QRgb label = 0xFFFFFFFE;
-const double pi = 3.1415926;
+
 
 QImage dwt(QImage source, int level, int width, int height)
 {
@@ -89,7 +89,7 @@ int autoThreshold(QImage source)
     int threshold = 255;
     while(histogram[threshold] == 0)
         threshold--;
-    return threshold * 4 / 10;
+    return threshold * 40 / 100;
 }
 
 QImage erode(QImage source, int d)
@@ -112,6 +112,51 @@ QImage erode(QImage source, int d)
                 extended.pixel(x + 1, y    ) == black ||
                 extended.pixel(x    , y + 1) == black)
                 output.setPixel(x - d, y - d, black);
+            if (d < 2)
+                continue;
+            if (extended.pixel(x + 2, y    ) == black ||
+                extended.pixel(x + 1, y + 1) == black ||
+                extended.pixel(x    , y + 2) == black ||
+                extended.pixel(x - 1, y + 1) == black ||
+                extended.pixel(x - 2, y    ) == black ||
+                extended.pixel(x - 1, y - 1) == black ||
+                extended.pixel(x    , y - 2) == black ||
+                extended.pixel(x + 1, y - 1) == black)
+                output.setPixel(x - d, y - d, black);
+            if (d < 3)
+                continue;
+            if (extended.pixel(x + 3, y    ) == black ||
+                extended.pixel(x + 2, y + 1) == black ||
+                extended.pixel(x + 1, y + 2) == black ||
+                extended.pixel(x    , y + 3) == black ||
+                extended.pixel(x - 1, y + 2) == black ||
+                extended.pixel(x - 2, y + 1) == black ||
+                extended.pixel(x - 3, y    ) == black ||
+                extended.pixel(x - 2, y - 1) == black ||
+                extended.pixel(x - 1, y - 2) == black ||
+                extended.pixel(x    , y - 3) == black ||
+                extended.pixel(x + 1, y - 2) == black ||
+                extended.pixel(x + 2, y - 1) == black)
+                output.setPixel(x - d, y - d, black);
+            if (d < 4)
+                continue;
+            if (extended.pixel(x + 4, y    ) == black ||
+                extended.pixel(x + 3, y + 1) == black ||
+                extended.pixel(x + 2, y + 2) == black ||
+                extended.pixel(x + 1, y + 3) == black ||
+                extended.pixel(x    , y + 4) == black ||
+                extended.pixel(x - 1, y + 3) == black ||
+                extended.pixel(x - 2, y + 2) == black ||
+                extended.pixel(x - 3, y + 1) == black ||
+                extended.pixel(x - 4, y    ) == black ||
+                extended.pixel(x - 3, y - 1) == black ||
+                extended.pixel(x - 2, y - 2) == black ||
+                extended.pixel(x - 1, y - 3) == black ||
+                extended.pixel(x    , y - 4) == black ||
+                extended.pixel(x + 1, y - 3) == black ||
+                extended.pixel(x + 2, y - 2) == black ||
+                extended.pixel(x + 3, y - 1) == black)
+                output.setPixel(x - d, y - d, black);
         }
     return output;
 }
@@ -121,75 +166,145 @@ QImage dilate(QImage source, int d)
     QImage tmp(source);
     for (int y = 0; y < source.height(); y++)
         for (int x = 0; x < source.width(); x++)
-            tmp.setPixel(x, y, 0xFFFFFFFF - (0x00FFFFFF & source.pixel(x, y)));
+            tmp.setPixel(x, y, white - (0x00FFFFFF & tmp.pixel(x, y)));
     tmp = erode(tmp, d);
     for (int y = 0; y < source.height(); y++)
         for (int x = 0; x < source.width(); x++)
-            tmp.setPixel(x, y, 0xFFFFFFFF - (0x00FFFFFF & tmp.pixel(x, y)));
+            tmp.setPixel(x, y, white - (0x00FFFFFF & tmp.pixel(x, y)));
     return tmp;
 }
 
-void analyze(int x0, int y0, QImage *src, int *area, int *perimeter,
-             QRect *bBox)
+void findObject(int x0, int y0, QImage *src, vector<QPoint> *object)
 {
-    queue<QPoint> obj;
-    obj.push(QPoint(x0, y0));
+    object->push_back(QPoint(x0, y0));
+    queue<QPoint> q;
+    q.push(QPoint(x0, y0));
     src->setPixel(x0, y0, black);
-    while (obj.size() > 0) {
-        visit(-1,  0, &obj, src, area, perimeter, bBox);
-        visit( 1,  0, &obj, src, area, perimeter, bBox);
-        visit( 0, -1, &obj, src, area, perimeter, bBox);
-        visit( 0,  1, &obj, src, area, perimeter, bBox);
-        visit(-1, -1, &obj, src, area, perimeter, bBox);
-        visit(-1,  1, &obj, src, area, perimeter, bBox);
-        visit( 1, -1, &obj, src, area, perimeter, bBox);
-        visit( 1,  1, &obj, src, area, perimeter, bBox);
-        visit( 2,  0, &obj, src, area, perimeter, bBox);
-        visit( 0,  2, &obj, src, area, perimeter, bBox);
-        visit(-2,  0, &obj, src, area, perimeter, bBox);
-        visit( 0, -2, &obj, src, area, perimeter, bBox);
-        visit( 3,  0, &obj, src, area, perimeter, bBox);
-        visit( 2,  1, &obj, src, area, perimeter, bBox);
-        visit( 1,  2, &obj, src, area, perimeter, bBox);
-        visit( 0,  3, &obj, src, area, perimeter, bBox);
-        visit(-1,  2, &obj, src, area, perimeter, bBox);
-        visit(-2,  1, &obj, src, area, perimeter, bBox);
-        visit(-3,  0, &obj, src, area, perimeter, bBox);
-        visit(-2, -1, &obj, src, area, perimeter, bBox);
-        visit(-1, -2, &obj, src, area, perimeter, bBox);
-        visit( 0, -3, &obj, src, area, perimeter, bBox);
-        visit( 1, -2, &obj, src, area, perimeter, bBox);
-        visit( 2, -1, &obj, src, area, perimeter, bBox);
-        obj.pop();
+    while (q.size() > 0) {
+        visit( 1,  0, &q, object, src);
+        visit( 0,  1, &q, object, src);
+        visit(-1,  0, &q, object, src);
+        visit( 0, -1, &q, object, src);
+        visit( 1,  1, &q, object, src);
+        visit(-1,  1, &q, object, src);
+        visit(-1, -1, &q, object, src);
+        visit( 1, -1, &q, object, src);
+        visit( 2,  0, &q, object, src);
+        visit( 0,  2, &q, object, src);
+        visit(-2,  0, &q, object, src);
+        visit( 0, -2, &q, object, src);
+        /*
+        visit( 3,  0, &q, object, src);
+        visit( 2,  1, &q, object, src);
+        visit( 1,  2, &q, object, src);
+        visit( 0,  3, &q, object, src);
+        visit(-1,  2, &q, object, src);
+        visit(-2,  1, &q, object, src);
+        visit(-3,  0, &q, object, src);
+        visit(-2, -1, &q, object, src);
+        visit(-1, -2, &q, object, src);
+        visit( 0, -3, &q, object, src);
+        visit( 1, -2, &q, object, src);
+        visit( 2, -1, &q, object, src);
+        */
+        q.pop();
     }
 }
 
-void visit(int dx, int dy, queue<QPoint> *obj, QImage *src, int *area,
-           int *perimeter, QRect *bBox)
+void visit(int dx, int dy, queue<QPoint> *q, vector<QPoint> *object,
+           QImage *src)
 {
-    QPoint p(obj->front().x() + dx,
-             obj->front().y() + dy);
-
+    QPoint p(q->front().x() + dx,
+             q->front().y() + dy);
     if (src->rect().contains(p) && src->pixel(p) != black) {
-        *area = *area + 1;
-        if (src->pixel(p) == label)
-            *perimeter = *perimeter + 1;
-        *bBox = bBox->united(QRect(p, p));
-        obj->push(p);
+        q->push(p);
+        object->push_back(p);
         src->setPixel(p, black);
     }
 }
 
-defectType getDefectType(int area, int perimeter, QRect bBox)
+defectType getDefectType(vector<QPoint> object, QImage *contour, QRect *bBox)
 {
-    if (area < 100 ||
-        bBox.width() > bBox.height() * 3)
+    int area = object.size();
+
+    if (area < 80 || area > 10000)
         return normal;
-    if (true &&
-        //area < bBox.width() * bBox.height() * 0.5 &&
-        perimeter * perimeter > 4 * pi * area * 2
-       )
+
+    int perimeter = 0;
+    long long int xSum = 0, ySum = 0, xxSum = 0, xySum = 0;
+
+    for (int i = 0; i < area; i++) {
+        QPoint p(object[i].x(), object[i].y());
+        *bBox = bBox->united(QRect(p, p));
+        if (contour->pixel(p) == white)
+            perimeter++;
+        xSum += p.x();
+        ySum += p.y();
+        xxSum += p.x() * p.x();
+        xySum += p.x() * p.y();
+    }
+    return impact;
+
+    if (bBox->width() > bBox->height() * 5)
+        return normal;
+
+    double xMean = (double)xSum / area, xxMean = (double)xxSum / area,
+           yMean = (double)ySum / area, xyMean = (double)xySum / area;
+    double orientation = (xyMean - xMean*yMean) / (xxMean - xMean*xMean);
+
+    //int isPlump = (area > bBox->width() * bBox->height() * 0.7);
+    int isSquare = ((bBox->width() < bBox->height() * 2) &&
+                    (bBox->height() < bBox->width() * 2));
+    //if (area > 300 &&
+        //area < bBox->width() * bBox->height() * 0.4 &&
+        //isSquare)
+
+    if (perimeter * 2 > area &&
+        area < 500)
+        return normal;
+
+    int convexArea = getConvexArea(object);
+
+    //if (convexArea > bBox->width() * bBox->height() * 1)
+    if (convexArea > bBox->width() * bBox->height() * 0.7 &&
+        convexArea > 250 &&
+        bBox->width() < bBox->height() * 1.5)
+        return water;
+
+    if (area < bBox->width() * bBox->height() * 0.3 &&
+        perimeter < area * 0.4)
+        return scratch;
+
+    if (abs(orientation) > 0.2 &&
+        abs(orientation) < 3 &&
+        area < bBox->width() * bBox->height() * 0.4)
         return impact;
+
+    /*
+    if (area > 200 &&
+        area < bBox->width() * bBox->height() * 0.4 &&
+        //perimeter < area * 0.3 &&
+        orientation < -0.5 &&
+        true)
+        return impact;
+        */
+
+
+    return unrecognized;
+
+    if (area - perimeter < 200 &&
+        perimeter * 2 > area)
+        return water;
+
+
+    if (bBox->width() > bBox->height() * 2 &&
+        area > bBox->width() * bBox->height() * 0.3)
+        return water;
+
+    if (area > 80 &&
+        perimeter > area * 0.5 &&
+        true)
+        return scratch;
     return normal;
 }
 
@@ -200,3 +315,57 @@ void scaleCoords(QRect *bBox, QRect after, QRect before)
                     bBox->right() * after.width() / before.width(),
                     bBox->bottom() * after.height() / before.height());
 }
+
+int cross(QPoint O, QPoint A, QPoint B)
+{
+    return (A.x()-O.x()) * (B.y()-A.y()) - (B.x()-A.x()) * (A.y()-O.y());
+}
+
+int compare(const void* C, const void* D)
+{
+    QPoint A = *(QPoint *)C,
+           B = *(QPoint *)D;
+    if (A.x() != B.x())
+        return A.x() - B.x();
+    else
+        return A.y() - B.y();
+}
+
+void convexHull(QPoint convex[10000], int *top, QPoint input[10000], int ninput)
+{
+    int i = 0;
+    for (i = 0; i < ninput; i++) {
+        while (*top > 0 &&
+               cross(convex[*top - 1], convex[*top], input[i]) <=0)
+            (*top)--;
+        convex[++(*top)] = input[i];
+    }
+    int middle = *top;
+    for (i = ninput - 2; i >=0; i--) {
+        while (*top > middle &&
+               cross(convex[*top - 1], convex[*top], input[i]) <= 0)
+            (*top)--;
+        convex[++(*top)] = input[i];
+    }
+    (*top)--;
+}
+
+int getConvexArea(vector<QPoint> object)
+{
+    int area = object.size();
+    QPoint array[10000];
+    for (int i = 0; i < area; i++)
+        array[i] = object[i];
+    qsort(array, area, sizeof(QPoint), compare);
+    QPoint convex[10000];
+    int top = -1;
+    convexHull(convex, &top, array, area);
+    int convexArea = 0;
+    for (int i = 0; i <= top - 1; i++)
+        convexArea += (convex[i].x() * convex[i + 1].y() -
+                       convex[i].y() * convex[i + 1].x());
+    convexArea += (convex[top].x() * convex[0].y() -
+                   convex[top].y() * convex[0].x());
+    return abs(convexArea) / 2;
+}
+

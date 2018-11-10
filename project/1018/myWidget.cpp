@@ -10,7 +10,6 @@ using namespace rapidxml;
 using namespace std;
 const QRgb black = 0xFF000000;
 const QRgb white = 0xFFFFFFFF;
-const QRgb label = 0xFFFFFFFE;
 
 
 myWidget::myWidget(char xmls[][30], char pics[][30], int nPics, int period, QWidget *parent) :
@@ -91,7 +90,38 @@ void myWidget::paintEvent(QPaintEvent *)
 
     // 2. paint dwt result
 
-    QImage copy = dwt(src, 5, 1024, 1024);
+    vector<int> lumi(src.height());
+    //int lumi[2000] = {0};
+    for (int y = 0; y < src.height(); y++) {
+        for (int x = 0; x < src.width(); x++)
+            lumi[y] += qGray(src.pixel(x, y));
+        lumi[y] /= src.width();
+    }
+
+    int average = 0;
+    for (int y = 0; y < src.height(); y++)
+        average += lumi[y];
+    average /= src.height();
+
+    QImage copy2 = src;
+    for (int y = 0; y < src.height(); y++) {
+        int d = lumi[y] - average;
+        for (int x = 0; x < src.width(); x++) {
+            int p = qGray(src.pixel(x, y));
+            p -= d;
+            if (p > 255)
+                p = 255;
+            else if (p < 0)
+                p = 0;
+            copy2.setPixel(x, y, QColor(p, p, p).rgb());
+        }
+    }
+
+
+    subCanvas.moveTo(canvas.x() + canvas.width() / 2, canvas.y());
+    painter.drawImage(subCanvas, copy2);
+
+    QImage copy = dwt(copy2, 6, 1024, 1024);
 
     subCanvas.moveTo(canvas.x(), canvas.y() + canvas.height() / 2);
     painter.drawImage(subCanvas, copy);
@@ -106,40 +136,32 @@ void myWidget::paintEvent(QPaintEvent *)
 
     // 4. paint processed image
 
-    /*
-    copy = dilate(copy, 1);
-    copy = dilate(copy, 1);
-    copy = dilate(copy, 1);
     copy = dilate(copy, 1);
     copy = erode(copy, 1);
-    copy = erode(copy, 1);
-    copy = erode(copy, 1);
-    copy = erode(copy, 1);
-    */
 
     subCanvas.moveTo(canvas.x() + canvas.width() / 2,
                      canvas.y());
-    painter.drawImage(subCanvas, copy);
-
-    //subCanvas = canvas;
-    QImage copy2 = erode(copy, 1);
-    for (int y = 0; y < copy.height(); y++)
-        for (int x = 0; x < copy.width(); x++) {
-            if (copy2.pixel(x, y) != copy.pixel(x, y))
-                copy.setPixel(x, y, label);
-        }
 
     // 4.2 paint frames on processed image
 
-    painter.setPen(QPen(Qt::blue, 2));
+    QImage contour = dilate(copy, 1);
+    for (int y = 0; y < copy.height(); y++)
+        for (int x = 0; x < copy.width(); x++)
+            contour.setPixel(x, y, contour.pixel(x, y) -
+                             (copy.pixel(x, y) & 0xFFFFFF));
+    //subCanvas = canvas;
+    //painter.drawImage(subCanvas, contour);
+
+    QImage tmpImg(copy);
+
     for (int y = 0; y < copy.height(); y++)
         for (int x = 0; x < copy.width(); x++)
             if (copy.pixel(x, y) != black) {
-                int area = 1;
-                int perimeter = 1;
+                vector<QPoint> object;
+                findObject(x, y, &tmpImg, &object);
                 QRect bBox(QPoint(x, y), QPoint(x, y));
-                analyze(x, y, &copy, &area, &perimeter, &bBox);
-                defectType type = getDefectType(area, perimeter, bBox);
+                defectType type = getDefectType(object, &contour, &bBox);
+
                 if (type == normal)
                     continue;
                 else if (type == impact)
@@ -148,8 +170,11 @@ void myWidget::paintEvent(QPaintEvent *)
                     painter.setPen(QPen(Qt::green, 2));
                 else if (type == sponge)
                     painter.setPen(QPen(Qt::yellow, 2));
-                else if (type == impact)
+                else if (type == water)
                     painter.setPen(QPen(Qt::blue, 2));
+                else if (type == unrecognized)
+                    painter.setPen(QPen(Qt::white, 2));
+
                 scaleCoords(&bBox, subCanvas, copy.rect());
                 bBox.translate(subCanvas.topLeft());
                 painter.drawRect(bBox);

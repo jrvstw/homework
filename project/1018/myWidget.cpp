@@ -149,8 +149,8 @@ void myWidget::paintEvent(QPaintEvent *)
         for (int x = 0; x < copy.width(); x++)
             contour.setPixel(x, y, copy.pixel(x, y) -
                              (contour.pixel(x, y) & 0xFFFFFF));
-    //subCanvas = canvas;
-    //painter.drawImage(subCanvas, contour);
+    subCanvas = canvas;
+    painter.drawImage(subCanvas, src);
 
     QImage tmpImg(copy);
 
@@ -160,7 +160,9 @@ void myWidget::paintEvent(QPaintEvent *)
                 vector<QPoint> object;
                 findObject(x, y, &tmpImg, &object);
                 QRect bBox(QPoint(x, y), QPoint(x, y));
-                defectType type = getDefectType(object, &contour, &bBox);
+                QString label;
+                defectType type = getDefectType(object, &contour, &bBox,
+                                                &label);
 
                 if (type == normal)
                     continue;
@@ -178,6 +180,7 @@ void myWidget::paintEvent(QPaintEvent *)
                 scaleCoords(&bBox, subCanvas, copy.rect());
                 bBox.translate(subCanvas.topLeft());
                 painter.drawRect(bBox);
+                painter.drawText(bBox.topLeft(), label);
             }
     //copy = copy.convertToFormat(QImage::Format_Mono);
 }

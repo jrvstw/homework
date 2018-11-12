@@ -1,5 +1,6 @@
 #include "imgTool.h"
 #include <vector>
+#include <cmath>
 using namespace std;
 const QRgb black = 0xFF000000;
 const QRgb white = 0xFFFFFFFF;
@@ -223,15 +224,17 @@ void visit(int dx, int dy, queue<QPoint> *q, vector<QPoint> *object,
     }
 }
 
-defectType getDefectType(vector<QPoint> object, QImage *contour, QRect *bBox)
+defectType getDefectType(vector<QPoint> object, QImage *contour,
+                         QRect *bBox, QString *label)
 {
     int area = object.size();
+
 
     if (area < 80 || area > 10000)
         return normal;
 
     int perimeter = 0;
-    double xSum = 0, ySum = 0, xxSum = 0, xySum = 0;
+    double xSum = 0, ySum = 0, xxSum = 0, xySum = 0, yySum = 0;
 
     for (int i = 0; i < area; i++) {
         QPoint p(object[i].x(), object[i].y());
@@ -242,32 +245,31 @@ defectType getDefectType(vector<QPoint> object, QImage *contour, QRect *bBox)
         ySum += p.y();
         xxSum += p.x() * p.x();
         xySum += p.x() * p.y();
+        yySum += p.y() * p.y();
     }
 
-    int convexArea = getConvexArea(object);
+    int convexArea;
+    double convexPerimeter;
+    getConvex(object, &convexArea, &convexPerimeter);
     double xMean = xSum / area,
-           orientation = (xySum - xMean*ySum) / (xxSum - xMean*xSum);
+           yMean = ySum / area,
+           nSxSx = xxSum - xMean * xSum,
+           nSySy = yySum - yMean * ySum,
+           orientation = -(xySum - xMean*ySum) / nSxSx,
+           correlation = orientation * sqrt(nSxSx / nSySy);
 
-    /*
-    if (true &&
-        convexArea > 250 &&
-        //perimeter * perimeter < area * 24 &&
-        bBox->width() < bBox->height() * 1.5)
-        return water;
-
-    if (true &&
-        convexArea > 250 &&
-        //perimeter * perimeter < area * 12 &&
-        bBox->width() < bBox->height() * 1.5)
-        return sponge;
-        */
+    label->setNum(correlation);
 
     if (true &&
-        perimeter * perimeter < area * 50 &&
+        abs(correlation) > 0.5 &&
+        true)
+        return impact;
+
+    if (true &&
         true)
         return water;
 
-    return unrecognized;
+    return sponge;
 
     //if (convexArea > bBox->width() * bBox->height() * 1)
     if (area < bBox->width() * bBox->height() * 0.3 &&
@@ -349,22 +351,28 @@ void convexHull(QPoint convex[10000], int *top, QPoint input[10000], int ninput)
     (*top)--;
 }
 
-int getConvexArea(vector<QPoint> object)
+void getConvex(vector<QPoint> object, int *area, double *perimeter)
 {
-    int area = object.size();
+    int size = object.size();
     QPoint array[10000];
-    for (int i = 0; i < area; i++)
+    for (int i = 0; i < size; i++)
         array[i] = object[i];
-    qsort(array, area, sizeof(QPoint), compare);
+    qsort(array, size, sizeof(QPoint), compare);
     QPoint convex[10000];
     int top = -1;
-    convexHull(convex, &top, array, area);
-    int convexArea = 0;
-    for (int i = 0; i <= top - 1; i++)
-        convexArea += (convex[i].x() * convex[i + 1].y() -
-                       convex[i].y() * convex[i + 1].x());
-    convexArea += (convex[top].x() * convex[0].y() -
-                   convex[top].y() * convex[0].x());
-    return abs(convexArea) / 2;
+    convexHull(convex, &top, array, size);
+    *area = (convex[top].x() * convex[0].y() -
+             convex[top].y() * convex[0].x());
+    int dx = convex[top].x() - convex[0].x(),
+        dy = convex[top].y() - convex[0].y();
+    *perimeter = sqrt(dx * dx + dy * dy);
+    for (int i = 0; i <= top - 1; i++) {
+        *area += (convex[i].x() * convex[i + 1].y() -
+                  convex[i].y() * convex[i + 1].x());
+        dx = convex[i + 1].x() - convex[i].x();
+        dy = convex[i + 1].y() - convex[i].y();
+        *perimeter += sqrt(dx * dx + dy * dy);
+    }
+   *area = abs(*area) / 2;
 }
 

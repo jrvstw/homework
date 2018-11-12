@@ -144,11 +144,11 @@ void myWidget::paintEvent(QPaintEvent *)
 
     // 4.2 paint frames on processed image
 
-    QImage contour = dilate(copy, 1);
+    QImage contour = erode(copy, 1);
     for (int y = 0; y < copy.height(); y++)
         for (int x = 0; x < copy.width(); x++)
-            contour.setPixel(x, y, contour.pixel(x, y) -
-                             (copy.pixel(x, y) & 0xFFFFFF));
+            contour.setPixel(x, y, copy.pixel(x, y) -
+                             (contour.pixel(x, y) & 0xFFFFFF));
     //subCanvas = canvas;
     //painter.drawImage(subCanvas, contour);
 

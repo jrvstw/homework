@@ -231,7 +231,7 @@ defectType getDefectType(vector<QPoint> object, QImage *contour, QRect *bBox)
         return normal;
 
     int perimeter = 0;
-    long long int xSum = 0, ySum = 0, xxSum = 0, xySum = 0;
+    double xSum = 0, ySum = 0, xxSum = 0, xySum = 0;
 
     for (int i = 0; i < area; i++) {
         QPoint p(object[i].x(), object[i].y());
@@ -243,37 +243,29 @@ defectType getDefectType(vector<QPoint> object, QImage *contour, QRect *bBox)
         xxSum += p.x() * p.x();
         xySum += p.x() * p.y();
     }
-    return impact;
-
-    if (bBox->width() > bBox->height() * 5)
-        return normal;
-
-    double xMean = (double)xSum / area, xxMean = (double)xxSum / area,
-           yMean = (double)ySum / area, xyMean = (double)xySum / area;
-    double orientation = (xyMean - xMean*yMean) / (xxMean - xMean*xMean);
-
-    //int isPlump = (area > bBox->width() * bBox->height() * 0.7);
-    int isSquare = ((bBox->width() < bBox->height() * 2) &&
-                    (bBox->height() < bBox->width() * 2));
-    //if (area > 300 &&
-        //area < bBox->width() * bBox->height() * 0.4 &&
-        //isSquare)
-
-    if (perimeter * 2 > area &&
-        area < 500)
-        return normal;
 
     int convexArea = getConvexArea(object);
+    double xMean = xSum / area,
+           orientation = (xySum - xMean*ySum) / (xxSum - xMean*xSum);
 
-    //if (convexArea > bBox->width() * bBox->height() * 1)
-    if (convexArea > bBox->width() * bBox->height() * 0.7 &&
+    if (true &&
         convexArea > 250 &&
+        //perimeter * perimeter < area * 24 &&
         bBox->width() < bBox->height() * 1.5)
         return water;
 
+    if (true &&
+        convexArea > 250 &&
+        //perimeter * perimeter < area * 12 &&
+        bBox->width() < bBox->height() * 1.5)
+        return sponge;
+
+    return unrecognized;
+
+    //if (convexArea > bBox->width() * bBox->height() * 1)
     if (area < bBox->width() * bBox->height() * 0.3 &&
         perimeter < area * 0.4)
-        return scratch;
+            return scratch;
 
     if (abs(orientation) > 0.2 &&
         abs(orientation) < 3 &&

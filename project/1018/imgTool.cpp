@@ -248,6 +248,7 @@ defectType getDefectType(vector<QPoint> object, QImage *contour, QRect *bBox)
     double xMean = xSum / area,
            orientation = (xySum - xMean*ySum) / (xxSum - xMean*xSum);
 
+    /*
     if (true &&
         convexArea > 250 &&
         //perimeter * perimeter < area * 24 &&
@@ -259,6 +260,12 @@ defectType getDefectType(vector<QPoint> object, QImage *contour, QRect *bBox)
         //perimeter * perimeter < area * 12 &&
         bBox->width() < bBox->height() * 1.5)
         return sponge;
+        */
+
+    if (true &&
+        perimeter * perimeter < area * 50 &&
+        true)
+        return water;
 
     return unrecognized;
 

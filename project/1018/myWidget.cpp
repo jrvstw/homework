@@ -149,8 +149,9 @@ void myWidget::paintEvent(QPaintEvent *)
         for (int x = 0; x < copy.width(); x++)
             contour.setPixel(x, y, copy.pixel(x, y) -
                              (contour.pixel(x, y) & 0xFFFFFF));
-    subCanvas = canvas;
-    painter.drawImage(subCanvas, src);
+    //subCanvas = canvas;
+    painter.drawImage(subCanvas, contour);
+    //painter.drawImage(subCanvas, copy);
 
     QImage tmpImg(copy);
 

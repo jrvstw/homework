@@ -6,9 +6,9 @@ const QRgb black = 0xFF000000;
 const QRgb white = 0xFFFFFFFF;
 
 
-QImage dwt(QImage source, int level, int width, int height)
+QImage dwt(QImage src, int level, int width, int height)
 {
-    QImage copy = source.scaled(width, height, Qt::IgnoreAspectRatio);
+    QImage copy = src.scaled(width, height, Qt::IgnoreAspectRatio);
 
     int m[1024][1024];
     for (int y = 0; y < height; y++)
@@ -64,7 +64,7 @@ QImage dwt(QImage source, int level, int width, int height)
             copy.setPixel(x, y, QColor(m[y][x], m[y][x], m[y][x]).rgb());
         }
 
-    return copy;
+    return copy.scaled(src.width()/2, src.height()/2, Qt::IgnoreAspectRatio);
 }
 
 QImage toBinary(QImage source, int threshold)
@@ -90,7 +90,7 @@ int autoThreshold(QImage source)
     int threshold = 255;
     while(histogram[threshold] == 0)
         threshold--;
-    return threshold * 40 / 100;
+    return threshold * 50 / 100;
 }
 
 QImage erode(QImage source, int d)
@@ -194,7 +194,6 @@ void findObject(int x0, int y0, QImage *src, vector<QPoint> *object)
         visit( 0,  2, &q, object, src);
         visit(-2,  0, &q, object, src);
         visit( 0, -2, &q, object, src);
-        /*
         visit( 3,  0, &q, object, src);
         visit( 2,  1, &q, object, src);
         visit( 1,  2, &q, object, src);
@@ -207,7 +206,6 @@ void findObject(int x0, int y0, QImage *src, vector<QPoint> *object)
         visit( 0, -3, &q, object, src);
         visit( 1, -2, &q, object, src);
         visit( 2, -1, &q, object, src);
-        */
         q.pop();
     }
 }
@@ -229,10 +227,6 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
 {
     int area = object.size();
 
-
-    if (area < 80 || area > 10000)
-        return normal;
-
     int perimeter = 0;
     double xSum = 0, ySum = 0, xxSum = 0, xySum = 0, yySum = 0;
 
@@ -248,6 +242,9 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
         yySum += p.y() * p.y();
     }
 
+    if (area < 40 || area > 3000)
+        return normal;
+
     int convexArea;
     double convexPerimeter;
     getConvex(object, &convexArea, &convexPerimeter);
@@ -258,14 +255,17 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
            orientation = -(xySum - xMean*ySum) / nSxSx,
            correlation = orientation * sqrt(nSxSx / nSySy);
 
-    label->setNum(correlation);
+    label->setNum(convexPerimeter*convexPerimeter/12.56/area);
+
+    return impact;
 
     if (true &&
-        abs(correlation) > 0.5 &&
+        abs(correlation) > 0.7 &&
         true)
         return impact;
 
     if (true &&
+        abs(correlation) < 0.3 &&
         true)
         return water;
 

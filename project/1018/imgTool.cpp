@@ -255,7 +255,7 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
            orientation = -(xySum - xMean*ySum) / nSxSx,
            correlation = orientation * sqrt(nSxSx / nSySy);
 
-    label->setNum(convexPerimeter*convexPerimeter/12.56/area);
+    label->setNum(convexPerimeter*convexPerimeter/12.56/convexArea);
 
     return impact;
 

@@ -5,3 +5,6 @@
 *.pyc
 *.vcd
 a.out
+
+moc_*
+1018

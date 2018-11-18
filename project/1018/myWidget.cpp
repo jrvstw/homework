@@ -1,5 +1,7 @@
 #include "myWidget.h"
 #include "imgTool.h"
+#include "getDefectType.h"
+
 #include <QPainter>
 #include <QTimer>
 #include <fstream>

@@ -39,7 +39,7 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
            correlation = orientation * sqrt(nSxSx / nSySy);
 
     double compactness = convexPerimeter*convexPerimeter/12.56/convexArea;
-    label->setNum(compactness);
+    //label->setNum(compactness);
 
     if (true &&
         compactness < 1.3 &&

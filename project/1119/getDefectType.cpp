@@ -39,7 +39,7 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
            correlation = orientation * sqrt(nSxSx / nSySy);
 
     double compactness = convexPerimeter*convexPerimeter/12.56/convexArea;
-    label->setNum(correlation);
+    label->setNum(compactness);
 
     if (true &&
         compactness < 1.3 &&
@@ -70,7 +70,19 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
         true)
         return impact;
 
-    return unrecognized;
+    if (true &&
+        area < 110 &&
+        area > 75 &&
+        compactness < 1.42 &&
+        compactness > 1.29 &&
+        true)
+        return sponge;
+
+    return normal;
+
+    /*
+    if (area > 200)
+        return unrecognized;
 
     //if (convexArea > bBox->width() * bBox->height() * 1)
     if (area < bBox->width() * bBox->height() * 0.3 &&
@@ -82,14 +94,12 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
         area < bBox->width() * bBox->height() * 0.4)
         return impact;
 
-    /*
     if (area > 200 &&
         area < bBox->width() * bBox->height() * 0.4 &&
         //perimeter < area * 0.3 &&
         orientation < -0.5 &&
         true)
         return impact;
-        */
 
 
     return unrecognized;
@@ -108,6 +118,7 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
         true)
         return scratch;
     return normal;
+    */
 }
 
 int cross(QPoint O, QPoint A, QPoint B)

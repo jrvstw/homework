@@ -255,17 +255,16 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
            orientation = -(xySum - xMean*ySum) / nSxSx,
            correlation = orientation * sqrt(nSxSx / nSySy);
 
-    label->setNum(convexPerimeter*convexPerimeter/12.56/convexArea);
-
-    return impact;
+    double compactness = convexPerimeter*convexPerimeter/12.56/convexArea;
+    label->setNum(compactness);
 
     if (true &&
-        abs(correlation) > 0.7 &&
+        compactness > 1.9 &&
         true)
-        return impact;
+        return scratch;
 
     if (true &&
-        abs(correlation) < 0.3 &&
+        compactness < 1.3 &&
         true)
         return water;
 

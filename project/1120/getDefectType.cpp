@@ -6,7 +6,7 @@ const QRgb black = 0xFF000000;
 const QRgb white = 0xFFFFFFFF;
 
 defectType getDefectType(vector<QPoint> object, QImage *contour,
-                         QRect *bBox)
+                         QRect *bBox, QString *label)
 {
     int area = object.size();
 
@@ -39,6 +39,7 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
            correlation = orientation * sqrt(nSxSx / nSySy);
 
     double compactness = convexPerimeter*convexPerimeter/12.56/convexArea;
+    //label->setNum(compactness);
 
     if (true &&
         compactness < 1.3 &&
@@ -78,6 +79,46 @@ defectType getDefectType(vector<QPoint> object, QImage *contour,
         return sponge;
 
     return normal;
+
+    /*
+    if (area > 200)
+        return unrecognized;
+
+    //if (convexArea > bBox->width() * bBox->height() * 1)
+    if (area < bBox->width() * bBox->height() * 0.3 &&
+        perimeter < area * 0.4)
+            return scratch;
+
+    if (abs(orientation) > 0.2 &&
+        abs(orientation) < 3 &&
+        area < bBox->width() * bBox->height() * 0.4)
+        return impact;
+
+    if (area > 200 &&
+        area < bBox->width() * bBox->height() * 0.4 &&
+        //perimeter < area * 0.3 &&
+        orientation < -0.5 &&
+        true)
+        return impact;
+
+
+    return unrecognized;
+
+    if (area - perimeter < 200 &&
+        perimeter * 2 > area)
+        return water;
+
+
+    if (bBox->width() > bBox->height() * 2 &&
+        area > bBox->width() * bBox->height() * 0.3)
+        return water;
+
+    if (area > 80 &&
+        perimeter > area * 0.5 &&
+        true)
+        return scratch;
+    return normal;
+    */
 }
 
 int cross(QPoint O, QPoint A, QPoint B)

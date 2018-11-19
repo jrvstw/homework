@@ -12,7 +12,7 @@ using namespace std;
 enum defectType{normal, impact, scratch, sponge, water, unrecognized};
 
 defectType getDefectType(vector<QPoint> object, QImage *contour,
-                         QRect *bBox);
+                         QRect *bBox, QString *label);
 int cross(QPoint O, QPoint A, QPoint B);
 int compare(const void* C, const void* D);
 void convexHull(QPoint convex[10000], int *top, QPoint input[10000], int ninput);

@@ -115,6 +115,51 @@ QImage erode(QImage source, int d)
                 extended.pixel(x + 1, y    ) == black ||
                 extended.pixel(x    , y + 1) == black)
                 output.setPixel(x - d, y - d, black);
+            if (d < 2)
+                continue;
+            if (extended.pixel(x + 2, y    ) == black ||
+                extended.pixel(x + 1, y + 1) == black ||
+                extended.pixel(x    , y + 2) == black ||
+                extended.pixel(x - 1, y + 1) == black ||
+                extended.pixel(x - 2, y    ) == black ||
+                extended.pixel(x - 1, y - 1) == black ||
+                extended.pixel(x    , y - 2) == black ||
+                extended.pixel(x + 1, y - 1) == black)
+                output.setPixel(x - d, y - d, black);
+            if (d < 3)
+                continue;
+            if (extended.pixel(x + 3, y    ) == black ||
+                extended.pixel(x + 2, y + 1) == black ||
+                extended.pixel(x + 1, y + 2) == black ||
+                extended.pixel(x    , y + 3) == black ||
+                extended.pixel(x - 1, y + 2) == black ||
+                extended.pixel(x - 2, y + 1) == black ||
+                extended.pixel(x - 3, y    ) == black ||
+                extended.pixel(x - 2, y - 1) == black ||
+                extended.pixel(x - 1, y - 2) == black ||
+                extended.pixel(x    , y - 3) == black ||
+                extended.pixel(x + 1, y - 2) == black ||
+                extended.pixel(x + 2, y - 1) == black)
+                output.setPixel(x - d, y - d, black);
+            if (d < 4)
+                continue;
+            if (extended.pixel(x + 4, y    ) == black ||
+                extended.pixel(x + 3, y + 1) == black ||
+                extended.pixel(x + 2, y + 2) == black ||
+                extended.pixel(x + 1, y + 3) == black ||
+                extended.pixel(x    , y + 4) == black ||
+                extended.pixel(x - 1, y + 3) == black ||
+                extended.pixel(x - 2, y + 2) == black ||
+                extended.pixel(x - 3, y + 1) == black ||
+                extended.pixel(x - 4, y    ) == black ||
+                extended.pixel(x - 3, y - 1) == black ||
+                extended.pixel(x - 2, y - 2) == black ||
+                extended.pixel(x - 1, y - 3) == black ||
+                extended.pixel(x    , y - 4) == black ||
+                extended.pixel(x + 1, y - 3) == black ||
+                extended.pixel(x + 2, y - 2) == black ||
+                extended.pixel(x + 3, y - 1) == black)
+                output.setPixel(x - d, y - d, black);
         }
     return output;
 }

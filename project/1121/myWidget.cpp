@@ -4,6 +4,8 @@
 
 #include <QPainter>
 #include <QTimer>
+#include <QLabel>
+#include <QString>
 #include <fstream>
 #include <vector>
 #include <rapidxml.h>
@@ -21,6 +23,14 @@ myWidget::myWidget(char xmls[][30], char pics[][30], int nPics, int period, QWid
     nSource = nPics;
     xmlFile = xmls;
 
+    dir = opendir("../pics");
+    ent = readdir(dir);
+    while (ent != NULL && strstr(ent->d_name, ".jpg") == NULL) {
+        ent = readdir(dir);
+    }
+    if (ent != NULL)
+        strcpy(pic_location, ent->d_name);
+
     if (period > 0) {
         timer = new QTimer(this);
         QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
@@ -31,12 +41,14 @@ myWidget::myWidget(char xmls[][30], char pics[][30], int nPics, int period, QWid
 void myWidget::timeout()
 {
     index = (index == nSource - 1)? 0: index + 1;
+
     this->update();
 }
 
 void myWidget::mousePressEvent(QMouseEvent *)
 {
     index = (index == nSource - 1)? 0: index + 1;
+
     this->update();
 }
 
@@ -44,6 +56,7 @@ void myWidget::paintEvent(QPaintEvent *)
 {
     // 0. setup
     QPainter painter(this);
+    //const QImage src(pic_location);
     const QImage src(source[index]);
 
     QSize paintSize(src.size());
@@ -124,6 +137,8 @@ void myWidget::paintEvent(QPaintEvent *)
     painter.drawImage(subCanvas, contour);
     //painter.drawImage(subCanvas, copy);
 
+    subCanvas.moveTo(canvas.x(), canvas.y());
+
     QImage tmpImg(copy);
 
     for (int y = 0; y < copy.height(); y++)
@@ -138,6 +153,9 @@ void myWidget::paintEvent(QPaintEvent *)
 
                 if (type == normal)
                     continue;
+                else if (type != unrecognized)
+                    painter.setPen(QPen(Qt::blue, 2));
+                /*
                 else if (type == impact)
                     painter.setPen(QPen(Qt::red, 2));
                 else if (type == scratch)
@@ -148,6 +166,7 @@ void myWidget::paintEvent(QPaintEvent *)
                     painter.setPen(QPen(Qt::blue, 2));
                 else if (type == unrecognized)
                     painter.setPen(QPen(Qt::white, 2));
+                    */
 
                 scaleCoords(&bBox, subCanvas, copy.rect());
                 bBox.translate(subCanvas.topLeft());
@@ -155,5 +174,74 @@ void myWidget::paintEvent(QPaintEvent *)
                 painter.drawText(bBox.topLeft(), label);
             }
     //copy = copy.convertToFormat(QImage::Format_Mono);
+
+    // show statistic
+    QFont font;
+    font.setPixelSize(20);
+    painter.setFont(font);
+
+    int hit, miss, fa;
+    switch (index) {
+        case 0: case 1: case 2: case 4: case 10: case 11: case 13: case 14:
+            hit = 1;
+            miss = 0;
+            fa = 0;
+            break;
+        case 3: case 5: case 12:
+            hit = 1;
+            miss = 1;
+            fa = 0;
+            break;
+        case 6:
+            hit = 1;
+            miss = 6;
+            fa = 2;
+            break;
+        case 7:
+            hit = 3;
+            miss = 0;
+            fa = 0;
+            break;
+        case 8:
+            hit = 2;
+            miss = 1;
+            fa = 0;
+            break;
+        case 9:
+            hit = 1;
+            miss = 0;
+            fa = 1;
+            break;
+        case 15:
+            hit = 1;
+            miss = 4;
+            fa = 0;
+            break;
+        case 16: case 18:
+            hit = 1;
+            miss = 3;
+            fa = 0;
+            break;
+        case 17:
+            hit = 2;
+            miss = 3;
+            fa = 0;
+            break;
+        case 19:
+            hit = 3;
+            miss = 0;
+            fa = 0;
+            break;
+    }
+
+    QString string;
+    string.append("Hit: ");
+    string.append(QString::number(hit));
+    string.append("     Miss: ");
+    string.append(QString::number(miss));
+    string.append("     False Alarm: ");
+    string.append(QString::number(fa));
+
+    painter.drawText(subCanvas.bottomLeft(), string);
 }
 
